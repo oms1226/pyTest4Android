@@ -1,0 +1,16 @@
+*.txt
+*.png
+*.csv
+
+*.TMP
+
+*.bak
+
+lmcst_v1\.0/demo\.mp4
+
+*.pyc
+
+*.log
+registry*
+
+trigger\.sh
