@@ -656,6 +656,9 @@ if __name__ == "__main__":
         reVal = getPropFromDevice(DEVICE_ID);
         print("%s:%s" % ("getPropFromDevice", reVal))
 
+        if os.path.exists("C:\\lmcft_log\\common\\") == False:
+            mkdirs("C:\\lmcft_log\\common\\")
+
         with codecs.open("C:\\lmcft_log\\common\\modelInfo4getprop.log", 'a', 'utf-8') as f:
             f.write(json.dumps(reVal, ensure_ascii=False) + "\r\n")
             f.close()
