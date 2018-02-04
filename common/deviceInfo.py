@@ -341,6 +341,26 @@ def getBoardFromDevice(deviceId):
 
     return reVal
 
+def getValueFromDevice(deviceId, field):
+    reVal = None
+
+    proc = subprocess.Popen("adb -s " + deviceId + " shell getprop | grep '\[" + field + "\]'", stdout=subprocess.PIPE)
+    fd_popen = proc.stdout
+
+    content = fd_popen.read().strip()
+    for line in content.split('\r\n'):
+        reVal = line.split(' ')[-1].replace('[', '').replace(']', '').replace('\r', '').replace('\n', '').replace(' ', '')
+        break
+
+    if reVal == '':
+        reVal = None
+    try:
+        proc.kill()
+    except:
+        printError("%s:%s" % ("Unexpected error", getExceptionString(sys.exc_info())))
+
+    return reVal
+
 def getPropFromDevice(deviceId):
     """
     greatlteks:/ $ getprop
