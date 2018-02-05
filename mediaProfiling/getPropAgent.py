@@ -6,7 +6,7 @@ import threading
 from common.contant import *
 from common.deviceInfo import *
 
-setDEBUG(True)
+setDEBUG(False)
 
 JSON_LOCAL_FILE = None
 INFO_FILEFULLNAME = "data\\modelInfo4getprop.data"
@@ -108,7 +108,11 @@ def localFileSelfProcess(fileName):
             with codecs.open(INFO_FILEFULLNAME, 'a', 'utf-8') as f:
                 f.write(json.dumps(getprop, ensure_ascii=False) + "\r\n")
                 f.close()
-
+"""
+아래를 pythonpath를 추가
+  C:\_python\workspace\PycharmProjects\pyTest4AndroidonGithub
+python C:\_python\workspace\PycharmProjects\pyTest4AndroidonGithub\mediaProfiling\getPropAgent.py -a
+"""
 if __name__ == "__main__":
     AUTOMODE = False
     while len(sys.argv) > 1:
@@ -116,6 +120,7 @@ if __name__ == "__main__":
             AUTOMODE = True
             sys.argv.pop(1)
 
+    printEx("%s:%s" % ("AUTOMODE", AUTOMODE))
     connected_Devices = []
     sleepTime = MIN_SLEEPTIME
     while True:
