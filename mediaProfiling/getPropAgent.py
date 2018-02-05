@@ -6,15 +6,20 @@ import threading
 from common.contant import *
 from common.deviceInfo import *
 
-setDEBUG(False)
+setDEBUG(True)
 
+JSON_LOCAL_FILE = None
 INFO_FILEFULLNAME = "data\\modelInfo4getprop.data"
 HASHKEY_FILEFULLNAME = "data\\modelInfo4getprop.hashkey"
 MIN_SLEEPTIME = 60
 MAX_SLEEPTIME = 15 * 60
 
 def getPropRefinded4ELK(deviceId):
-    property = getPropFromDevice(DEVICE_ID);
+    global JSON_LOCAL_FILE
+    if JSON_LOCAL_FILE == None:
+        property = getPropFromDevice(DEVICE_ID)
+    else:
+        property = JSON_LOCAL_FILE
     for key in property.keys():
         if key in property.keys():
             for searchKey in property.keys():
@@ -26,6 +31,7 @@ def getPropRefinded4ELK(deviceId):
     return property
 
 def getHashkeyThisDevice4ELK(deviceId):
+    global JSON_LOCAL_FILE
     needFields = [
         "ro.product.manufacturer",
         "ro.product.model",
@@ -42,7 +48,13 @@ def getHashkeyThisDevice4ELK(deviceId):
 
     hashKey = str(len(needFields))
     for field in needFields:
-        reVal =  getValueFromDevice(deviceId, field)
+        if JSON_LOCAL_FILE == None:
+            reVal =  getValueFromDevice(deviceId, field)
+        else:
+            try:
+                reVal =  JSON_LOCAL_FILE[field].replace(' ', '')
+            except KeyError:
+                printError("Unexpected error: ", sys.exc_info()[0], sys.exc_info()[1])
         if reVal == None:
             reVal = 'None'
         hashKey = hashKey + '_' + reVal
@@ -50,6 +62,52 @@ def getHashkeyThisDevice4ELK(deviceId):
     printEx("%s:%s" % ("hashKey", hashKey))
 
     return hashKey
+"""
+기 수집된 파일을 재 파싱하여 원하는 형태로 다시 재조립할 때 사용했다. 20180205
+localFileSelfProcess("C:\\lmcft_log\\common\\modelInfo4getprop.log")
+exit(0)
+"""
+def localFileSelfProcess(fileName):
+    global JSON_LOCAL_FILE
+    if os.path.exists(fileName):
+        with open(fileName) as f:
+            lines = f.readlines()
+    else:
+        lines = []
+
+    for line in lines:
+        JSON_LOCAL_FILE = json.loads(line)
+
+        if os.path.exists(HASHKEY_FILEFULLNAME):
+            with open(HASHKEY_FILEFULLNAME) as f:
+                hashKeys = f.readlines()
+        else:
+            hashKeys = []
+
+        fGetInfo = True
+        hashKey = getHashkeyThisDevice4ELK(None)
+        printEx("%s:%s" % ("hashKey", hashKey))
+
+        for pastKey in hashKeys:
+            if hashKey in pastKey:
+                fGetInfo = False
+                break
+
+        printEx("%s:%s" % ("fGetInfo", fGetInfo))
+
+        if fGetInfo:
+            with codecs.open(HASHKEY_FILEFULLNAME, 'a', 'utf-8') as f:
+                f.write(json.dumps(hashKey, ensure_ascii=False) + "\r\n")
+                f.close()
+
+            getprop = getPropRefinded4ELK(None);
+            printEx("%s:%s" % ("type(reVal)", type(getprop)))
+            if os.path.exists("data") == False:
+                mkdirs("data")
+
+            with codecs.open(INFO_FILEFULLNAME, 'a', 'utf-8') as f:
+                f.write(json.dumps(getprop, ensure_ascii=False) + "\r\n")
+                f.close()
 
 if __name__ == "__main__":
     AUTOMODE = False
