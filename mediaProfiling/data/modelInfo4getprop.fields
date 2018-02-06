@@ -1,3 +1,4 @@
+persist.camera.mct.debug
 persist.vendor.radio.3gpp_drte_ltd
 ril.official_cscver
 system_init.startsurfaceflinger

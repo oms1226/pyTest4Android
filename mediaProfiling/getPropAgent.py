@@ -14,6 +14,7 @@ HASHKEY_FILEFULLNAME = "data\\modelInfo4getprop.hashkey"
 FIELDS_FILEFULLNAME = "data\\modelInfo4getprop.fields"
 MIN_SLEEPTIME = 60
 MAX_SLEEPTIME = 15 * 60
+EXISTED_FIELD_DEPEND = True
 
 def getPropRefinded4ELK(deviceId):
     global JSON_LOCAL_FILE
@@ -49,6 +50,10 @@ def getPropRefinded4ELK(deviceId):
                 if field in key:
                     fAppend = False
                     break
+                if EXISTED_FIELD_DEPEND:
+                    if key in field and key != field:
+                        fAppend = False
+                        del property[key]
             if fAppend:
                 fields.append(key)
                 fWrite = True
@@ -57,12 +62,13 @@ def getPropRefinded4ELK(deviceId):
             for key in property.keys():
                 if key in property.keys():
                     if key in field and key != field:
-                        fields[i] = key
-                        fWrite = True
-                        pass
+                        if EXISTED_FIELD_DEPEND:
+                            del property[key]
+                        else:
+                            fields[i] = key
+                            fWrite = True
                     elif field in key and key != field:
                         del property[key]
-                        pass
 
     # for key in property.keys():
     #     if len(key.split('.')) > 3:
@@ -111,6 +117,8 @@ def getHashkeyThisDevice4ELK(deviceId):
     return hashKey
 """
 기 수집된 파일을 재 파싱하여 원하는 형태로 다시 재조립할 때 사용했다. 20180205
+Field를 수집한려면,
+    EXISTED_FIELD_DEPEND = False 로 설정한다.
 localFileSelfProcess("C:\\lmcft_log\\common\\modelInfo4getprop.log")
 exit(0)
 """
