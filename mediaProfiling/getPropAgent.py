@@ -196,6 +196,7 @@ if __name__ == "__main__":
         else:
             connected_Devices = connectingDevices
             sleepTime = MIN_SLEEPTIME
+            fReport = False
             for DEVICE_ID in connected_Devices:
                 try:
                     printEx("%s:%s" % ("DEVICE_ID", DEVICE_ID))
@@ -222,13 +223,14 @@ if __name__ == "__main__":
                             f.write(json.dumps(getprop, ensure_ascii=False) + "\r\n")
                             f.close()
 
-                        #os_systemEx("..\\filebeat\\filebeat-6.1.3-windows-x86_64\\filebeat.exe --once -e -c " + "sys\\filebeat.yml")
-                        os.system("..\\filebeat\\filebeat-6.1.3-windows-x86_64\\filebeat.exe --once -e -c " + "sys\\filebeat.yml")
+                        fReport = True
                 except:
                     printError("Unexpected error: ", sys.exc_info()[0], sys.exc_info()[1])
                 finally:
                     excuteTime = (datetime.datetime.utcnow() + datetime.timedelta(hours=9)).strftime("%Y%m%d%H%M")
                     print("%s-%s." % ("awake", excuteTime)),
-
+            if fReport:
+                # os_systemEx("..\\filebeat\\filebeat-6.1.3-windows-x86_64\\filebeat.exe --once -e -c " + "sys\\filebeat.yml")
+                os.system("..\\filebeat\\filebeat-6.1.3-windows-x86_64\\filebeat.exe --once -e -c " + "sys\\filebeat.yml")
         if AUTOMODE == False:
             break
