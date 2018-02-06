@@ -16,3 +16,5 @@ registry*
 trigger\.sh
 
 \.idea/
+
+mediaTuning/com\.skt\.trtc\.sample_preferences\.xml

@@ -10,7 +10,7 @@ from xml.etree.ElementTree import parse
 SHARD_PREFENCES = "com.skt.trtc.sample_preferences.xml"
 MP4_SAVEFOLDER = 'A:\\_MT\\'
 #MP4_SAVEFOLDER = 'A:\\stub\\'
-TIME_LIMIT = 120
+TIME_LIMIT = 60
 pids = []
 setDEBUG(True)
 
@@ -40,8 +40,10 @@ def getShardPreference(xmlFileName, tagName, key):
 connectIds = getRealDevices()
 
 if len(connectIds) != 2:
-    printError("len(connectIds) is " + str(len(connectIds)))
-    exit(0)
+    raw_input('connected device\'s num is ' + str(len(connectIds)) + '! Is it right?[enter]')
+    if len(connectIds) > 2:
+        printError("len(connectIds) is " + str(len(connectIds)) + '! But, that is not available!')
+        exit(0)
 
 resultSingleFileNameS = dict()
 
@@ -80,13 +82,18 @@ for id in connectIds:
 resultPairFileNameS = dict()
 START______TIME = (datetime.datetime.utcnow() + datetime.timedelta(hours=9)).strftime("%Y%m%d%H%M")
 
-for me in connectIds:
-    myName = resultSingleFileNameS[me]
-    #resultPairFileNameS[me] = "me[" + myName + "]" + "_" + START______TIME + ".mp4"
-    for you in connectIds:
-        if me != you:
-            resultPairFileNameS[me] = "me[" + myName + "]you[" + resultSingleFileNameS[you] + "]" + "_" + START______TIME + ".mp4"
-            break
+if len(connectIds) == 2:
+    for me in connectIds:
+        myName = resultSingleFileNameS[me]
+        #resultPairFileNameS[me] = "me[" + myName + "]" + "_" + START______TIME + ".mp4"
+        for you in connectIds:
+            if me != you:
+                resultPairFileNameS[me] = "me[" + myName + "]you[" + resultSingleFileNameS[you] + "]" + "_" + START______TIME + ".mp4"
+                break
+else:
+    for me in connectIds:
+        myName = resultSingleFileNameS[me]
+        resultPairFileNameS[me] = "single[" + myName + "]_" + START______TIME + ".mp4"
 
 # Example usage
 def someOtherFunc(device_id, model, tLimit, filename):

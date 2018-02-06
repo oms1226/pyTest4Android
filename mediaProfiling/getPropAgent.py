@@ -166,6 +166,8 @@ if __name__ == "__main__":
                         with codecs.open(INFO_FILEFULLNAME, 'a', 'utf-8') as f:
                             f.write(json.dumps(getprop, ensure_ascii=False) + "\r\n")
                             f.close()
+
+                        os.system("..\\filebeat\\filebeat-6.1.3-windows-x86_64\\filebeat.exe --once -e -c " + "sys\\filebeat.yml")
                 except:
                     printError("Unexpected error: ", sys.exc_info()[0], sys.exc_info()[1])
                 finally:
