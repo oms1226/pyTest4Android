@@ -6,7 +6,7 @@ import threading
 from common.contant import *
 from common.deviceInfo import *
 
-setDEBUG(True)
+setDEBUG(False)
 
 JSON_LOCAL_FILE = None
 INFO_FILEFULLNAME = "data\\modelInfo4getprop.data"
@@ -161,8 +161,6 @@ def localFileSelfProcess(fileName):
 python C:\_python\workspace\PycharmProjects\pyTest4AndroidonGithub\mediaProfiling\getPropAgent.py -a
 """
 if __name__ == "__main__":
-    localFileSelfProcess("C:\\lmcft_log\\common\\modelInfo4getprop.log")
-    exit(0)
     AUTOMODE = False
     while len(sys.argv) > 1:
         if len(sys.argv) > 1 and '-a' in sys.argv[1]:
@@ -216,6 +214,7 @@ if __name__ == "__main__":
                             f.write(json.dumps(getprop, ensure_ascii=False) + "\r\n")
                             f.close()
 
+                        #os_systemEx("..\\filebeat\\filebeat-6.1.3-windows-x86_64\\filebeat.exe --once -e -c " + "sys\\filebeat.yml")
                         os.system("..\\filebeat\\filebeat-6.1.3-windows-x86_64\\filebeat.exe --once -e -c " + "sys\\filebeat.yml")
                 except:
                     printError("Unexpected error: ", sys.exc_info()[0], sys.exc_info()[1])
