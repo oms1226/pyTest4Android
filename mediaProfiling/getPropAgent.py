@@ -6,11 +6,12 @@ import threading
 from common.contant import *
 from common.deviceInfo import *
 
-setDEBUG(False)
+setDEBUG(True)
 
 JSON_LOCAL_FILE = None
 INFO_FILEFULLNAME = "data\\modelInfo4getprop.data"
 HASHKEY_FILEFULLNAME = "data\\modelInfo4getprop.hashkey"
+FIELDS_FILEFULLNAME = "data\\modelInfo4getprop.fields"
 MIN_SLEEPTIME = 60
 MAX_SLEEPTIME = 15 * 60
 
@@ -20,12 +21,54 @@ def getPropRefinded4ELK(deviceId):
         property = getPropFromDevice(DEVICE_ID)
     else:
         property = JSON_LOCAL_FILE
+
+    fields = []
+    if os.path.exists(FIELDS_FILEFULLNAME):
+        with open(FIELDS_FILEFULLNAME) as f:
+            while True:
+                line = f.readline().replace('\r', '').replace('\n', '')
+                if not line: break
+                fields.append(line)
+            f.close()
+
     for key in property.keys():
         if key in property.keys():
             for searchKey in property.keys():
                 if key in searchKey and searchKey != key:
                     del property[searchKey]
                     printEx("%s:%s --> %s" % ("del", searchKey, 'due to ' + key))
+
+    fWrite = False
+    if len(fields) == 0:
+        fields = property.keys()
+        fWrite = True
+    else:
+        for i, field in enumerate(fields):
+            if field in fields:
+                for j, innerField in enumerate(fields):
+                    if i != j:
+                        if field in innerField and innerField == field:
+                            del fields[j]
+
+        for i, field in enumerate(fields):
+            for key in property.keys():
+                if key in property.keys():
+                    if key in field and key != field:
+                        fields[i] = key
+                        fWrite = True
+                        pass
+                    elif field in key and key != field:
+                        del property[key]
+                        pass
+
+    for key in property.keys():
+        if len(key.split('.')) > 3:
+            del property[key]
+
+    if fWrite:
+        with open(FIELDS_FILEFULLNAME, 'w') as f:
+            f.write('\n'.join(fields))
+            f.close()
 
     printEx("%s:%s" % ("len(property)", len(property)))
     return property
@@ -97,7 +140,7 @@ def localFileSelfProcess(fileName):
 
         if fGetInfo:
             with codecs.open(HASHKEY_FILEFULLNAME, 'a', 'utf-8') as f:
-                f.write(json.dumps(hashKey, ensure_ascii=False) + "\r\n")
+                f.write(hashKey + "\r\n")
                 f.close()
 
             getprop = getPropRefinded4ELK(None);
@@ -114,6 +157,8 @@ def localFileSelfProcess(fileName):
 python C:\_python\workspace\PycharmProjects\pyTest4AndroidonGithub\mediaProfiling\getPropAgent.py -a
 """
 if __name__ == "__main__":
+    localFileSelfProcess("C:\\lmcft_log\\common\\modelInfo4getprop.log")
+    exit(0)
     AUTOMODE = False
     while len(sys.argv) > 1:
         if len(sys.argv) > 1 and '-a' in sys.argv[1]:
@@ -154,8 +199,8 @@ if __name__ == "__main__":
                     printEx("%s:%s" % ("fGetInfo", fGetInfo))
 
                     if fGetInfo:
-                        with codecs.open(HASHKEY_FILEFULLNAME, 'a', 'utf-8') as f:
-                            f.write(json.dumps(hashKey, ensure_ascii=False) + "\r\n")
+                        with open(HASHKEY_FILEFULLNAME, 'a') as f:
+                            f.write(hashKey + "\n")
                             f.close()
 
                         getprop = getPropRefinded4ELK(DEVICE_ID);

@@ -18,3 +18,5 @@ trigger\.sh
 \.idea/
 
 mediaTuning/com\.skt\.trtc\.sample_preferences\.xml
+
+filebeat/filebeat-6\.1\.3-windows-x86_64/data/
