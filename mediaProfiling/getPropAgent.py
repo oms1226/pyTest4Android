@@ -43,12 +43,15 @@ def getPropRefinded4ELK(deviceId):
         fields = property.keys()
         fWrite = True
     else:
-        for i, field in enumerate(fields):
-            if field in fields:
-                for j, innerField in enumerate(fields):
-                    if i != j:
-                        if field in innerField and innerField == field:
-                            del fields[j]
+        for key in property.keys():
+            fAppend = True
+            for i, field in enumerate(fields):
+                if field in key:
+                    fAppend = False
+                    break
+            if fAppend:
+                fields.append(key)
+                fWrite = True
 
         for i, field in enumerate(fields):
             for key in property.keys():
@@ -61,11 +64,12 @@ def getPropRefinded4ELK(deviceId):
                         del property[key]
                         pass
 
-    for key in property.keys():
-        if len(key.split('.')) > 3:
-            del property[key]
+    # for key in property.keys():
+    #     if len(key.split('.')) > 3:
+    #         del property[key]
 
     if fWrite:
+        fields = list(set(fields))
         with open(FIELDS_FILEFULLNAME, 'w') as f:
             f.write('\n'.join(fields))
             f.close()
