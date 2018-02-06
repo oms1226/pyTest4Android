@@ -10,7 +10,7 @@ from xml.etree.ElementTree import parse
 SHARD_PREFENCES = "com.skt.trtc.sample_preferences.xml"
 MP4_SAVEFOLDER = 'A:\\_MT\\'
 #MP4_SAVEFOLDER = 'A:\\stub\\'
-TIME_LIMIT = 60
+TIME_LIMIT = 120
 pids = []
 setDEBUG(True)
 
@@ -44,6 +44,11 @@ if len(connectIds) != 2:
     if len(connectIds) > 2:
         printError("len(connectIds) is " + str(len(connectIds)) + '! But, that is not available!')
         exit(0)
+
+if len(connectIds) == 1:
+    TIME_LIMIT = 60
+printEx("[%s:%s]" % ("TIME_LIMIT", TIME_LIMIT))
+time.sleep(3)
 
 resultSingleFileNameS = dict()
 

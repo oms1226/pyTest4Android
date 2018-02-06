@@ -28,6 +28,7 @@ init.svc.agpsd
 ro.sys.ship_mode
 sys.games.gt.prof
 persist.radio.lte_vrte_ltd
+ro.prototype.param.offset
 persist.vendor.radio.lte_vrte_ltd
 ril.nw.erat.ext.support
 ro.pr.param.offset
@@ -63,7 +64,6 @@ persist.camera.eis.enable
 debug.mdl.save_log_stroage
 bluetooth.chip.vendor
 vendor.audio.offload.pstimeout.secs
-init.svc.m7sysrilcmdiface
 ril.telephony.sxlte-mode
 init.svc.pq
 ro.system.boot.cause
@@ -132,6 +132,7 @@ ro.boottime.power-hal-1-0
 cda.skuid.brand
 init.svc.frstd
 init.svc.console
+ro.lge.build.basetag
 ro.chameleon.sprintwificall
 ro.qualcomm.bluetooth.map
 ro.build.characteristics
@@ -140,7 +141,6 @@ wlan.lge.traffic.trigger
 voice.conc.fallbackpath
 camera.volume.constant
 persist.sys.drs.date
-ro.boot.dram_rev
 dalvik.vm.lockprof.threshold
 ro.lge.noise.suppression
 persist.OPERATOR_MODE
@@ -227,6 +227,7 @@ ro.ril.transmitpower
 gsm.sim.version
 init.svc.sec-sh
 persist.radio.adb_log_on
+persist.radio.missing_phone
 init.svc.prepare-mobicore
 persist.radio.csretrycategory
 ro.com.android.dateformat
@@ -268,6 +269,7 @@ ro.boot.ap_serial
 ro.mtk_perf_response_time
 ro.build.version.sem
 ril.voicecapable
+ro.logdumpd.enabled
 sched.colocate.enable
 ro.build.version.sep
 init.svc.security-check2
@@ -334,7 +336,7 @@ init.svc.mid_sh
 persist.net.wo.log_level
 dev.ssrm.report_rate
 net.rmnet_data0.dns2
-logd.logpersistd.enable
+net.rmnet_data0.dns1
 persist.security.tlc.ccm
 ro.qc.sensors.max_grav_no_gyro
 persist.sys.sso.DialogOnOff
@@ -362,7 +364,6 @@ ro.com.google.rlz_ap_whitelist
 sys.lge.dsdp.mode
 ro.crypto.state
 net.knoxsso.version
-net.rmnet_data0.dns1
 persist.dpm.feature
 net.webkit.cache.size
 ro.device.hapticfeedback
@@ -442,10 +443,12 @@ init.svc.vndservicemanager
 init.svc.dmb
 persist.audio.stereospeaker
 persist.hwc.mdpcomp.enable
+gsm.stk.perso.app.title
 persist.sys.sso.nCallNoti_Colo
 wlan.lge.gons.scan.scanonly
 ril.barcode
 persist.sys.aodstatus_byuser
+ro.boottime.ccm
 ro.config.timer_alert
 def.tct.drm.cd.enabled
 ril.currentsystem
@@ -454,7 +457,7 @@ ro.build.product
 persist.qcril.disable_retry
 init.svc.BCS-daemon
 ro.boot.boottime
-init.svc.sec-post-boot
+ro.boot.bootdevice
 persist.radio.ROTATION_ENABLE
 ro.csc.sales_code
 ro.factorytest
@@ -477,12 +480,11 @@ persist.radio.vrte_logic
 persist.vendor.radio.force_ltd_sys_ind
 persist.security.tlc.otp
 persist.radio.no_wait_for_card
-ro.boot.bootdevice
 ro.def.software.svn
 ro.mtk_eap_sim_aka
 persist.debug.av.logs.level
 ro.lock.screen.stock
-dalvik.vm.heapstartsize
+net.ims.enabler_type
 ro.sys.fw.dex2oat_thread_count
 ro.boot.revision
 init.svc.mirrorlink-lge-hal-1-0
@@ -512,7 +514,7 @@ vdf.sml.ergo.type
 init.svc.port-bridge
 cda.skuid.locale
 init.svc.conn_launcher
-debug.starting.mode.md1
+lge.policy_data_enable
 ro.boottime.swapon
 persist.cne.dpm
 logd.klogd
@@ -533,6 +535,7 @@ tps.keepstate
 persist.radio.nitz_plmn_0
 fmradio.driver.enable
 persist.fd.scron.timer
+gsm.sim-state-ready.status
 feature.silent.mode.enable
 ro.boot.lge.lcdbreak_mode
 persist.sys.flipfontpath
@@ -542,7 +545,6 @@ init.svc.emsvr_user
 ro.qti.sensors.mot_detect
 lpa.decode
 ril.lte.info
-persist.BT3_2.version
 ro.wlan.mtk.wifi.5g
 init.svc.nvdiag_daemon
 sys.config.slginfo_meminfo
@@ -572,7 +574,6 @@ persist.audio.mysound
 persist.sys.e911.gcf
 ro.core_ctl_present
 dhcp.cachefunc.notuse
-persist.sys.sso.blk_app_al
 ril.iccid.sim2
 ro.vendor.sensors.multishake
 ril.iccid.sim1
@@ -599,7 +600,6 @@ init.svc.drm
 ril.card_operator
 persist.radio.plmnname
 ro.hwui.r_buffer_cache_size
-init.svc.tclapp_ss
 mtk.md1.starttime
 net.ims.reg
 persist.radio.NO_STAPA
@@ -615,7 +615,7 @@ persist.sys.sso.TriggerOnOff
 ro.vold.forceencryption
 init.svc.ccci3_fsd
 ddk.set.afbc
-ro.config.vibrate_type
+audio.heap.size.multiplier
 ro.debug_level
 net.dns2
 init.svc.ccci_mdinit
@@ -640,6 +640,7 @@ ro.oem.key1
 persist.sky.kg.pref.type
 net.ims.operator
 gsm.sim.operator.numeric
+ro.boot.pr.param.offset
 gsm.operator.sky_numeric
 ril.bt_macaddr
 init.svc.netlabels
@@ -688,8 +689,9 @@ persist.sys.tct.brandMode.name
 init.svc.mdlogger
 persist.sys.lang.mccmnc
 init.svc.power_sh
+vidc.disable.split.mode
 init.svc.thermal
-ro.qc.sdk.izat.service_mask
+wfd.dummy.enable
 ro.sys.fw.empty_app_percent
 init.svc.xlogdebugchanged
 ro.boottime.visiond
@@ -741,7 +743,7 @@ init.svc.restore_efs
 sys.lge.mini_status_bar.shown
 persist.security.tlc.esecomm
 persist.radio.nitz_lons_1_0
-ril.lte.esm_reject
+ro.have_aacencode_feature
 dhcp.wlan0.leasetime
 ro.lge.sar.value
 persist.radio.nitz_lons_3_0
@@ -758,13 +760,12 @@ ro.tct.handsetref
 ro.product.acpu_pvs
 wc_transport.ref_count
 ro.feature.sortbyfamilyname
-wfd.dummy.enable
+partition.vendor.verified
 service.media.powersnd
 ro.horizontalVVM
 persist.service.logger.low
 persist.radio.rplmn
 ril.rejectedPlmn
-persist.radio.savedLastMcc
 ril.plmn.mx
 phone.num.significant.length
 sys.logbootcomplete
@@ -786,8 +787,8 @@ persist.radio.multiTZ.plmn
 net.perf.cpu.core
 persist.audio.spk_sm_fluence
 ro.sys.fw.mOomMinFree3
-ro.sys.fw.mOomMinFree2
-ro.sys.fw.mOomMinFree1
+init.svc.bms-sh
+ro.boottime.sem_daemon
 ro.sys.fw.mOomMinFree6
 net.tcp.buffersize.gprs
 init.svc.sec-vibrator-1-0
@@ -800,7 +801,6 @@ ril.ICC_TYPE
 persist.audio.product.identify
 persist.radio.initphone-type
 init.svc.icd
-camera.disable_zsl_mode
 init.svc.securefsservice
 ro.lge.petname
 ril.cbd.boot_done
@@ -835,6 +835,8 @@ ro.boottime.media
 persist.sys.imsomc_updated
 vendor.audio.tunnel.encode
 ro.config.videocall.show
+hw.extSecureLink
+persist.camera.mmstill.logs
 persist.log.tag
 ro.boottime.sec_fps_hal
 feature.tct.hostapd.wps.enabled
@@ -865,6 +867,7 @@ persist.fih.flight_cap
 persist.sensors.wul_delay
 persist.sys.disable_rescue
 persist.vendor.radio.force_nw_search
+sys.shutdown.voltage
 ro.boot.alarm
 sys.gps.chipinfo
 init.svc.secsvr
@@ -907,6 +910,7 @@ ro.boot.ringtone.enable
 ril.data.limited_lte_reject
 ro.setupwizard.wifi_on_exit
 ro.lge.mtk_dualsim
+service.brcm.bt.chip_check
 init.svc.rtc_log
 dhcp.p2p.gateway
 persist.radio.support_subaddr
@@ -932,6 +936,7 @@ ro.bt.bdaddr_path
 persist.radio.fd.off.counter
 ro.secure
 init.svc.msensord
+ro.qc.sdk.izat.service_mask
 sys.dualapp.profile_id
 init.svc.immvibed
 init.svc.dmmond
@@ -959,7 +964,9 @@ persist.sys.camera.preview
 ro.bootloader
 ril.lte.lte_roaming_avilable
 init.svc.fuse_sdcard1
+persist.lg.data.iwlan.conf.xver
 ril.cbs_onoff
+persist.hwc.enable_vds
 ro.tct.sml.ver
 ro.contacts.number.match.minima
 init.svc.secure_storage
@@ -987,10 +994,10 @@ dev.kiessupport
 net.tcp.buffersize.evdo
 ro.config.zram
 ro.sf.init.lcd_density
+init.svc.quipc_igsn
 audio.smartpa.top_imp_max
 persist.radio.synccallshowing
 gsm.apn.sim.operator.mvno.data
-init.svc.xlogboot
 ro.lge.capp_smartcard_uicc
 init.svc.edmaudit
 mpq.audio.decode
@@ -1009,6 +1016,7 @@ init.svc.wififtmd
 persist.sys.sso.SMC_VText
 ril.prl_ver_3
 init.svc.mobicore
+persist.camera.cpp.debug.mask
 persist.sys.sso._Recharge_OnOf
 ro.runtime.firstboot
 persist.sys.sso.SCHelpShow
@@ -1060,7 +1068,7 @@ persist.radio.phoneTestMode
 telephony.uicc.cardtype
 ro.cp_system_other_odex
 init.svc.scs
-init.svc.up_ver
+qc.izat.gtp.wifi.low_power
 persist.sys.pwringtone.enable
 persist.radio.data_dormancy_ind
 ro.vendor.sensors.wu
@@ -1074,6 +1082,7 @@ persist.sys.strict_op_enable
 debug.enable.wl_log
 persist.data.df.iwlan_mux
 init.svc.ukd
+ro.security.icd.flagmode
 persist.sys.strictmode.disable
 hdr_capable
 service.camera.running
@@ -1092,7 +1101,7 @@ nfc.fw_update
 gsm.operator.isroaming
 persist.ap.fallback.support
 ro.mtk_cta_set
-ro.have_aacencode_feature
+ril.lte.esm_reject
 ro.product.brand
 gps.clock.type
 wifi.interface
@@ -1122,6 +1131,7 @@ ro.security.fips_bssl.ver
 ro.security.fips_scrypto.ver
 ro.opa.eligible_device
 persist.sys.country
+ro.boot.sales_code
 init.svc.amp-enable-sh
 audio.offload.passthrough
 ro.mtk_md_world_mode_support
@@ -1147,7 +1157,6 @@ persist.sys.mcc.mnc
 persist.eccforchina.enable
 sys.config.samp_enable
 ro.lge.capp_smartcard_ac_gp
-partition.vendor.verified
 ro.input.noresample
 init.svc.fingerprintd
 vidc.enc.narrow.searchrange
@@ -1238,6 +1247,7 @@ ro.sf.lcd_density
 debug.force_rtl
 ro.sys.fw.trim_empty_percent
 ro.camera.ui.use_tg_ui
+ro.boot.sku.param.offset
 debug.atrace.tags.enableflags
 persist.audio.pcmdump
 persist.vega.piezospeaker
@@ -1291,6 +1301,7 @@ ril.lte.cid
 wifi.lge.ftm_test
 persist.lg.data.mptcp_feature
 ro.boottime.audio-hal-2-0
+sys.logd.logpersistd
 persist.sys.dpmd.nsrm
 ro.lcd_min_brightness
 ril.gsm.reject_cause
@@ -1306,7 +1317,8 @@ wifi.direct.interface
 net.tcp.buffersize.edge
 ro.mst.support
 lge.zdi.actionsend
-ril.twwan911Timer
+persist.camera.sensor.debug
+ime_handwriting_apply
 persist.sys.sso.ameraNoti_OnOf
 init.svc.cs-early-boot
 init.svc.container
@@ -1367,9 +1379,10 @@ dhcp.p2p.dns4
 dhcp.p2p.dns3
 dhcp.p2p.dns2
 dhcp.p2p.dns1
-init.svc.bms-sh
+ro.sys.fw.mOomMinFree2
 dev.ssrm.init
-ro.boottime.sem_daemon
+ro.sys.fw.mOomMinFree1
+persist.radio.new.profid
 service.bootanim.exit
 init.svc.location_mq
 persist.radio.ims_block
@@ -1380,6 +1393,7 @@ ro.dalvik.vm.native.bridge
 ro.sys.fw.mOomMinFree5
 log.tag.LgeGpsIndicator
 ro.sys.fw.mOomMinFree4
+sysprof.activitythread.slowloop
 ril.ltenetworktype
 audio.hifi_rec.normal_lmt
 wlan.driver.status
@@ -1417,7 +1431,6 @@ net.ipv6.ccmni4.plen
 persist.service.main.enable
 ro.boot.debug_level
 tunnel.decode
-dalvik.vm.dex2oat-Xms
 persist.audio.nsenabled
 persist.lge.appman.firstboot
 persist.sys.fota_datapaypopup
@@ -1441,7 +1454,7 @@ persist.sys.sso.autoplugplay
 persist.sys.logkit.ctrlcode
 persist.sys.sso.check.ringtone
 init.svc.atfwd
-sys.shutdown.voltage
+persist.radio.savedLastMcc
 init.svc.zramswapon
 ro.boottime.lhd
 ro.cdma.home.operator.alpha
@@ -1470,7 +1483,7 @@ ro.vf.audio.enforce.audible
 debug.qualcomm.sns.daemon
 persist.bluetooth_fw_ver
 persist.sys.gps.lpp
-service.brcm.bt.chip_check
+camera.disable_zsl_mode
 init.svc.digicl
 persist.pantech.usb.default
 ecc.list.for.perso.ui
@@ -1494,6 +1507,7 @@ init.svc.DIAG-daemon
 wlan.monitor.status
 wifi.lge.offdelay
 audio.offload.pcm.24bit.enable
+init.svc.sec-post-boot
 persist.http.gba.auth
 ril.IsManualSelection
 persist.audio.uhqa
@@ -1507,6 +1521,7 @@ persist.fih.autotest.count
 ro.com.google.gmsversion
 persist.radio.orig_num_disp
 nfc.boot.reason
+debug.gralloc.gfx_ubwc_disable
 init.svc.hidden-post
 init.svc.fuse_otg_storage
 persist.sys.sim.spn
@@ -1535,7 +1550,7 @@ init.svc.gas_srv
 bluetooth.headset.class
 persist.mdpcomp.4k2kSplit
 ro.vendor.qti.core_ctl_max_cpu
-persist.lg.data.iwlan.conf.xver
+ro.mtk_emmc_support
 debug.composition.type
 wlan.lge.gons.scan.completed
 persist.audio.voicewakeup
@@ -1556,6 +1571,7 @@ amv.ssv.auto.display.hyphens2
 ro.boottime.wpa_supplicant
 sys.audio.init
 init.svc.log-ims
+ro.boot.im.param.offset
 ril.epdg.connecting
 ro.qualcomm.bluetooth.nap
 ro.boot.opt_using_default
@@ -1588,9 +1604,11 @@ persist.sys.sso.nitionNFC_Colo
 persist.data.df.mux_count
 ril.modem.uuid_info
 wifi.enable.network.ms
+ro.boot.me.param.offset
 mediatek.wlan.chip
 ro.bluetooth.dun
 init.svc.dbus
+sys.aasservice.aason
 ro.config.kap
 persist.radio.app_hw_mbn_path
 ro.boottime.audioserver
@@ -1626,9 +1644,10 @@ feature.tethering.check.enabled
 ro.boot.wificountrycode
 ro.muic.param.offset
 init.svc.qseeproxydaemon
-net.is_dropping_packet
+sys.vs.display
 persist.dpm.nsrm.bkg.evt
 ro.build.user
+init.svc.imsstarter
 ro.boottime.keymaster-3-0
 persist.sys.bootstep
 ro.mtk_passpoint_r1_support
@@ -1677,6 +1696,7 @@ persist.service.avrcp.browsing
 persist.radio.use_se_table_only
 sys.knox.exists
 ro.com.movilnet.SP.label
+sysprof.inputdispatcher.slow
 wlan.chip.vendor
 ro.build.fingerprint
 ro.dbg.coresight.config
@@ -1686,7 +1706,7 @@ persist.debug.8976.config
 dalvik.vm.isa.arm64.features
 init.svc.knox
 dev.ssrm.live_thumbnail
-persist.radio.missing_phone
+persist.sys.thermald_miti_off
 net.iptype
 persist.debug.capsensor
 dev.wifistate
@@ -1720,7 +1740,7 @@ init.svc.media
 ro.core_ctl_min_cpu
 persist.radio.nitz_sons_1_0
 dhcp.wlan0.domain
-gsm.stk.perso.app.title
+sys.pwrcntl.decision.change
 media.stagefright.enable-scan
 ro.build.official.release
 persist.ril.ims.eutranParam
@@ -1731,6 +1751,7 @@ bluetooth.enable_timeout_ms
 gsm.sim.operator.default-name
 bluetooth.btif.state
 ro.lge.app_scaling
+persist.camera.iface.logs
 persist.sys.dummy_h264_lvga
 audio.playback.mch.downsample
 ro.camera.sound.forced
@@ -1787,6 +1808,7 @@ persist.lg.data.dsqn
 mm.enable.smoothstreaming
 init.svc.swapon
 sdm.debug.disable_rotator_split
+ro.mtk_wmv_playback_support
 log.tag.FlpServiceProvider
 init.svc.chcon_keystore
 ro.headset.sound.mode
@@ -1826,10 +1848,11 @@ dev.ssrm.gamelevel
 vendor.audio.use.sw.ape.decoder
 persist.sys.tcpOptimizer.on
 lge.normalizer.param
-hw.extSecureLink
+sysprof.inputdispatcher.stale
 ro.boottime.lmkd
 sys.usb.rmnet.func.name
 wc_transport.patch_dnld_inprog
+persist.camera.stats.debug.mask
 ro.boot.sales.param.offset
 audio.hifi_rec.concert_lcf
 ro.panic.reboot.time
@@ -1848,7 +1871,7 @@ persist.sys.sso._not_show_agai
 init.svc.met_log_d
 persist.audio.k2hd
 def.sys.stk.sume.name
-ime_handwriting_apply
+ril.twwan911Timer
 init.svc.dhcpcd_bt-pan
 security.perf_harden
 persist.sys.sso.blk_strt_m
@@ -1877,9 +1900,11 @@ ril.stk.bip
 ro.mediatek.platform
 wlan.lge.powermode
 ro.bluetooth.tty
+persist.sys.cust.rmsmartwrd
 init.svc.bootanim
 init.svc.poad
 persist.launcher2.phone20_mode
+persist.sys.kill_support
 init.svc.fihop
 init.svc.ccci3_mdinit
 ro.qc.sdk.us.digitalpen
@@ -1908,8 +1933,9 @@ init.svc.amp-mode-sh
 persist.lge.wlan.favorite
 debug.tct.crash
 persist.sys.ssr.restart_level
+ro.sec.ice.key_update
 persist.sys.switchFlip.on
-sys.logd.logpersistd
+init.svc.epmd
 init.svc.pkmd
 persist.media.hls.actual_bw
 sys.config.samp_hotness_enable
@@ -1927,6 +1953,7 @@ persist.data_netmgrd_mtu
 persist.sys.lg.sound_enable
 selinux.policy_version
 ril.mux.ee.md1
+ro.boot.sn.param.offset
 persist.rild.nitz_plmn
 persist.sys.pq.ultrares.en
 init.svc.camera-provider-2-4
@@ -1947,7 +1974,6 @@ ril.hasisim
 persist.radio.sim-spn
 debug.mdpcomp.idletime
 persist.sys.poweron.ringtone
-persist.camera.mct.debug.mask
 ro.config.dmverity
 persist.radio.mtk_ps2_rat
 init.svc.dpmd
@@ -2000,7 +2026,7 @@ ro.x.wap.profile
 init.svc.enable_hall
 ril.subscription.types
 ril.lge.supportvolte
-persist.sys.sso.HoldBackground
+ro.config.dha_increase_th
 init.svc.dcm
 service.wcn.driver.ready
 net.lte_ca_enabled
@@ -2014,6 +2040,7 @@ persist.sys.sms.encoding
 persist.service.removelog
 persist.sys.usb.default
 persist.radio.custom_nw_ecc
+persist.console.silent.config
 init.svc.perfprofd
 persist.camera.mobicat
 persist.fih.flight_n_cap
@@ -2022,7 +2049,7 @@ ro.config.notification_sound
 ro.boottime.gatekeeperd
 audio.offload.track.enable
 init.svc.amp-default-sh
-net.tcp.usercfg.default
+net.tcp.buffersize.ethernet
 media.sfrec.adj_frames
 init.svc.set_soc_info
 persist.metadata_dynfps.disable
@@ -2037,9 +2064,9 @@ persist.finger.mode
 ro.boottime.gpsd
 persist.service.bdroid.tether
 ro.dbg.coresight.cfg_file
-ro.ssbd.offset
 ro.mtk_antibricking_level
 persist.ril.ims.preroaming
+video.disable.ubwc
 persist.radio.reset_on_switch
 persist.camera.debug.logfile
 persist.pm.multitask
@@ -2072,7 +2099,6 @@ ro.boottime.sec-miscpower-1-0
 persist.radio.sw_mbn_loaded
 ro.config.pppoe_enable
 wlan.setband.status
-init.svc.cnd
 ro.fih.app_install
 ro.tct.operator
 persist.tcp.delack.enable
@@ -2093,7 +2119,7 @@ init.svc.logcat-memory
 ro.boottime.sec-sh
 sys.ims.QMI_DAEMON_STATUS
 persist.sys.storage_preload
-audio.offload.min.duration.secs
+init.svc.iwland
 init.svc.rctd
 init.svc.stop_modem
 persist.ril.xcap.pdnFailCause
@@ -2115,7 +2141,7 @@ init.svc.apaservice
 ro.sys.fw.mOomAdj4
 persist.sys.sso.HoldBgPath
 ro.uplus.preinstalled_app
-init.svc.start_hci_filter
+sys.boot_completed
 ro.sys.fw.mOomAdj1
 ro.sys.fw.mOomAdj2
 ro.boot.cause
@@ -2129,11 +2155,11 @@ com.lge.splink_screen_off
 persist.sys.pq.adl.idx
 DEVICE_PROVISIONED
 ro.boot.temp_protect_ignore
-ro.security.icd.flagmode
+persist.vendor.radio.eons.enabled
 persist.sys.omcnw_path
 persist.radio.atfwd.start
 ril.reject_121315
-sys.aasservice.aason
+persist.sys.sso.HoldBackground
 ro.qualcomm.perf.cores_online
 ril.supportgprs
 sys.config.samp_oakoom_enable
@@ -2146,7 +2172,7 @@ sys.ssrm.game_running
 persist.cne.loc.policy.user
 persist.service.adb.enable
 gsm.sim.operator.oldnumeric
-persist.hwc.enable_vds
+persist.sys.sso.blk_app_al
 persist.radio.no_cons_man_roam
 ro.limit.notification.vol
 init.svc.keymaster-3-0
@@ -2166,7 +2192,7 @@ ro.vendor.sensors.dpc
 security.mdpp
 ro.build.date
 init.svc.ipsec-daemon
-init.svc.lognoti
+persist.camera.mct.debug
 audio.smartamp.CurrentVolstep
 persist.radio.voip_enabled
 selinux.init_rc_finished
@@ -2183,6 +2209,7 @@ ro.ril.network_code
 persist.sys.sso._Calendar_Colo
 persist.mtk.volte.enable
 nfc.fw.rfreg_mode
+persist.camera.hal.debug
 ro.boot.mode
 ril.datacross.slotid
 debug.sf.fb_always_on
@@ -2262,7 +2289,7 @@ init.svc.font_extractor
 persist.service.ssr_dump.enable
 ro.boot.emmc
 persist.phone.minmatch.length
-gsm.sim-state-ready.status
+sysprof.choreographer.skip
 ro.boot.dlcomplete
 init.svc.tftp_server
 persist.sys.pantechvolume
@@ -2276,7 +2303,7 @@ persist.service.postboot.enable
 init.svc.aal
 persist.sys.media.rtp-ports
 ro.def.browser
-persist.sys.thermald_miti_off
+ro.config.vibrate_type
 ro.qti.sensors.pmd
 ro.soc_info
 ro.hwui.layer_cache_size
@@ -2291,6 +2318,7 @@ dhcp.wlan0.dns4
 dhcp.wlan0.dns3
 init.svc.wifi_hal_legacy
 dhcp.wlan0.dns1
+bluetooth.pan
 persist.debug.sf.statistics
 init.svc.usbdebug-manager
 ro.smps.gain.spk
@@ -2337,6 +2365,7 @@ ro.config.alarm_alert
 persist.sys.pq.mdp.color.idx
 init.svc.wificond
 init.svc.bootchecker
+persist.data.ibfc.enable
 contacts.display.photo_size
 debug.pq.dshp.en
 mts.act
@@ -2373,10 +2402,12 @@ persist.service.system.enable
 audio.offload.buffer.size.kb
 av.offload.enable
 ril.telephony.sku.id
-persist.sys.cust.rmsmartwrd
+init.svc.check_sys
+logd.logpersistd.enable
 init.svc.wmtLoader
 init.svc.qcom-wifi
 ro.config.tel.ssv.ringtone
+persist.graphics.vulkan.disable
 init.svc.SIDESYNC_service
 ro.mtk_is_tablet
 init.svc.sensor-sh
@@ -2388,6 +2419,7 @@ service.brcm.bt.ag_connecting
 persist.sys.xtra_time
 ro.build.expect.baseband
 ro.lge.ivt_ring_magnitude
+persist.camera.global.debug
 ro.boot.wifi_cal
 lg.data.overwarning
 ro.telephony.call_ring.multiple
@@ -2401,7 +2433,6 @@ persist.sys.sso.blk_al
 init.svc.disable_hall
 dalvik.vm.boot-dex2oat-threads
 gsm.operator.alpha
-debug.hwc.nodirtyregion
 init.svc.privatemode
 ro.data.large_tcp_window_size
 ro.boot.opt_md3_support
@@ -2432,7 +2463,6 @@ debug.sf.swaprect
 ro.sys.fw.trim_cache_percent
 ro.security.vaultkeeper.feature
 ro.config.64bit_lmk_enable
-persist.sys.sso.showPopup_St
 ro.config.ldha_es_enable
 friends.lge.app.toast
 persist.service.logging_packet
@@ -2445,7 +2475,7 @@ audio.smartamp.CurrentProfile
 media.stagefright.log-uri
 sys.cameramode.cam_fps
 init.svc.log-power
-init.svc.quipc_igsn
+net.tcp.usercfg.default
 persist.radio.sms_cdma_format
 persist.sys.display_density
 bluetooth.hciattach
@@ -2502,6 +2532,7 @@ persist.sky.kg.issecret
 ro.qti.sensors.sta_detect
 net.rmnet_data1.gw
 persist.data.sbp.update
+persist.radio.cilent_info
 persist.cne.feature
 init.svc.seemp_healthd
 persist.splitwindow.support_all
@@ -2512,13 +2543,14 @@ persist.ril.sim.regmode
 ro.product.locale
 ro.product.baseband_ver
 ro.brightness_config
+persist.camera.isp.debug
 persist.vendor.radio.custom_ecc
 ro.lge.voice.clarity
 init.svc.dualmdlogger
 dev.mtp.opensession
 pm.dexopt.core-app
 sys.mdniecontrolservice.mscon
-persist.radio.cilent_info
+init.svc.cnd
 persist.radio.ril_payload_on
 def.uaprofile.enabled
 debug.sf.layerdump
@@ -2535,12 +2567,14 @@ ro.baseband
 persist.launcher2.iconpackage
 ril.atd_status
 dalvik.vm.usejit
+ro.config.swap
 init.svc.startday_info
 persist.sys.sso.llMsgNoti_OnOf
 gsm.ril.eboot
 init.svc.dsqn
-ro.boottime.ccm
+init.svc.wigig_supplicant
 net.bt.name
+ro.config.dha_step
 persist.sys.setupwizard
 ro.build.PDA
 ril.cdma.card.type.1
@@ -2612,13 +2646,14 @@ def.zenMode.allowCalls
 ril.uim.subscriberid.1
 net.hostname
 init.svc.mobile_log_d
+persist.camera.c2d.debug.mask
 ro.boottime.webview_zygote32
 dev.knoxapp.running
 ro.lge.hw.cable
 persist.radio.client_err
 persist.sys.sso.ScreenCapture
 persist.sys.sso.g_MsgNoti_OnOf
-ro.mtk_wmv_playback_support
+persist.sys.sso.UnlockFinger
 ro.lge.adoptable_storage
 ro.lge.window_color
 ro.uart_debug
@@ -2657,11 +2692,11 @@ ro.boot.radio
 init.svc.emdlogger6
 persist.profiled.build.version
 debug.enable.sglscale
-net.ims.enabler_type
+dalvik.vm.heapstartsize
 ro.build.display.id
 persist.sensors.sre_low_thresh
 ro.lge.enable.mini_activity
-persist.sys.sso.UnlockFinger
+persist.sys.sso.showPopup_St
 ro.mtk_blulight_def_support
 persist.sys.ssr.enable_efsrec
 persist.radio.cc_alphaid
@@ -2669,13 +2704,14 @@ sys.config.bigdata_enable
 init.svc.broadcast
 init.svc.lsm6ds3d
 dalvik.vm.isa.arm.features
+wlan.hdcp2.insthk
 ro.config.mdha_ssr_enable
 persist.sys.dalvik.vm.lib
 persist.radio.savedLastSimMcc
 persist.timed.enable
 sys.vendor.shutdown.waittime
 audio.hifi_rec.concert_gain
-init.svc.cs_service
+ro.tct.camera.sound.forced
 net.tcp.buffersize.hsupa
 ro.bluetooth.remote.autoconnect
 ro.product.manufacturer
@@ -2690,13 +2726,14 @@ net.wlan0.dns2
 nfc.fw.dfl_areacode
 persist.debug.sensors.hal
 persist.lg.data.blkdnsinbg
-init.svc.wigig_supplicant
+debug.hwc.nodirtyregion
 hw.camcorder.fpsrange
 persist.lg.data.vdbg
 sys.hangouts.fps
 ro.ril.svlte1x
 net.wlan0.dns1
 persist.radio.RATE_ADAPT_ENABLE
+persist.pantech.usb.pc_mode
 ril.callcount
 wlan.lge.feature.version
 init.svc.faced
@@ -2721,9 +2758,9 @@ ril.ia.iccid
 ro.boot.ddrinfo
 persist.debug.wfd.enable
 dev.ssrm.app.install.standby
-wc_transport.clean_up
+ril.cdma.maintreq
 persist.ctm.disallowed
-init.svc.check_sys
+ro.mtk_enable_md1
 ro.mtk_lte_support
 sys.lge.vtmode
 config.disable_atlas
@@ -2784,7 +2821,7 @@ persist.gralloc.cp.level3
 ro.camera.record.anim.delay
 debug.mdlogger.Running
 sys.lge.lgmdm_version
-ro.mtk_emmc_support
+init.svc.tclapp_ss
 ril.DS
 init.svc.sreadahead
 init.svc.webview_zygote64
@@ -2851,7 +2888,7 @@ net.tcp.buffersize.hsdpa
 persist.nfc.log.index
 persist.radio.nitz_oper_lname
 sys.wine.ime
-lge.policy_data_enable
+debug.starting.mode.md1
 persist.sys.bbsys
 debug.mdl.sdswap.path
 ro.mtk_bt_support
@@ -2860,7 +2897,7 @@ ro.boot.hardware
 persist.sys.cnd.nsrm
 net.tcp.buffersize.hspa
 dsps.retry.count
-bluetooth.pan
+audio.offload.min.duration.secs
 init.svc.qcom-c_main-sh
 ro.sec_debug.enable
 ro.embms.enable
@@ -2918,7 +2955,7 @@ init.svc.imswmsproxy
 init.svc.audio-hal-2-0
 dev.ssrm.appsync3p
 persist.mtk.wcn.patch.version
-qc.izat.gtp.wifi.low_power
+init.svc.up_ver
 dalvik.vm.dex2oat-filter
 ril.backoffstate
 debug.mdlogger.log2sd.path
@@ -2965,7 +3002,7 @@ ro.sys.fw.mOomAdj6
 persist.qfp
 dhcp.autoIP
 config.disable_otadexopt
-sys.boot_completed
+init.svc.start_hci_filter
 gsm.operator.numeric
 ro.lge.build.branch
 ro.lge.dataprotect
@@ -3023,11 +3060,11 @@ ro.debuggable
 persist.sys.sso.TestOnOff
 ril.data.bootingpopup
 ro.boottime.secure_storage
-persist.vendor.radio.eons.enabled
+ro.ssbd.offset
 ro.mediatek.wlan.wsc
 ro.config.media_vol_extend
 ril.vss.common_init
-ro.tct.camera.sound.forced
+init.svc.cs_service
 ro.bluetooth.alwaysbleon
 persist.vendor.radio.ril_payload_on
 ro.boottime.sdp_cryptod
@@ -3064,7 +3101,7 @@ ro.mtk_bg_power_saving_support
 persist.station.firstboot
 def.7bit.to.ascii.enable
 rw.km_fips_status
-init.svc.iwland
+init.svc.xlogboot
 ro.lge.capp_hidenav
 ro.facelock.det_timeout
 persist.radio.apm_sim_not_pwdn
@@ -3122,6 +3159,7 @@ persist.speaker.prot.enable
 persist.sys.sso.g_AppNoti_Colo
 volte_mic_mute
 persist.audio.a2dp_avc
+init.svc.loggerlauncher
 persist.radio.silent-reset
 ro.security.vpnpp.ver
 ro.boot.opt_c2k_support
@@ -3129,6 +3167,7 @@ persist.bluetooth.enableinbandringing
 init.svc.ssr_ramdump
 gsm.call.clear_codes
 persist.radio.fake_roaming
+ro.gpu.available_frequencies
 persist.sys.profiler_ms
 init.svc.freshsebool
 init.svc.DR-daemon
@@ -3146,7 +3185,7 @@ persist.sys.sso.AlarmNoti_Colo
 sys.knox.zygote.containerapps
 ime_split_keyboard
 persist.sys.usb.protect
-sys.vs.display
+net.is_dropping_packet
 persist.radio.VolteSettingMode
 persist.sys.hotssid.ksc5601
 persist.audio.effectcpufreq
@@ -3154,7 +3193,7 @@ net.nw.cache.weightadvstep
 ro.lge.dzmode_control
 persist.cne.bwbased.rat.sel
 persist.radio.DROPSETENABLE
-ril.nitz.savedattime
+ro.boot.dram_rev
 camera.use.al6010
 persist.atel.noalpha.usrcnf
 ro.boottime.remotedisplay
@@ -3198,7 +3237,7 @@ ro.kernel.diag.enable
 dev.kies.drivedisplay
 ro.mount.fs
 persist.sys.sso.VoiceUnlock
-persist.pantech.usb.pc_mode
+dalvik.vm.dex2oat-Xms
 ro.boot.console
 log.tag.NlpProxy
 persist.log.seclevel
@@ -3224,8 +3263,10 @@ lg.data.bandwidth.enable
 ril.manufacturedate
 init.svc.fuse_uicc0
 persist.smartamp.enable
+init.svc.lognoti
 init.svc.dvfs
 net.rmnet0.dns4
+persist.radio.sim.onoff
 net.rmnet0.dns1
 net.rmnet0.dns3
 net.rmnet0.dns2
@@ -3256,6 +3297,7 @@ dhcp.wlan0.pid
 init.svc.lge-usb-sh
 init.svc.ipsecclient
 debug.mdpcomp.logs
+persist.camera.imglib.logs
 persist.radio.aosp_usr_pref_sel
 persist.audio.sm_fluence
 init.svc.diag_knight
@@ -3274,9 +3316,9 @@ ro.boottime.prepare_param
 gsm.sim.msisdn
 ro.build.version.sdk
 ril.currentplmn
-ril.cdma.maintreq
+wc_transport.clean_up
 ro.vendor.sensors.sta_detect
-init.svc.loggerlauncher
+init.svc.m7sysrilcmdiface
 media.input.fd.disable
 persist.radio.apm_mdm_not_pwdn
 ril.reject.rat
@@ -3284,8 +3326,9 @@ init.svc.health-hal-1-0
 lpa.use-stagefright
 dev.ssrm.dex2oat.affinity
 persist.sky.kg.pref.path
-ro.lge.build.basetag
-ro.mtk_enable_md1
+persist.BT3_2.version
+ril.nitz.savedattime
+service.qti.ims.enabled
 init.svc.last_kmsg_backup
 persist.rild.nitz_short_ons_0
 persist.radio.dataprefer.slotId
