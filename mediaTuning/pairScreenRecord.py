@@ -8,8 +8,8 @@ from common.utils import *
 from xml.etree.ElementTree import parse
 
 SHARD_PREFENCES = "com.skt.trtc.sample_preferences.xml"
-MP4_SAVEFOLDER = 'A:\\_MT\\'
-#MP4_SAVEFOLDER = 'A:\\stub\\'
+MP4_SAVEFOLDER = 'B:\\_MT\\'
+#MP4_SAVEFOLDER = 'B:\\stub\\'
 TIME_LIMIT = 120
 pids = []
 setDEBUG(True)
