@@ -36,7 +36,10 @@ def getPropRefinded4ELK(deviceId):
         if key in property.keys():
             for searchKey in property.keys():
                 if key in searchKey and searchKey != key:
-                    del property[searchKey]
+                    try:
+                        del property[searchKey]
+                    except KeyError:
+                        pass
                     printEx("%s:%s --> %s" % ("del", searchKey, 'due to ' + key))
 
     fWrite = False
@@ -53,7 +56,10 @@ def getPropRefinded4ELK(deviceId):
                 if EXISTED_FIELD_DEPEND:
                     if key in field and key != field:
                         fAppend = False
-                        del property[key]
+                        try:
+                            del property[key]
+                        except KeyError:
+                            pass
             if fAppend:
                 fields.append(key)
                 fWrite = True

@@ -1098,10 +1098,9 @@ service.camera.running
 ro.lge.zwait
 media.stagefright.enable-http
 gsm.network.rat
-ro.min_freq_4
+ro.min_freq
 init.svc.qvop-daemon
 nfc.product.support.ese
-ro.min_freq_0
 ro.mediatek.wlan.p2p
 ro.lge.has_left_sidekey
 net.rmnet_data7.dns2
