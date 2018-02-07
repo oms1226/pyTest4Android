@@ -40,10 +40,12 @@ def getShardPreference(xmlFileName, tagName, key):
 connectIds = getRealDevices()
 
 if len(connectIds) != 2:
-    raw_input('connected device\'s num is ' + str(len(connectIds)) + '! Is it right?[enter]')
-    if len(connectIds) > 2:
+    if len(connectIds) > 2 or len(connectIds) == 0:
         printError("len(connectIds) is " + str(len(connectIds)) + '! But, that is not available!')
         exit(0)
+
+    raw_input('connected device\'s num is ' + str(len(connectIds)) + '! Is it right?[enter]')
+
 
 if len(connectIds) == 1:
     TIME_LIMIT = 60

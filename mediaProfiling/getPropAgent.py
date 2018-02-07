@@ -210,22 +210,23 @@ if __name__ == "__main__":
                     printEx("%s:%s" % ("fGetInfo", fGetInfo))
 
                     if fGetInfo:
-                        with open(HASHKEY_FILEFULLNAME, 'a') as f:
-                            f.write(hashKey + "\n")
-                            f.close()
-
                         getprop = getPropRefinded4ELK(DEVICE_ID);
                         printEx("%s:%s" % ("type(reVal)", type(getprop)))
                         if os.path.exists("data") == False:
                             mkdirs("data")
 
-                        with codecs.open(INFO_FILEFULLNAME, 'a', 'utf-8') as f:
-                            f.write(json.dumps(getprop, ensure_ascii=False) + "\r\n")
-                            f.close()
+                        if len(getprop) > 0 :
+                            with codecs.open(INFO_FILEFULLNAME, 'a', 'utf-8') as f:
+                                f.write(json.dumps(getprop, ensure_ascii=False) + "\r\n")
+                                f.close()
 
-                        fReport = True
+                            with open(HASHKEY_FILEFULLNAME, 'a') as f:
+                                f.write(hashKey + "\n")
+                                f.close()
+
+                            fReport = True
                 except:
-                    printError("Unexpected error: ", sys.exc_info()[0], sys.exc_info()[1])
+                    printError("Main Logic Unexpected error: ", sys.exc_info()[0], sys.exc_info()[1])
                 finally:
                     excuteTime = (datetime.datetime.utcnow() + datetime.timedelta(hours=9)).strftime("%Y%m%d%H%M")
                     print("%s-%s." % ("awake", excuteTime)),
