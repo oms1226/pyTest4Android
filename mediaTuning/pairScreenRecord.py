@@ -102,14 +102,22 @@ else:
         myName = resultSingleFileNameS[me]
         resultPairFileNameS[me] = "single[" + myName + "]_" + START______TIME + ".mp4"
 
-# Example usage
+"""Bit rate 128000000bps outside acceptable range [100000,100000000]"""
+outside_acceptable_range_128000000bps = [
+    "SHV-E250",
+    "SM-A500",
+]
 def someOtherFunc(device_id, model, tLimit, filename):
     global pids
     global commands
     global ERRO_DETECT
     global FINISH_COUNT
-    if "SHV-E250" in model:
-        """Bit rate 128000000bps outside acceptable range [100000,100000000]"""
+    fLowBitrate = False
+    for abnormalModel in outside_acceptable_range_128000000bps:
+        if abnormalModel in model:
+            fLowBitrate = True
+
+    if fLowBitrate :
         #os.system("adb -s " + device_id + " shell screenrecord --verbose --bit-rate 100000000 --time-limit " + str(tLimit) + " /sdcard/" + filename)
         proc = subprocess.Popen("adb -s " + device_id + " shell screenrecord --verbose --bit-rate 100000000 --time-limit " + str(tLimit) + " /sdcard/" + filename, stdout=subprocess.PIPE)
         command = "adb -s " + device_id + " shell screenrecord --verbose --bit-rate 100000000 --time-limit " + str(tLimit) + " /sdcard/" + filename
