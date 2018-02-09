@@ -116,6 +116,11 @@ def getHashkeyThisDevice4ELK(deviceId):
                 printError("Unexpected error: ", sys.exc_info()[0], sys.exc_info()[1])
         if reVal == None:
             reVal = 'None'
+            if "ro.product.model" == field:
+                hashKey = None
+        if hashKey == None:
+            break
+
         hashKey = hashKey + '_' + reVal
 
     printEx("%s:%s" % ("hashKey", hashKey))
@@ -149,10 +154,11 @@ def localFileSelfProcess(fileName):
         hashKey = getHashkeyThisDevice4ELK(None)
         printEx("%s:%s" % ("hashKey", hashKey))
 
-        for pastKey in hashKeys:
-            if hashKey in pastKey:
-                fGetInfo = False
-                break
+        if hashKey != None:
+            for pastKey in hashKeys:
+                if hashKey in pastKey:
+                    fGetInfo = False
+                    break
 
         printEx("%s:%s" % ("fGetInfo", fGetInfo))
 
