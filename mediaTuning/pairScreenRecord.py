@@ -72,10 +72,22 @@ for id in connectIds:
     printEx("[%s:%s]" % ("osversion", osversion))
 
     try:
+        os.system("adb -s " + id + " root")
         os.system("adb -s " + id + " pull " + "/data/data/com.skt.trtc.sample/shared_prefs/com.skt.trtc.sample_preferences.xml")
+        if os.path.isfile(SHARD_PREFENCES) == False:
+            raise Exception('NOTFOUND', SHARD_PREFENCES)
         trtc_video_quality_resol = getShardPreference("com.skt.trtc.sample_preferences.xml", "string", "trtc_video_quality_resol")
+        if trtc_video_quality_resol == None:
+            printError("%s[%s:%s]" % (id, "trtc_video_quality_resol", trtc_video_quality_resol))
+            exit(0)
         trtc_video_quality_fps = getShardPreference("com.skt.trtc.sample_preferences.xml", "string", "trtc_video_quality_fps")
+        if trtc_video_quality_fps == None:
+            printError("%s[%s:%s]" % (id, "trtc_video_quality_fps", trtc_video_quality_fps))
+            exit(0)
         trtc_video_quality_max_bitrate = getShardPreference("com.skt.trtc.sample_preferences.xml", "string", "trtc_video_quality_max_bitrate")
+        if trtc_video_quality_max_bitrate == None:
+            printError("%s[%s:%s]" % (id, "trtc_video_quality_max_bitrate", trtc_video_quality_max_bitrate))
+            exit(0)
     except:
         printError(sys.exc_info()[0], sys.exc_info()[1])
         trtc_video_quality_resol = "g1280x720"
