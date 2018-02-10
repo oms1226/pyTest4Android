@@ -19,7 +19,7 @@ setDEBUG(True)
 0.8.0[1236/d15b794d54348969b8e9021aaee2840dc1adbb08]
 """
 if __name__ == "__main__":
-    AUTOMODE = True
+    AUTOMODE = False
     while len(sys.argv) > 1:
         if len(sys.argv) > 1 and '-a' in sys.argv[1]:
             AUTOMODE = True
@@ -29,7 +29,7 @@ if __name__ == "__main__":
 
     sleepTime = MIN_SLEEPTIME
     while True:
-        RawData = []
+        RawDatas = []
         try:
             for (dirpath, dirnames, rawFilenames) in walk(PROFILE_RAW_FILEFOLDER):
                 printEx("%s:%s" % ("dirpath", dirpath))
@@ -44,7 +44,7 @@ if __name__ == "__main__":
                             while True:
                                 line = f.readline().replace('\r', '').replace('\n', '')
                                 if not line: break
-                                RawData.append(line)
+                                RawDatas.append(line)
                             f.close()
                         os.remove(rawFullFilename)
 
@@ -61,17 +61,38 @@ if __name__ == "__main__":
                         while True:
                             line = f.readline().replace('\r', '').replace('\n', '')
                             if not line: break
-                            RawData.append(line)
+                            RawDatas.append(line)
                         f.close()
                     os.remove(Trtr_Profiling_fileName)
         except:
             printError("Main Logic Unexpected error: ", sys.exc_info()[0], sys.exc_info()[1])
         finally:
-            if len(RawData) > 0:
-                with open(PROFILE_FILEFULLNAME, 'a') as f:
-                    f.write('\n'.join(RawData))
-                    f.write('\n')
-                    f.close()
+            if len(RawDatas) > 0:
+                for RawData in RawDatas:
+                    RawDataJson = json.loads(RawData)
+                    """
+                  71b17b3ae41bc256f43da5d666d63d36a16f1ea7
+                  0.8.0[1236/d15b794d54348969b8e9021aaee2840dc1adbb08]
+                  """
+                    trtc_version_name = "None"
+                    trtc_git_hashcode = "None"
+                    trtc_git_revcnt = 0
+                    trtc_version = RawDataJson["trtc_version"]
+                    if '[' in trtc_version:
+                        trtc_version_name = trtc_version.split('[')[0]
+                        trtc_git_hashcode = trtc_version.split('[')[1]
+                        if '/' in trtc_git_hashcode:
+                            trtc_git_revcnt = int(trtc_git_hashcode.split('/')[0])
+                            trtc_git_hashcode = trtc_git_hashcode.split('/')[1]
+                        trtc_git_hashcode = trtc_git_hashcode.replace(']', '')
+                    else:
+                        trtc_git_hashcode = trtc_version
+                    RawDataJson['trtc_version_name'] = trtc_version_name
+                    RawDataJson['trtc_git_hashcode'] = trtc_git_hashcode
+                    RawDataJson['trtc_git_revcnt'] = trtc_git_revcnt
+                    with codecs.open(PROFILE_FILEFULLNAME, 'a', 'utf-8') as f:
+                        f.write(json.dumps(RawDataJson, ensure_ascii=False) + "\r\n")
+                        f.close()
 
                 # os_systemEx("..\\filebeat\\filebeat-6.1.3-windows-x86_64\\filebeat.exe --once -e -c " + "sys\\filebeat.yml")
                 os.system(
