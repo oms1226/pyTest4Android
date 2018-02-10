@@ -12,12 +12,8 @@ MIN_SLEEPTIME = 60
 MAX_SLEEPTIME = 15 * 60
 PROFILE_FILEFULLNAME = "data\\trtc.profile"
 PROFILE_RAW_FILEFOLDER = "rawdata"
-setDEBUG(True)
+setDEBUG(False)
 
-"""
-71b17b3ae41bc256f43da5d666d63d36a16f1ea7
-0.8.0[1236/d15b794d54348969b8e9021aaee2840dc1adbb08]
-"""
 if __name__ == "__main__":
     AUTOMODE = False
     while len(sys.argv) > 1:
@@ -94,13 +90,13 @@ if __name__ == "__main__":
                         f.write(json.dumps(RawDataJson, ensure_ascii=False) + "\r\n")
                         f.close()
 
+                excuteTime = (datetime.datetime.utcnow() + datetime.timedelta(hours=9)).strftime("%Y%m%d%H%M")
                 # os_systemEx("..\\filebeat\\filebeat-6.1.3-windows-x86_64\\filebeat.exe --once -e -c " + "sys\\filebeat.yml")
                 os.system(
                     "..\\filebeat\\filebeat-6.1.3-windows-x86_64\\filebeat.exe --once -e -c " + "sys\\filebeat.yml")
+                print("%s-%s." % ("awake", excuteTime)),
 
         time.sleep(sleepTime)
-        excuteTime = (datetime.datetime.utcnow() + datetime.timedelta(hours=9)).strftime("%Y%m%d%H%M")
-        print("%s-%s." % ("awake", excuteTime)),
 
         if AUTOMODE == False:
             break
