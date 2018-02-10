@@ -70,7 +70,7 @@ for id in connectIds:
     printEx("[%s:%s]" % ("model", model))
     osversion = getOSVersionFromDevice(id)
     printEx("[%s:%s]" % ("osversion", osversion))
-
+    addtionalFactors = None
     try:
         os.system("adb -s " + id + " root")
         os.system("adb -s " + id + " pull " + "/data/data/com.skt.trtc.sample/shared_prefs/com.skt.trtc.sample_preferences.xml")
@@ -88,6 +88,34 @@ for id in connectIds:
         if trtc_video_quality_max_bitrate == None:
             printError("%s[%s:%s]" % (id, "trtc_video_quality_max_bitrate", trtc_video_quality_max_bitrate))
             exit(0)
+        #addtionalFactors start
+        trtc_perform_videoframehooker_pixcelformat = getShardPreference("com.skt.trtc.sample_preferences.xml", "string",
+                                                                        "trtc_perform_videoframehooker_pixcelformat")
+        if trtc_perform_videoframehooker_pixcelformat == None:
+            printError("%s[%s:%s]" % (
+                id, "trtc_perform_videoframehooker_pixcelformat", trtc_perform_videoframehooker_pixcelformat))
+        else:
+            addtionalFactors = '-' + trtc_perform_videoframehooker_pixcelformat
+
+        trtc_perform_videoframehooker_1_normalizedmaxwidthlandscape = getShardPreference(
+            "com.skt.trtc.sample_preferences.xml", "string",
+            "trtc_perform_videoframehooker_1_normalizedmaxwidthlandscape")
+        if trtc_perform_videoframehooker_1_normalizedmaxwidthlandscape == None:
+            printError("%s[%s:%s]" % (
+                id, "trtc_perform_videoframehooker_1_normalizedmaxwidthlandscape",
+                trtc_perform_videoframehooker_1_normalizedmaxwidthlandscape))
+        else:
+            addtionalFactors = addtionalFactors + '_' + trtc_perform_videoframehooker_1_normalizedmaxwidthlandscape
+
+        trtc_perform_videoframehooker_2_normalizedmaxwidthlandscape_4dlib = getShardPreference(
+            "com.skt.trtc.sample_preferences.xml", "string",
+            "trtc_perform_videoframehooker_2_normalizedmaxwidthlandscape_4dlib")
+        if trtc_perform_videoframehooker_2_normalizedmaxwidthlandscape_4dlib == None:
+            printError("%s[%s:%s]" % (id, "trtc_perform_videoframehooker_2_normalizedmaxwidthlandscape_4dlib", trtc_perform_videoframehooker_2_normalizedmaxwidthlandscape_4dlib))
+            addtionalFactors = None
+        else:
+            addtionalFactors = addtionalFactors + '_' + trtc_perform_videoframehooker_2_normalizedmaxwidthlandscape_4dlib
+
     except:
         printError(sys.exc_info()[0], sys.exc_info()[1])
         trtc_video_quality_resol = "g1280x720"
@@ -96,6 +124,9 @@ for id in connectIds:
         trtc_video_quality_max_bitrate="g1800"
 
     resultSingleFileNameS[id] = manufacture + "_" + board + "_" + abi + "_" + model + "_" + osversion + "_" + trtc_video_quality_resol + "_" + trtc_video_quality_fps + "_" + trtc_video_quality_max_bitrate
+    if addtionalFactors != None:
+        printEx("%s:%s" % ("addtionalFactors", addtionalFactors))
+        resultSingleFileNameS[id] = resultSingleFileNameS[id] + addtionalFactors
     printEx("%s:%s" % ("resultSingleFileNameS[id]", resultSingleFileNameS[id]))
 
 resultPairFileNameS = dict()
