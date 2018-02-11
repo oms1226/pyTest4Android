@@ -81,6 +81,9 @@ if __name__ == "__main__":
                             trtc_git_revcnt = int(trtc_git_hashcode.split('/')[0])
                             trtc_git_hashcode = trtc_git_hashcode.split('/')[1]
                         trtc_git_hashcode = trtc_git_hashcode.replace(']', '')
+                    elif '/' in trtc_version:
+                        trtc_git_revcnt = int(trtc_version.split('/')[0])
+                        trtc_git_hashcode = trtc_version.split('/')[1]
                     else:
                         trtc_git_hashcode = trtc_version
                     RawDataJson['trtc_version_name'] = trtc_version_name
