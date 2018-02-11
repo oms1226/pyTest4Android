@@ -70,7 +70,7 @@ def loginIfNotCSRF(url, loginInfo):
     with requests.Session() as s:
         # HTTP POST request: 로그인을 위해 POST url와 함께 전송될 data를 넣어주자.
         login_response = s.post('http://www.raonkindergarten.com/members/login', data=loginInfo)
-        printEx("%s:%s", ('login_response.status_code', login_response.status_code))
+        printEx("%s:%s" % ('login_response.status_code', login_response.status_code))
         if login_response.status_code == 200:
             COOKIE = login_response.headers.get('Set-Cookie')
             return s
@@ -89,72 +89,93 @@ if __name__ == "__main__":
     }
 
     session = loginIfNotCSRF('http://www.raonkindergarten.com/members/login', LOGIN_INFO)
-    printEx("%s:%s", ('session', session))
+    printEx("%s:%s" % ("session", session))
 
     for pageNum in range(1, 11):
+    #for pageNum in range(1, 2):
         for no in range(13000, -1, -1):
         #for no in range(12231, -1, -1):
         #for no in range(12357, -1, -1):
-            #printEx("%s:%s", ('no', no)),
+        #for no in range(12307, 12306, -1):
+            #printEx("%s:%s" % ('no', no)),
             if no % 1000 == 0:
                 session = loginIfNotCSRF('http://www.raonkindergarten.com/members/login', LOGIN_INFO)
-                printEx("%s:%s", ('session', session))
+                printEx("%s:%s" % ("session", session))
 
-            printEx("%s:%s", ('target_url', 'http://www.raonkindergarten.com/sub03/sub03_3/?method=view&no=' + str(no) + '&page=' + str(pageNum)))
-            response = session.get(
-                'http://www.raonkindergarten.com/sub03/sub03_3/?method=view&no=' + str(no) + '&page=' + str(pageNum))
-            soup = BeautifulSoup(response.text, 'html.parser')
-
+            prefixUrls = [
+                'http://www.raonkindergarten.com/sub03/sub03_3/?method=view&no=',
+                #'http://www.raonkindergarten.com/sub03/sub03_8/?method=view&no=',
+            ]
             DOWNLOADLIST = {}
-            # for a in soup.find_all('a', href=True):
-            for ahreflink in soup.find_all('a', href=True):
-                """
-                <a href="/sub03/sub03_3/?method=download&amp;no=12231&amp;fno=70679">					IMG_6243.JPG</a>
-                """
-                if 'method=download' in ahreflink.attrs['href']:
+            for prefixUrl in prefixUrls:
+                printEx("%s:%s" % ('target_url',
+                                  prefixUrl + str(no) + '&page=' + str(
+                                      pageNum)))
+                response = session.get(
+                    prefixUrl + str(no) + '&page=' + str(pageNum))
+                soup = BeautifulSoup(response.text, 'html.parser')
+
+
+                # for a in soup.find_all('a', href=True):
+                for ahreflink in soup.find_all('a', href=True):
                     """
-                  reference: http://stackabuse.com/download-files-with-python/
+                    <a href="/sub03/sub03_3/?method=download&amp;no=12231&amp;fno=70679">					IMG_6243.JPG</a>
+                    """
+                    if 'method=download' in ahreflink.attrs['href']:
+                        """
+                      reference: http://stackabuse.com/download-files-with-python/
+                      """
+                        #printEx("%s:%s" % ('ahreflink.attrs[href]', ahreflink.attrs['href']))
+                        fulllinkNmae = "http://" \
+                                       "www.raonkindergarten.com" + ahreflink.attrs['href']
+                        fileName = ""
+                        if len(ahreflink.contents) >= 1:
+                            fileName = ahreflink.contents[0].replace(" ", "").replace('\r', '').replace('\n', '').replace(
+                                '\t', '')
+                        if '.jpg' in fileName.lower() or '.png' in fileName.lower():
+                            pass
+                        else:
+                            excuteTime = (datetime.datetime.utcnow() + datetime.timedelta(hours=9)).strftime("%Y%m%d%H%M%S")
+                            fileName = "ohjihun_raon_2017_" + excuteTime + ".jpg"
+                            time.sleep(1)
+
+                        DOWNLOADLIST[fileName] = fulllinkNmae
+                soup = BeautifulSoup(response.text, 'html.parser')
+                for img in soup.find_all('img'):
+                    """
+                    <img name="target_resize_image[]" onclick="image_window(this)" src="/data/admin/board_upload/17/images/ffe4f58f314c980ad00778bd6c3a9a69.JPG" class="txc-image" style="clear:none;float:none;">
                   """
-                    printEx("%s:%s", ('ahreflink.attrs[href]', ahreflink.attrs['href']))
-                    fulllinkNmae = "http://" \
-                                   "www.raonkindergarten.com" + ahreflink.attrs['href']
-                    fileName = ""
-                    if len(ahreflink.contents) >= 1:
-                        fileName = ahreflink.contents[0].replace(" ", "").replace('\r', '').replace('\n', '').replace(
-                            '\t', '')
-                    if '.jpg' in fileName.lower() or '.png' in fileName.lower():
-                        pass
-                    else:
-                        excuteTime = (datetime.datetime.utcnow() + datetime.timedelta(hours=9)).strftime("%Y%m%d%H%M%S")
-                        fileName = "ohjihun_raon_2017_" + excuteTime + ".jpg"
-                        time.sleep(1)
+                #for img in soup.find_all("img", {"onclick": "image_window(this)"}):
+                    if img.has_attr('src') == 1 and "http" not in img.attrs['src']\
+                            and img.has_attr('onclick') == 1 and 'image_window(this)' in img.attrs['onclick']:
+                        fulllinkNmae = "http://" \
+                                       "www.raonkindergarten.com" + img['src']
 
-                    DOWNLOADLIST[fileName] = fulllinkNmae
-            soup = BeautifulSoup(response.text, 'html.parser')
-            for img in soup.find_all('img'):
-                """
-                <img name="target_resize_image[]" onclick="image_window(this)" src="/data/admin/board_upload/17/images/ffe4f58f314c980ad00778bd6c3a9a69.JPG" class="txc-image" style="clear:none;float:none;">
-              """
-            #for img in soup.find_all("img", {"onclick": "image_window(this)"}):
-                if img.has_attr('src') == 1 and "http" not in img.attrs['src']\
-                        and img.has_attr('onclick') == 1 and 'image_window(this)' in img.attrs['onclick']:
-                    fulllinkNmae = "http://" \
-                                   "www.raonkindergarten.com" + img['src']
+                        fileName = fulllinkNmae.split('/')[-1]
 
-                    fileName = fulllinkNmae.split('/')[-1]
+                        if '.jpg' in fileName.lower() or '.png' in fileName.lower():
+                            pass
+                        else:
+                            excuteTime = (datetime.datetime.utcnow() + datetime.timedelta(hours=9)).strftime("%Y%m%d%H%M%S")
+                            fileName = "ohjihun_raon_2017_" + excuteTime + ".jpg"
+                            time.sleep(1)
 
-                    if '.jpg' in fileName.lower() or '.png' in fileName.lower():
-                        pass
-                    else:
-                        excuteTime = (datetime.datetime.utcnow() + datetime.timedelta(hours=9)).strftime("%Y%m%d%H%M%S")
-                        fileName = "ohjihun_raon_2017_" + excuteTime + ".jpg"
-                        time.sleep(1)
-
-                    DOWNLOADLIST[fileName] = fulllinkNmae
+                        DOWNLOADLIST[fileName] = fulllinkNmae
 
             for fileN, linkU in DOWNLOADLIST.items():
                 content = session.get(linkU).content
                 if 'text/html' not in content:
-                    with open("D:\\ohjihun_raon_2017\\" + fileN, "wb") as f:
-                        status = f.write(content)
-                        #printEx("%s:%s", ('status', status))
+                    try:
+                        with open("D:\\ohjihun_raon_2017\\" + fileN, "wb") as f:
+                            status = f.write(content)
+                            #printEx("%s:%s" % ('status', status))
+                    except:
+                        printEx("%s:%s" % ('linkU', linkU))
+                        printEx("%s:%s" % ('fileN', fileN))
+                        print "Unexpected error:", sys.exc_info()[0]
+                        print "Unexpected error:", sys.exc_info()[1]
+                        print "Unexpected error:", sys.exc_info()[2]
+
+                        if os.path.isfile("D:\\ohjihun_raon_2017\\" + fileN):
+                            os.remove("D:\\ohjihun_raon_2017\\" + fileN)
+
