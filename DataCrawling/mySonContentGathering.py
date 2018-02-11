@@ -97,6 +97,7 @@ if __name__ == "__main__":
         #for no in range(12231, -1, -1):
         #for no in range(12357, -1, -1):
         #for no in range(12307, 12306, -1):
+        #for no in range(0, -1, -1):
             #printEx("%s:%s" % ('no', no)),
             if no % 1000 == 0:
                 session = loginIfNotCSRF('http://www.raonkindergarten.com/members/login', LOGIN_INFO)
@@ -111,10 +112,20 @@ if __name__ == "__main__":
                 printEx("%s:%s" % ('target_url',
                                   prefixUrl + str(no) + '&page=' + str(
                                       pageNum)))
-                response = session.get(
-                    prefixUrl + str(no) + '&page=' + str(pageNum))
-                soup = BeautifulSoup(response.text, 'html.parser')
+                fPass = False
+                while fPass == False:
+                    try:
+                        response = session.get(
+                            prefixUrl + str(no) + '&page=' + str(pageNum))
+                    except:
+                        session = loginIfNotCSRF('http://www.raonkindergarten.com/members/login', LOGIN_INFO)
+                        printEx("%s:%s" % ("session", session))
+                        response.status_code = 400
 
+                    if response.status_code == 200:
+                        fPass = True
+
+                soup = BeautifulSoup(response.text, 'html.parser')
 
                 # for a in soup.find_all('a', href=True):
                 for ahreflink in soup.find_all('a', href=True):
