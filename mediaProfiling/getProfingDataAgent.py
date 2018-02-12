@@ -98,6 +98,8 @@ if __name__ == "__main__":
                 os.system(
                     "..\\filebeat\\filebeat-6.1.3-windows-x86_64\\filebeat.exe --once -e -c " + "sys\\filebeat.yml")
                 print("%s-%s." % ("awake", excuteTime)),
+            else:
+                print(str(sleepTime) + "sec-sleeping."),
 
         time.sleep(sleepTime)
 
