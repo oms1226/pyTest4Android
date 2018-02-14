@@ -48,7 +48,7 @@ if len(connectIds) != 2:
 
 
 if len(connectIds) == 1:
-    TIME_LIMIT = 60
+    TIME_LIMIT = 180
 printEx("[%s:%s]" % ("TIME_LIMIT", TIME_LIMIT))
 time.sleep(3)
 
