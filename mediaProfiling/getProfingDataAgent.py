@@ -14,6 +14,11 @@ PROFILE_FILEFULLNAME = "data\\trtc.profile"
 PROFILE_RAW_FILEFOLDER = "rawdata"
 setDEBUG(False)
 
+Trtr_Target_fileName_Subfixs = [
+    "_trtc.profile",
+    "_trtc.setting",
+]
+
 if __name__ == "__main__":
     AUTOMODE = False
     while len(sys.argv) > 1:
@@ -45,21 +50,22 @@ if __name__ == "__main__":
                         os.remove(rawFullFilename)
 
             for id in getRealDevices():
-                Trtr_Profiling_fileName = getModelNameFromDevice(id) + "_trtc.profile"
-                if os.path.isfile(Trtr_Profiling_fileName):
-                    os.remove(Trtr_Profiling_fileName)
+                for Trtr_Target_fileName_Subfix in Trtr_Target_fileName_Subfixs:
+                    Trtr_Profiling_fileName = getModelNameFromDevice(id) + Trtr_Target_fileName_Subfix
+                    if os.path.isfile(Trtr_Profiling_fileName):
+                        os.remove(Trtr_Profiling_fileName)
 
-                os.system("adb -s " + id + " pull " + "/sdcard/trtc_logs/" + Trtr_Profiling_fileName)
+                    os.system("adb -s " + id + " pull " + "/sdcard/trtc_logs/" + Trtr_Profiling_fileName)
 
-                if os.path.isfile(Trtr_Profiling_fileName):
-                    os.system("adb -s " + id + " shell rm -f " + "/sdcard/trtc_logs/" + Trtr_Profiling_fileName)
-                    with open(Trtr_Profiling_fileName) as f:
-                        while True:
-                            line = f.readline().replace('\r', '').replace('\n', '')
-                            if not line: break
-                            RawDatas.append(line)
-                        f.close()
-                    os.remove(Trtr_Profiling_fileName)
+                    if os.path.isfile(Trtr_Profiling_fileName):
+                        os.system("adb -s " + id + " shell rm -f " + "/sdcard/trtc_logs/" + Trtr_Profiling_fileName)
+                        with open(Trtr_Profiling_fileName) as f:
+                            while True:
+                                line = f.readline().replace('\r', '').replace('\n', '')
+                                if not line: break
+                                RawDatas.append(line)
+                            f.close()
+                        os.remove(Trtr_Profiling_fileName)
         except:
             printError("Main Logic Unexpected error: ", sys.exc_info()[0], sys.exc_info()[1])
         finally:
