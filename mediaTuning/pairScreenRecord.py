@@ -76,6 +76,13 @@ for id in connectIds:
         os.system("adb -s " + id + " pull " + "/data/data/com.skt.trtc.sample/shared_prefs/com.skt.trtc.sample_preferences.xml")
         if os.path.isfile(SHARD_PREFENCES) == False:
             raise Exception('NOTFOUND', SHARD_PREFENCES)
+
+        trtc__trtc_engine_version = getShardPreference("com.skt.trtc.sample_preferences.xml", "string", "trtc_engine_version")
+        if trtc__trtc_engine_version == None:
+            printError("%s[%s:%s]" % (id, "trtc__trtc_engine_version", trtc__trtc_engine_version))
+            exit(0)
+        trtc_git_revcnt = "v" + trtc__trtc_engine_version.split('/')[0]
+
         trtc_video_quality_resol = getShardPreference("com.skt.trtc.sample_preferences.xml", "string", "trtc_video_quality_resol")
         if trtc_video_quality_resol == None:
             printError("%s[%s:%s]" % (id, "trtc_video_quality_resol", trtc_video_quality_resol))
@@ -118,12 +125,13 @@ for id in connectIds:
 
     except:
         printError(sys.exc_info()[0], sys.exc_info()[1])
+        trtc_git_revcnt = "vNone"
         trtc_video_quality_resol = "g1280x720"
         #trtc_video_quality_resol = "g640x480"
         trtc_video_quality_fps="g24"
         trtc_video_quality_max_bitrate="g1800"
 
-    resultSingleFileNameS[id] = manufacture + "_" + board + "_" + abi + "_" + model + "_" + osversion + "_" + trtc_video_quality_resol + "_" + trtc_video_quality_fps + "_" + trtc_video_quality_max_bitrate
+    resultSingleFileNameS[id] = manufacture + "_" + board + "_" + abi + "_" + model + "_" + osversion + "_" + trtc_video_quality_resol + "_" + trtc_video_quality_fps + "_" + trtc_video_quality_max_bitrate + "_" + trtc_git_revcnt
     if addtionalFactors != None:
         printEx("%s:%s" % ("addtionalFactors", addtionalFactors))
         resultSingleFileNameS[id] = resultSingleFileNameS[id] + addtionalFactors
