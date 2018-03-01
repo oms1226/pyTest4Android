@@ -79,22 +79,34 @@ if __name__ == "__main__":
                     trtc_version_name = "None"
                     trtc_git_hashcode = "None"
                     trtc_git_revcnt = 0
+                    trtc_build_pc = "None"
+                    trtc_build_time = "None"
                     trtc_version = RawDataJson["trtc_version"]
                     if '[' in trtc_version:
                         trtc_version_name = trtc_version.split('[')[0]
                         trtc_git_hashcode = trtc_version.split('[')[1]
                         if '/' in trtc_git_hashcode:
                             trtc_git_revcnt = int(trtc_git_hashcode.split('/')[0])
-                            trtc_git_hashcode = trtc_git_hashcode.split('/')[1]
+                            trtc_git_hashcode = ''.join(trtc_git_hashcode.split('/')[1:])
                         trtc_git_hashcode = trtc_git_hashcode.replace(']', '')
                     elif '/' in trtc_version:
                         trtc_git_revcnt = int(trtc_version.split('/')[0])
-                        trtc_git_hashcode = trtc_version.split('/')[1]
+                        trtc_git_hashcode = ''.join(trtc_version.split('/')[1:])
                     else:
                         trtc_git_hashcode = trtc_version
+
+                    if '/' in trtc_git_hashcode:
+                        trtc_git_hashcode = trtc_git_hashcode.split('/')[0]
+                        trtc_build_pc = ''.join(trtc_git_hashcode.split('/')[1:])
+                    if '/' in trtc_build_pc:
+                        trtc_build_pc = trtc_git_hashcode.split('/')[0]
+                        trtc_build_time = ''.join(trtc_git_hashcode.split('/')[1:])
+
                     RawDataJson['trtc_version_name'] = trtc_version_name
                     RawDataJson['trtc_git_hashcode'] = trtc_git_hashcode
                     RawDataJson['trtc_git_revcnt'] = trtc_git_revcnt
+                    RawDataJson['trtc_build_pc'] = trtc_build_pc
+                    RawDataJson['trtc_build_time'] = trtc_build_time
                     with codecs.open(PROFILE_FILEFULLNAME, 'a', 'utf-8') as f:
                         f.write(json.dumps(RawDataJson, ensure_ascii=False) + "\r\n")
                         f.close()
