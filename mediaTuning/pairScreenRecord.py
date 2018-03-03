@@ -126,10 +126,10 @@ for id in connectIds:
     except:
         printError(sys.exc_info()[0], sys.exc_info()[1])
         trtc_git_revcnt = "vNone"
-        trtc_video_quality_resol = "g1280x720"
+        trtc_video_quality_resol = "Default"
         #trtc_video_quality_resol = "g640x480"
-        trtc_video_quality_fps="g24"
-        trtc_video_quality_max_bitrate="g1800"
+        trtc_video_quality_fps="Default"
+        trtc_video_quality_max_bitrate="Default"
 
     resultSingleFileNameS[id] = manufacture + "_" + board + "_" + abi + "_" + model + "_" + osversion + "_" + trtc_video_quality_resol + "_" + trtc_video_quality_fps + "_" + trtc_video_quality_max_bitrate + "_" + trtc_git_revcnt
     if addtionalFactors != None:
