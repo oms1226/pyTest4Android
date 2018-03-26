@@ -240,7 +240,7 @@ def getLocationOnMainDialPad(number, key):
     reVal = None
 
     if key != None:
-        reVal = "%s %s" % (str(SECRETDIALPADs[key][number][0]), str(int(SECRETDIALPADs[key][number][1]) + 200))
+        reVal = "%s %s" % (str(SECRETDIALPADs[key][number][0]), str(int(SECRETDIALPADs[key][number][1]) + 300))
         # reVal = "%s %s" % (str(SECRETDIALPADs[key][number][0]), str(int(SECRETDIALPADs[key][number][1])))
 
     return reVal

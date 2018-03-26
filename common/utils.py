@@ -99,6 +99,56 @@ def getPidInDevice(deviceId, processName):
 
     return reVal
 
+"""
+gta2slteskt:/ # dumpsys activity activities | grep mFocusedActivity
+  mFocusedActivity: ActivityRecord{9784bc6d0 u0 com.skt.prod.dialer/com.skt.prod.incall.lib.ui.activities.incall.InCallActivity t2188}
+gta2slteskt:/ # dumpsys window windows | grep -E 'mCurrentFocus|mFocusedApp'
+  mCurrentFocus=Window{deacd13d0 u0 com.skt.prod.dialer/com.skt.prod.incall.lib.ui.activities.incall.InCallActivity}
+  mFocusedApp=AppWindowToken{6522dd token=Token{31446b4 ActivityRecord{9784bc6d0 u0 com.skt.prod.dialer/com.skt.prod.incall.lib.ui.activities.incall.InCallActivity t2188}}}
+"""
+def getCurrentActivity(deviceId):
+    reVal = 'None'
+
+    proc = subprocess.Popen(
+        "adb -s " + deviceId + " shell dumpsys activity activities", stdout=subprocess.PIPE)
+    content = proc.stdout.read().strip()
+    mFocusedActivity = None
+    for line in content.split('\r\n'):
+        if 'mFocusedActivity' in line:
+            splitLine = line.split(' ')
+            if (len(splitLine) - 2) >= 0:
+                mFocusedActivity = splitLine[len(splitLine) - 2]
+    try:
+        proc.kill()
+    except:
+        printError("%s:%s" % ("Unexpected error", getExceptionString(sys.exc_info())))
+
+    proc = subprocess.Popen(
+        "adb -s " + deviceId + " shell dumpsys window windows", stdout=subprocess.PIPE)
+    content = proc.stdout.read().strip()
+    mCurrentFocus = None
+    mFocusedApp = None
+    for line in content.split('\r\n'):
+        if 'mCurrentFocus' in line:
+            mCurrentFocus = line.split(' ')[-1]
+        elif 'mFocusedApp' in line:
+            splitLine = line.split(' ')
+            if (len(splitLine) - 2) >= 0:
+                mFocusedApp = splitLine[len(splitLine) - 2]
+    try:
+        proc.kill()
+    except:
+        printError("%s:%s" % ("Unexpected error", getExceptionString(sys.exc_info())))
+
+    printEx("%s(%s)" % ("mFocusedActivity", mFocusedActivity))
+    printEx("%s(%s)" % ("mCurrentFocus", mCurrentFocus))
+    printEx("%s(%s)" % ("mFocusedApp", mFocusedApp))
+
+    if mFocusedActivity != None and mFocusedActivity == mFocusedApp: #and mFocusedApp in mCurrentFocus:
+        reVal = mFocusedActivity.replace('/', '')
+
+    return reVal
+
 def startActivity(deviceId, componentName, repeatCount):
     """
     adb shell am start -a android.intent.action.MAIN -n com.google.android.googlequicksearchbox/.SearchActivity
