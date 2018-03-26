@@ -187,6 +187,27 @@ def runMonkeyInDevice(deviceId, context):
 
     return reVal
 
+
+def runStartApp(deviceId, packageName, activityName):
+    reVal = 0
+    pid = getPidInDevice(deviceId, packageName)
+    if pid != 0:
+        killProcessInDevice(deviceId, pid)
+        time.sleep(5)
+
+    proc = subprocess.Popen("adb -s " + deviceId + " shell am start -a android.intent.action.MAIN -n " + packageName + '/' + activityName, stdout=subprocess.PIPE)
+    time.sleep(5)
+    try:
+        proc.kill()
+    except:
+        printError("%s:%s" % ("Unexpected error", getExceptionString(sys.exc_info())))
+
+    pid = getPidInDevice(deviceId, packageName)
+    if pid != 0:
+        reVal = pid;
+
+    return reVal
+
 def mkdirs(fullpathName):
     dir = os.path.dirname(fullpathName)
     # create directory if it does not exist

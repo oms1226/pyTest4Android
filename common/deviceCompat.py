@@ -236,6 +236,23 @@ def getLocationOnDialPad(number, key):
 
     return reVal
 
+def getLocationOnMainDialPad(number, key):
+    reVal = None
+
+    if key != None:
+        reVal = "%s %s" % (str(SECRETDIALPADs[key][number][0]), str(int(SECRETDIALPADs[key][number][1]) + 200))
+        # reVal = "%s %s" % (str(SECRETDIALPADs[key][number][0]), str(int(SECRETDIALPADs[key][number][1])))
+
+    return reVal
+
+def getLocationXYOnMainDialPad(number, key, index):
+    reVal = None
+
+    if key != None:
+        reVal = SECRETDIALPADs[key][number][index]
+
+    return reVal
+
 def getKey4LocationOnDialPad(selfVersion, appVersion, manufacture, model, width, height, density):
     printEx( "%s:%s" % ("manufacture", manufacture) )
     printEx( "%s:%s" % ("model", model) )
