@@ -235,7 +235,7 @@ if __name__ == "__main__":
         if len(sys.argv) > 1 and '-m' in sys.argv[1]:
             sys.argv.pop(1)
             if len(sys.argv) > 1:
-                during_mins = sys.argv[1]
+                during_mins = int(sys.argv[1])
                 sys.argv.pop(1)
         if len(sys.argv) > 1 and '-hash' in sys.argv[1]:
             sys.argv.pop(1)
