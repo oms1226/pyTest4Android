@@ -149,6 +149,36 @@ def getCurrentActivity(deviceId):
 
     return reVal
 
+
+def isScreenON(deviceId):
+    reVal = False
+    proc = subprocess.Popen(
+        "adb -s " + deviceId + " shell dumpsys power", stdout=subprocess.PIPE)
+    content = proc.stdout.read().strip()
+    for line in content.split('\r\n'):
+        if 'mScreenOn' in line:
+            if 'ON' in line:
+                reVal = True
+                break
+        elif 'Display' in line and 'Power:' in line :
+            if 'ON' in line:
+                reVal = True
+                break
+    try:
+        proc.kill()
+    except:
+        printError("%s:%s" % ("Unexpected error", getExceptionString(sys.exc_info())))
+
+    return reVal
+
+def screenTurnON(deviceId):
+    while isScreenON(deviceId) == False:
+        inputKeyEventInDevice(deviceId, 'KEYCODE_POWER')
+
+def screenTurnOFF(deviceId):
+    while isScreenON(deviceId) == True:
+        inputKeyEventInDevice(deviceId, 'KEYCODE_POWER')
+
 def startActivity(deviceId, componentName, repeatCount):
     """
     adb shell am start -a android.intent.action.MAIN -n com.google.android.googlequicksearchbox/.SearchActivity
@@ -190,6 +220,33 @@ def startActivity(deviceId, componentName, repeatCount):
     reVal = True
 
     return reVal
+
+def installAPK(deviceId, fullpathName, packageName):
+    if packageName != None:
+        command = "adb -s " + deviceId + " shell pm clear " + packageName
+        printEx("%s(%s)" % (command, 'begin'))
+        os_systemEx(command)
+        printEx("%s(%s)" % (command, '__end'))
+    command = "adb -s " + deviceId + " install -r -d " + fullpathName
+    printEx("%s(%s)" % (command, 'begin'))
+    os_systemEx(command)
+    printEx("%s(%s)" % (command, '__end'))
+
+def inputKeyEventInDevice(deviceId, key_event):
+    proc = subprocess.Popen("adb -s " + deviceId + " shell input keyevent " + key_event, stdout=subprocess.PIPE)
+    time.sleep(5)
+    try:
+        proc.kill()
+    except:
+        printError("%s:%s" % ("Unexpected error", getExceptionString(sys.exc_info())))
+
+def inputKeyEventInDevice(deviceId, key_event):
+    proc = subprocess.Popen("adb -s " + deviceId + " shell input keyevent " + key_event, stdout=subprocess.PIPE)
+    time.sleep(5)
+    try:
+        proc.kill()
+    except:
+        printError("%s:%s" % ("Unexpected error", getExceptionString(sys.exc_info())))
 
 def killProcessInDevice(deviceId, pid):
     reVal = ''

@@ -18,9 +18,7 @@ TARGET_PACKAGENAME = 'com.skt.prod.dialer'
 LAUNCH_ACTIVITYNAME= 'com.skt.prod.dialer.activities.main.MainActivity'
 INCALL_ACTIVITYNAME= 'com.skt.prod.incall.lib.ui.activities.incall.InCallActivity'
 JSON_LOCAL_FILE = None
-INFO_FILEFULLNAME = "data\\modelInfo4getprop.data"
-HASHKEY_FILEFULLNAME = "data\\modelInfo4getprop.hashkey"
-FIELDS_FILEFULLNAME = "data\\modelInfo4getprop.fields"
+INFO_FILEFULLNAME = "testResults.log"
 SMALL_DELAY = 3
 BASIC_DELAY = 5
 MIN_SLEEPTIME = 60
@@ -114,6 +112,7 @@ def setLogCat(SELF):
     tagName = 'NONE'
     searchName = 'NONE'
     args["logfullfilename"] = ".\\" + "Logcat" + "_" + tagName + '_' + searchName + '_' + SELF.PACKAGENAME + "_" + SELF.hostname + "_" + SELF.MODEL + "_" + SELF.OSVERSION + "_" + START_TIME + ".log"
+    SELF.LOGFILENAME  = args["logfullfilename"]
     args["DEVICE_ID"] = SELF.DEVICE_ID
     args["MYNUM"] = SELF.MYNUM
     args["MODEL"] = SELF.MODEL
@@ -126,7 +125,8 @@ def setLogCat(SELF):
 python C:\_python\workspace\PycharmProjects\pyTest4AndroidonGithub\mediaProfiling\getPropAgent.py -a
 """
 class SELF:
-    def __init__(self, deviceID, selfVersion, apkName, hashcode, revcnt, during_mins):
+    def __init__(self, thisFilename, deviceID, selfVersion, apkName, hashcode, revcnt, during_mins):
+        self.MYNAME = thisFilename
         self.INSTALLAPKNAME = apkName
         self.trtc_git_hashcode = hashcode
         self.trtc_git_revcnt = revcnt
@@ -157,6 +157,7 @@ class SELF:
         self.hostname = socket.gethostname()
         self.DIENUM = 0
         self.BATTERYLEVEL_START = getBatteryLevel(deviceID)
+        self.LOGFILENAME = None
     def setPartner(self, deviceID, num):
         self.PARTNERID = deviceID
         self.PARTNERNUM = num
@@ -173,6 +174,8 @@ class SELF:
         self.info['MODEL'] = self.MODEL
         self.info['OSVERSION'] = self.OSVERSION
         self.info['MANUFACTURER'] = self.MANUFACTURER
+
+        self.info['MYNAME'] = self.MYNAME
 
         self.info['TRY_COUNT_ARCALL_OUTGOING'] = self.TRY_COUNT_ARCALL_OUTGOING
         self.info['TRY_COUNT_ARCALL_INCOMING'] = self.TRY_COUNT_ARCALL_INCOMING
@@ -220,23 +223,34 @@ if __name__ == "__main__":
     INSTALLAPKNAME = 'None'
     git_hashcode = 'None'
     git_revcnt = -1
-    during_mins = 30
+    during_mins = 10
     SETUP_SUCESS = True
     while len(sys.argv) > 1:
-        if len(sys.argv) > 1 and '-a' in sys.argv[1]:
-            AUTOMODE = True
-            sys.argv.pop(1)
-        if '-apk' in sys.argv[1]:
+        printEx("%s:%s" % ("sys.argv", sys.argv))
+        if len(sys.argv) > 1 and '-apk' in sys.argv[1]:
             sys.argv.pop(1)
             if len(sys.argv) > 1:
                 INSTALLAPKNAME = sys.argv[1]
                 sys.argv.pop(1)
-        if '-apk' in sys.argv[1]:
+        if len(sys.argv) > 1 and '-m' in sys.argv[1]:
             sys.argv.pop(1)
             if len(sys.argv) > 1:
-                INSTALLAPKNAME = sys.argv[1]
+                during_mins = sys.argv[1]
                 sys.argv.pop(1)
-    printEx("%s:%s" % ("AUTOMODE", AUTOMODE))
+        if len(sys.argv) > 1 and '-hash' in sys.argv[1]:
+            sys.argv.pop(1)
+            if len(sys.argv) > 1:
+                git_hashcode = sys.argv[1]
+                sys.argv.pop(1)
+        if len(sys.argv) > 1 and '-revcnt' in sys.argv[1]:
+            sys.argv.pop(1)
+            if len(sys.argv) > 1:
+                git_revcnt = sys.argv[1]
+                sys.argv.pop(1)
+
+    printEx("%s:%s" % ("git_hashcode", git_hashcode))
+    printEx("%s:%s" % ("git_revcnt", git_revcnt))
+    printEx("%s:%s" % ("during_mins", during_mins))
     printEx("%s:%s" % ("INSTALLAPKNAME", INSTALLAPKNAME))
     connected_Devices = getRealDevices()
 
@@ -247,10 +261,15 @@ if __name__ == "__main__":
 
     phoneNum = []
     selfs = {}
+    myName = sys.argv[0].split('/')[-1]
+    print "%s:%s" % ("myName", myName)
     for DEVICE_ID in connected_Devices:
         printEx("%s:%s" % ("DEVICE_ID", DEVICE_ID))
         phoneNum.append(getPhoneNumberFromDevice(DEVICE_ID))
-        selfs[DEVICE_ID] = SELF(DEVICE_ID, "None", INSTALLAPKNAME, git_hashcode, git_revcnt, during_mins)
+        selfs[DEVICE_ID] = SELF(myName, DEVICE_ID, "None", INSTALLAPKNAME, git_hashcode, git_revcnt, during_mins)
+        screenTurnON(DEVICE_ID)
+        if INSTALLAPKNAME != 'None':
+            installAPK(DEVICE_ID, INSTALLAPKNAME, None)
 
     for i in connected_Devices:
         for j in connected_Devices:
@@ -308,6 +327,8 @@ if __name__ == "__main__":
             try:
                 CurrentActivityName = getCurrentActivity(selfs[SELECTED_DEVICEID].DEVICE_ID)
                 while LAUNCH_ACTIVITYNAME not in CurrentActivityName:
+                    inputKeyEventInDevice(selfs[SELECTED_DEVICEID].DEVICE_ID, 'KEYCODE_BACK')
+                    inputKeyEventInDevice(selfs[SELECTED_DEVICEID].DEVICE_ID, 'KEYCODE_HOME')
                     startActivity(selfs[SELECTED_DEVICEID].DEVICE_ID, ("%s/%s" % (TARGET_PACKAGENAME, LAUNCH_ACTIVITYNAME)), 1)
                     time.sleep(BASIC_DELAY)
                     CurrentActivityName = getCurrentActivity(selfs[SELECTED_DEVICEID].DEVICE_ID)
@@ -384,3 +405,7 @@ if __name__ == "__main__":
 
             printEx("%s:%s" % ("LOGINFO", selfs[DEVICE_ID].getAllInfo()))
         selfs[DEVICE_ID].printWellformedInfo()
+        with codecs.open(INFO_FILEFULLNAME, 'a', 'utf-8') as f:
+            f.write(selfs[DEVICE_ID].getAllInfo() + "\r\n")
+            f.close()
+        screenTurnOFF(DEVICE_ID)
