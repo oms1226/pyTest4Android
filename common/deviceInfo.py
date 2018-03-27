@@ -506,13 +506,13 @@ class logInfo:
     def getAllInfo(self):
         if self.info.has_key('PIDS') and len(self.info['PIDS']) > 0:
             self.info['PIDS#'] = len(set(self.info['PIDS']))
-        # del self.info['PIDS']
+        self.info['PIDS']
         if self.info.has_key('TIDS') and self.info['TIDS'] > 0:
             self.info['TIDS#'] = len(set(self.info['TIDS']))
-        # del self.info['TIDS']
+        del self.info['TIDS']
         if self.info.has_key('TAGLIST') and len(self.info['TAGLIST']) > 0:
             self.info['TAGLIST#'] = len(set(self.info['TAGLIST']))
-        # del self.info['TAGLIST']
+        #del self.info['TAGLIST']
         return json.dumps(self.info).replace('\\', '')
     def setInfo(self, key, value):
         self.info[key] = value

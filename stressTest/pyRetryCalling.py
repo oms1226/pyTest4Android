@@ -156,6 +156,7 @@ class SELF:
         self.PACKAGENAME = 'com.skt.prod.dialer'
         self.hostname = socket.gethostname()
         self.DIENUM = 0
+        self.BATTERYLEVEL_START = getBatteryLevel(deviceID)
     def setPartner(self, deviceID, num):
         self.PARTNERID = deviceID
         self.PARTNERNUM = num
@@ -168,6 +169,7 @@ class SELF:
         reVal = dict()
         dummy = self.LOGINFO.getAllInfo()
         reVal.update(self.LOGINFO.getInfo(None))
+        self.BATTERYLEVEL___END = getBatteryLevel(self.DEVICE_ID)
         self.info['MODEL'] = self.MODEL
         self.info['OSVERSION'] = self.OSVERSION
         self.info['MANUFACTURER'] = self.MANUFACTURER
@@ -184,6 +186,9 @@ class SELF:
         self.info['trtc_git_revcnt'] = self.trtc_git_revcnt
         self.info['during_mins'] = self.during_mins
         self.info['INSTALLAPKNAME'] = self.INSTALLAPKNAME
+        self.info['during_mins'] = self.during_mins
+        self.info['BATTERYLEVEL_START'] = self.BATTERYLEVEL_START
+        self.info['BATTERYLEVEL___END'] = self.BATTERYLEVEL___END
         self.DIENUM = self.LOGINFO.getInfo('PIDS#') - self.KILL_COUNT -1
         self.info['DIE#'] = self.DIENUM
         reVal.update(self.info)
@@ -206,6 +211,8 @@ class SELF:
         print("%s:%d" % ("TID#", self.LOGINFO.getInfo('TIDS#')))
         print("%s:%d / " % ("DIE#", self.DIENUM)),
         print("%s:%d" % ("KILL#", self.KILL_COUNT))
+        print("%s:%d / " % ("BATTERYLEVEL_START", self.BATTERYLEVEL_START)),
+        print("%s:%d" % ("BATTERYLEVEL___END", self.BATTERYLEVEL___END))
         print("<=============================================")
 
 if __name__ == "__main__":
@@ -213,7 +220,7 @@ if __name__ == "__main__":
     INSTALLAPKNAME = 'None'
     git_hashcode = 'None'
     git_revcnt = -1
-    during_mins = 10
+    during_mins = 30
     SETUP_SUCESS = True
     while len(sys.argv) > 1:
         if len(sys.argv) > 1 and '-a' in sys.argv[1]:
@@ -287,13 +294,14 @@ if __name__ == "__main__":
             printEx("%s:%s" % ("connected_Devices", connected_Devices))
             break
         else:
-            while NEED2RESET:
-                NEED2RESET = (processCallSetup(connected_Devices, selfs) == False)
-                retryCount4NEED2RESET = retryCount4NEED2RESET + 1
-                printError("%s:%s" % ("retryCount4NEED2RESET", retryCount4NEED2RESET))
-                for DEVICE_ID in connected_Devices:
-                    selfs[DEVICE_ID].KILL_COUNT += 1
-                faultCount = 0
+            if False:
+                while NEED2RESET:
+                    NEED2RESET = (processCallSetup(connected_Devices, selfs) == False)
+                    retryCount4NEED2RESET = retryCount4NEED2RESET + 1
+                    printError("%s:%s" % ("retryCount4NEED2RESET", retryCount4NEED2RESET))
+                    for DEVICE_ID in connected_Devices:
+                        selfs[DEVICE_ID].KILL_COUNT += 1
+                    faultCount = 0
             connected_Devices = connectingDevices
             SELECTED_DEVICEID = connected_Devices[random.randrange(0, len(connected_Devices))]
 
