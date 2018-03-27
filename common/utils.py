@@ -238,7 +238,7 @@ def runMonkeyInDevice(deviceId, context):
     return reVal
 
 
-def runStartApp(deviceId, packageName, activityName):
+def runRestartApp(deviceId, packageName, activityName):
     reVal = 0
     pid = getPidInDevice(deviceId, packageName)
     if pid != 0:

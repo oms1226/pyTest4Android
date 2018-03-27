@@ -70,7 +70,7 @@ def processCallSetup(connected_Devices, selfs):
     setupCount = 0
     reVal = True
     for DEVICE_ID in connected_Devices:
-        runStartApp(DEVICE_ID, TARGET_PACKAGENAME, LAUNCH_ACTIVITYNAME)
+        runRestartApp(DEVICE_ID, TARGET_PACKAGENAME, LAUNCH_ACTIVITYNAME)
         time.sleep(BASIC_DELAY)
         tapPhoneNumbOnDevice(selfs[DEVICE_ID], selfs[DEVICE_ID].PARTNERNUM)
         time.sleep(BASIC_DELAY)
@@ -126,7 +126,19 @@ def setLogCat(SELF):
 python C:\_python\workspace\PycharmProjects\pyTest4AndroidonGithub\mediaProfiling\getPropAgent.py -a
 """
 class SELF:
-    def __init__(self, deviceID, selfVersion):
+    def __init__(self, deviceID, selfVersion, apkName, hashcode, revcnt, during_mins):
+        self.INSTALLAPKNAME = apkName
+        self.trtc_git_hashcode = hashcode
+        self.trtc_git_revcnt = revcnt
+        self.during_mins = during_mins
+        self.KILL_COUNT = 0
+        self.TRY_COUNT_ARCALL_OUTGOING = 0
+        self.TRY_COUNT_ARCALL_INCOMING = 0
+        self.SUCCCOUNT_ARCALL_OUTGOING = 0
+        self.SUCCCOUNT_ARCALL_INCOMING = 0
+        self.FAILCOUNT_ARCALL_OUTGOING = 0
+        self.FAILCOUNT_ARCALL_INCOMING = 0
+        self.info = dict()
         self.pids = []
         self.resultS = dict()
         self.selfVersion = selfVersion
@@ -143,22 +155,75 @@ class SELF:
         self.DIALPAD_KEY = getKey4LocationOnDialPad(self.selfVersion, self.APPVERSION, self.MANUFACTURER, self.MODEL, self.WIDTH, self.HEIGHT, self.DENSITY)
         self.PACKAGENAME = 'com.skt.prod.dialer'
         self.hostname = socket.gethostname()
+        self.DIENUM = 0
     def setPartner(self, deviceID, num):
         self.PARTNERID = deviceID
         self.PARTNERNUM = num
     def setLogCat(self, LOGPROCESS, LOGINFO):
         self.LOGPROCESS = LOGPROCESS
         self.LOGINFO = LOGINFO
+    def setStartTime(self, sTime):
+        self.START______TIME = sTime
+    def getAllInfo(self):
+        reVal = dict()
+        dummy = self.LOGINFO.getAllInfo()
+        reVal.update(self.LOGINFO.getInfo(None))
+        self.info['MODEL'] = self.MODEL
+        self.info['OSVERSION'] = self.OSVERSION
+        self.info['MANUFACTURER'] = self.MANUFACTURER
+
+        self.info['TRY_COUNT_ARCALL_OUTGOING'] = self.TRY_COUNT_ARCALL_OUTGOING
+        self.info['TRY_COUNT_ARCALL_INCOMING'] = self.TRY_COUNT_ARCALL_INCOMING
+        self.info['SUCCCOUNT_ARCALL_OUTGOING'] = self.SUCCCOUNT_ARCALL_OUTGOING
+        self.info['SUCCCOUNT_ARCALL_INCOMING'] = self.SUCCCOUNT_ARCALL_INCOMING
+        self.info['FAILCOUNT_ARCALL_OUTGOING'] = self.FAILCOUNT_ARCALL_OUTGOING
+        self.info['FAILCOUNT_ARCALL_INCOMING'] = self.FAILCOUNT_ARCALL_INCOMING
+
+        self.info['START______TIME'] = self.START______TIME
+        self.info['trtc_git_hashcode'] = self.trtc_git_hashcode
+        self.info['trtc_git_revcnt'] = self.trtc_git_revcnt
+        self.info['during_mins'] = self.during_mins
+        self.info['INSTALLAPKNAME'] = self.INSTALLAPKNAME
+        self.DIENUM = self.LOGINFO.getInfo('PIDS#') - self.KILL_COUNT -1
+        self.info['DIE#'] = self.DIENUM
+        reVal.update(self.info)
+        return json.dumps(reVal).replace('\\', '')
+    def printWellformedInfo(self):
+        print("=============================================>")
+        print("%s:%s /" % ("MODEL", self.MODEL)),
+        print("%s:%s /" % ("OSVERSION", self.OSVERSION)),
+        print("%s:%s /" % ("MANUFACTURER", self.MANUFACTURER)),
+        print("%s:%d /" % ("during_mins", self.during_mins)),
+        print("%s:%s" % ("START______TIME", self.START______TIME))
+        print("----------------------------------------------")
+        print("%s:%d /" % ("TRY_COUNT_ARCALL_OUTGOING", self.TRY_COUNT_ARCALL_OUTGOING)),
+        print("%s:%d /" % ("SUCCCOUNT_ARCALL_OUTGOING", self.SUCCCOUNT_ARCALL_OUTGOING)),
+        print("%s:%d" % ("FAILCOUNT_ARCALL_OUTGOING", self.FAILCOUNT_ARCALL_OUTGOING))
+        print("%s:%d /" % ("TRY_COUNT_ARCALL_INCOMING", self.TRY_COUNT_ARCALL_INCOMING)),
+        print("%s:%d /" % ("SUCCCOUNT_ARCALL_INCOMING", self.SUCCCOUNT_ARCALL_INCOMING)),
+        print("%s:%d" % ("FAILCOUNT_ARCALL_INCOMING", self.FAILCOUNT_ARCALL_INCOMING))
+        print("%s:%d / " % ("PID#", self.LOGINFO.getInfo('PIDS#'))),
+        print("%s:%d" % ("TID#", self.LOGINFO.getInfo('TIDS#')))
+        print("%s:%d / " % ("DIE#", self.DIENUM)),
+        print("%s:%d" % ("KILL#", self.KILL_COUNT))
+        print("<=============================================")
 
 if __name__ == "__main__":
     AUTOMODE = True
     INSTALLAPKNAME = 'None'
-    during_mins = 1
+    git_hashcode = 'None'
+    git_revcnt = -1
+    during_mins = 10
     SETUP_SUCESS = True
     while len(sys.argv) > 1:
         if len(sys.argv) > 1 and '-a' in sys.argv[1]:
             AUTOMODE = True
             sys.argv.pop(1)
+        if '-apk' in sys.argv[1]:
+            sys.argv.pop(1)
+            if len(sys.argv) > 1:
+                INSTALLAPKNAME = sys.argv[1]
+                sys.argv.pop(1)
         if '-apk' in sys.argv[1]:
             sys.argv.pop(1)
             if len(sys.argv) > 1:
@@ -178,18 +243,18 @@ if __name__ == "__main__":
     for DEVICE_ID in connected_Devices:
         printEx("%s:%s" % ("DEVICE_ID", DEVICE_ID))
         phoneNum.append(getPhoneNumberFromDevice(DEVICE_ID))
-        selfs[DEVICE_ID] = SELF(DEVICE_ID, "None")
+        selfs[DEVICE_ID] = SELF(DEVICE_ID, "None", INSTALLAPKNAME, git_hashcode, git_revcnt, during_mins)
 
     for i in connected_Devices:
         for j in connected_Devices:
             if i != j:
                 selfs[i].setPartner(selfs[j].DEVICE_ID, selfs[j].MYNUM)
 
-    if AUTOMODE == False:
+    if True:#AUTOMODE == False:
         for DEVICE_ID in connected_Devices:
             printEx("%s:%s" % ("phoneNum", str(selfs[DEVICE_ID].MYNUM)))
             printEx("%s:%s" % ("partnerNum", str(selfs[DEVICE_ID].PARTNERNUM)))
-            runStartApp(DEVICE_ID, TARGET_PACKAGENAME, LAUNCH_ACTIVITYNAME)
+            runRestartApp(DEVICE_ID, TARGET_PACKAGENAME, LAUNCH_ACTIVITYNAME)
 
         SETUP_SUCESS = processCallSetup(connected_Devices, selfs)
         if SETUP_SUCESS == False:
@@ -199,13 +264,17 @@ if __name__ == "__main__":
         time.sleep(BASIC_DELAY)
 
     NEED2RESET = (SETUP_SUCESS == False)
+
+    START______TIME = (datetime.datetime.utcnow() + datetime.timedelta(hours=9)).strftime("%Y%m%d%H%M")
     for DEVICE_ID in connected_Devices:
         LOGPROCESS, LOGINFO = setLogCat(selfs[DEVICE_ID])
         selfs[DEVICE_ID].setLogCat(LOGPROCESS, LOGINFO)
+        selfs[DEVICE_ID].setStartTime(START______TIME)
 
-    START______TIME = (datetime.datetime.utcnow() + datetime.timedelta(hours=9)).strftime("%Y%m%d%H%M")
     endDatetime = (datetime.datetime.utcnow() + datetime.timedelta(hours=9, minutes=during_mins))
     EXPECT_END_TIME = endDatetime.strftime("%Y%m%d%H%M")
+    retryCount4NEED2RESET = 0
+    faultCount = 0
     while long(EXPECT_END_TIME) > long((datetime.datetime.utcnow() + datetime.timedelta(hours=9)).strftime("%Y%m%d%H%M")):
         connectingDevices = getRealDevices()
 
@@ -218,29 +287,60 @@ if __name__ == "__main__":
             printEx("%s:%s" % ("connected_Devices", connected_Devices))
             break
         else:
-            retryCount4NEED2RESET = 0
             while NEED2RESET:
                 NEED2RESET = (processCallSetup(connected_Devices, selfs) == False)
                 retryCount4NEED2RESET = retryCount4NEED2RESET + 1
                 printError("%s:%s" % ("retryCount4NEED2RESET", retryCount4NEED2RESET))
-            faultCount = 0
+                for DEVICE_ID in connected_Devices:
+                    selfs[DEVICE_ID].KILL_COUNT += 1
+                faultCount = 0
             connected_Devices = connectingDevices
             SELECTED_DEVICEID = connected_Devices[random.randrange(0, len(connected_Devices))]
 
             try:
+                CurrentActivityName = getCurrentActivity(selfs[SELECTED_DEVICEID].DEVICE_ID)
+                while LAUNCH_ACTIVITYNAME not in CurrentActivityName:
+                    startActivity(selfs[SELECTED_DEVICEID].DEVICE_ID, ("%s/%s" % (TARGET_PACKAGENAME, LAUNCH_ACTIVITYNAME)), 1)
+                    time.sleep(BASIC_DELAY)
+                    CurrentActivityName = getCurrentActivity(selfs[SELECTED_DEVICEID].DEVICE_ID)
+                    faultCount = faultCount + 1
+                    if faultCount > MAX_RETRYCOUNT:
+                        selfs[SELECTED_DEVICEID].FAILCOUNT_ARCALL_OUTGOING  += 1
+                        NEED2RESET = True
+                        break
+
+
                 tapReDialOnDevice(selfs[SELECTED_DEVICEID])
                 time.sleep(BASIC_DELAY)
                 tapDialOnDevice(selfs[SELECTED_DEVICEID])
                 time.sleep(BASIC_DELAY * 2)
+                selfs[SELECTED_DEVICEID].TRY_COUNT_ARCALL_OUTGOING += 1
                 while (True):
-                    CurrentActivityName = getCurrentActivity(selfs[SELECTED_DEVICEID].PARTNERID)
+                    CurrentActivityName = getCurrentActivity(selfs[SELECTED_DEVICEID].DEVICE_ID)
                     printEx("%s:%s" % ("getCurrentActivity", CurrentActivityName))
                     if INCALL_ACTIVITYNAME in CurrentActivityName:
+                        selfs[SELECTED_DEVICEID].SUCCCOUNT_ARCALL_OUTGOING  += 1
                         break
                     else:
                         time.sleep(BASIC_DELAY)
                     faultCount = faultCount + 1
                     if faultCount > MAX_RETRYCOUNT:
+                        selfs[SELECTED_DEVICEID].FAILCOUNT_ARCALL_OUTGOING  += 1
+                        NEED2RESET = True
+                        break
+
+                selfs[selfs[SELECTED_DEVICEID].PARTNERID].TRY_COUNT_ARCALL_INCOMING += 1
+                while (True):
+                    CurrentActivityName = getCurrentActivity(selfs[SELECTED_DEVICEID].PARTNERID)
+                    printEx("%s:%s" % ("getCurrentActivity", CurrentActivityName))
+                    if INCALL_ACTIVITYNAME in CurrentActivityName:
+                        selfs[selfs[SELECTED_DEVICEID].PARTNERID].SUCCCOUNT_ARCALL_INCOMING += 1
+                        break
+                    else:
+                        time.sleep(BASIC_DELAY)
+                    faultCount = faultCount + 1
+                    if faultCount > MAX_RETRYCOUNT:
+                        selfs[selfs[SELECTED_DEVICEID].PARTNERID].FAILCOUNT_ARCALL_INCOMING += 1
                         NEED2RESET = True
                         break
 
@@ -259,11 +359,13 @@ if __name__ == "__main__":
                         break
             except:
                 printError("Main Logic Unexpected error: ", sys.exc_info()[0], sys.exc_info()[1])
+                faultCount = faultCount + 1
+                if faultCount > MAX_RETRYCOUNT:
+                    NEED2RESET = True
             finally:
                 excuteTime = (datetime.datetime.utcnow() + datetime.timedelta(hours=9)).strftime("%Y%m%d%H%M")
-                print("%s-%s." % ("awake", excuteTime)),
-        if AUTOMODE == False:
-            break
+                print("%s-%s." % ("running", excuteTime))
+
 
     for DEVICE_ID in connected_Devices:
         if selfs[DEVICE_ID].LOGPROCESS != None:
@@ -272,4 +374,5 @@ if __name__ == "__main__":
             except:
                 printError("%s:%s" % ("Unexpected error", getExceptionString(sys.exc_info())))
 
-            printEx("%s:%s" % ("LOGINFO", selfs[DEVICE_ID].LOGINFO.getAllInfo()))
+            printEx("%s:%s" % ("LOGINFO", selfs[DEVICE_ID].getAllInfo()))
+        selfs[DEVICE_ID].printWellformedInfo()

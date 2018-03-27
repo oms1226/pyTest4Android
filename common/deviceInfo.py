@@ -506,18 +506,22 @@ class logInfo:
     def getAllInfo(self):
         if self.info.has_key('PIDS') and len(self.info['PIDS']) > 0:
             self.info['PIDS#'] = len(set(self.info['PIDS']))
-        del self.info['PIDS']
+        # del self.info['PIDS']
         if self.info.has_key('TIDS') and self.info['TIDS'] > 0:
             self.info['TIDS#'] = len(set(self.info['TIDS']))
-        del self.info['TIDS']
+        # del self.info['TIDS']
         if self.info.has_key('TAGLIST') and len(self.info['TAGLIST']) > 0:
             self.info['TAGLIST#'] = len(set(self.info['TAGLIST']))
-        del self.info['TAGLIST']
+        # del self.info['TAGLIST']
         return json.dumps(self.info).replace('\\', '')
     def setInfo(self, key, value):
         self.info[key] = value
     def getInfo(self, key):
-        return self.info[key]
+        if key == None:
+            reVal = self.info
+        else:
+            reVal = self.info[key]
+        return reVal
 
 def getProc4LogCat(**options):
     """
@@ -560,7 +564,7 @@ def getProc4LogCat(**options):
                                 reportNum = None
 
                     if isWriteFile:
-                        printEx("%s:%s" % ("output", output))
+                        # printEx("%s:%s" % ("output", output))
                         mkdirs(logfullfilename)
                         #with codecs.open(logfullfilename, 'a', 'utf-8') as f:
                         with open(logfullfilename, 'a') as f:
@@ -574,7 +578,16 @@ def getProc4LogCat(**options):
 
                         items = output.split(' ')
                         if len(items) >= 7:
-                            if tag != None:
+                            key = 'TAGLIST'
+                            if ':' in items[5]:
+                                items[5] = items[5].split(':')[0]
+                            if ' ' in items[5]:
+                                items[5] = items[5].strip()
+
+                            if items[5] != None and items[5] not in logI.getInfo(key):
+                                logI.getInfo(key).append(items[5])
+
+                            if tag != None and (tag in items[5] or items[5] in tag):
                                 # PIDS
                                 key = 'PIDS'
                                 if items[2] != None and int(items[2]) not in logI.getInfo(key):
@@ -588,14 +601,6 @@ def getProc4LogCat(**options):
                                 # LOGLEVEL
                                 logI.setInfo(items[4], logI.getInfo(items[4]) + 1)
 
-                            key = 'TAGLIST'
-                            if ':' in items[5]:
-                                items[5] = items[5].split(':')[0]
-                            if ' ' in items[5]:
-                                items[5] = items[5].strip()
-
-                            if items[5] != None and items[5] not in logI.getInfo(key):
-                                logI.getInfo(key).append(items[5])
                 except:
                     printError("%s:%s" % ("Unexpected error", getExceptionString(sys.exc_info())))
 
