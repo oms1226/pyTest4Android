@@ -42,7 +42,7 @@ def tapDialOnDevice(mySelf):
     if int(mySelf.DENSITY) > 320:
         y = getLocationXYOnMainDialPad('*', mySelf.DIALPAD_KEY, 1) + 500
     elif int(mySelf.DENSITY) > 280:
-        y = getLocationXYOnMainDialPad('*', mySelf.DIALPAD_KEY, 1) + 450
+        y = getLocationXYOnMainDialPad('*', mySelf.DIALPAD_KEY, 1) + 350
     else:
         y = getLocationXYOnMainDialPad('*', mySelf.DIALPAD_KEY, 1) + 150
     x_y = "%s %s" % (str(x), str(y))
@@ -54,7 +54,7 @@ def tapReDialOnDevice(mySelf):
     if int(mySelf.DENSITY) > 320:
         y = getLocationXYOnMainDialPad('*', mySelf.DIALPAD_KEY, 1) + 500
     elif int(mySelf.DENSITY) > 280:
-        y = getLocationXYOnMainDialPad('*', mySelf.DIALPAD_KEY, 1) + 450
+        y = getLocationXYOnMainDialPad('*', mySelf.DIALPAD_KEY, 1) + 350
     else:
         y = getLocationXYOnMainDialPad('*', mySelf.DIALPAD_KEY, 1) + 150
     x_y = "%s %s" % (str(x), str(y))
@@ -63,7 +63,10 @@ def tapReDialOnDevice(mySelf):
 
 def tapEndCallOnDevice(mySelf):
     x = getLocationXYOnMainDialPad('#', mySelf.DIALPAD_KEY, 0) + 100
-    y = getLocationXYOnMainDialPad('#', mySelf.DIALPAD_KEY, 1) + 500
+    if int(mySelf.DENSITY) == 320:
+        y = getLocationXYOnMainDialPad('#', mySelf.DIALPAD_KEY, 1) + 350
+    else:
+        y = getLocationXYOnMainDialPad('#', mySelf.DIALPAD_KEY, 1) + 500
     x_y = "%s %s" % (str(x), str(y))
     time.sleep(SMALL_DELAY)
     tapOnDevice(mySelf.DEVICE_ID, x_y)
@@ -237,6 +240,11 @@ class SELF:
         print("%s:%f" % ("RSRP_AVERAGE", self.RSRP_SUM/self.RSRP_COUNT))
         print("<=============================================")
 
+"""
+<preCondition>
+1> 단말 두대만 연결
+2> 각 단말의 콜라 히든 메뉴에서 auto mute on, auto answer on
+"""
 if __name__ == "__main__":
     AUTOMODE = True
     INSTALLAPKNAME = 'None'
