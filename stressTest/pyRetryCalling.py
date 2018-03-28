@@ -8,6 +8,8 @@ import socket
 from common.deviceCompat import *
 from common.deviceInfo import *
 from common.utils import *
+from sys import platform as _platform
+
 
 
 setDEBUG(True)
@@ -108,7 +110,10 @@ def setLogCat(SELF):
     START_TIME = strftime("%Y%m%d%H%M%S", localtime())
     tagName = 'NONE'
     searchName = 'NONE'
-    args["logfullfilename"] = ".\\" + "Logcat" + "_" + tagName + '_' + searchName + '_' + SELF.PACKAGENAME + "_" + SELF.hostname + "_" + SELF.MODEL + "_" + SELF.OSVERSION + "_" + START_TIME + ".log"
+    if _platform == "linux" or _platform == "linux2" or _platform == "darwin":
+        args["logfullfilename"] = "./" + "Logcat" + "_" + tagName + '_' + searchName + '_' + SELF.PACKAGENAME + "_" + SELF.hostname + "_" + SELF.MODEL + "_" + SELF.OSVERSION + "_" + START_TIME + ".log"
+    elif _platform == "win32":
+        args["logfullfilename"] = ".\\" + "Logcat" + "_" + tagName + '_' + searchName + '_' + SELF.PACKAGENAME + "_" + SELF.hostname + "_" + SELF.MODEL + "_" + SELF.OSVERSION + "_" + START_TIME + ".log"
     SELF.LOGFILENAME  = args["logfullfilename"]
     args["DEVICE_ID"] = SELF.DEVICE_ID
     args["MYNUM"] = SELF.MYNUM
