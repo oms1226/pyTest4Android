@@ -62,10 +62,11 @@ def tapReDialOnDevice(mySelf):
     tapOnDevice(mySelf.DEVICE_ID, x_y)
 
 def tapEndCallOnDevice(mySelf):
-    x = getLocationXYOnMainDialPad('#', mySelf.DIALPAD_KEY, 0) + 100
+    x = getLocationXYOnMainDialPad('#', mySelf.DIALPAD_KEY, 0)
     if int(mySelf.DENSITY) == 320:
         y = getLocationXYOnMainDialPad('#', mySelf.DIALPAD_KEY, 1) + 350
     else:
+        x = getLocationXYOnMainDialPad('#', mySelf.DIALPAD_KEY, 0) + 100
         y = getLocationXYOnMainDialPad('#', mySelf.DIALPAD_KEY, 1) + 500
     x_y = "%s %s" % (str(x), str(y))
     time.sleep(SMALL_DELAY)
