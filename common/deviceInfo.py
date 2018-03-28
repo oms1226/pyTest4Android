@@ -441,6 +441,30 @@ def getBatteryLevel(deviceId):
 
     return reVal
 
+def getRSRPonMobileData(deviceId):
+    """
+herolteskt:/ # dumpsys telephony.registry | grep mSignalStrength
+  mSignalStrength=SignalStrength: 99 99 -120 -160 -120 -1 -1 63 -69 -5 300 2 2147483647 0x4000 gsm|lte
+    """
+    reVal = None
+
+    proc = subprocess.Popen("adb -s " + deviceId + " shell dumpsys telephony.registry", stdout=subprocess.PIPE)
+    fd_popen = proc.stdout
+
+    content = fd_popen.read().strip()
+    for line in content.split('\r\n'):
+        if ('mSignalStrength' in line) and ('gsm|lte' in line):
+            items = line.strip().split(' ')
+            if len(items) == 16:
+                reVal = int(items[9])
+
+    try:
+        proc.kill()
+    except:
+        printError("%s:%s" % ("Unexpected error", getExceptionString(sys.exc_info())))
+
+    return reVal
+
 def getPackageVersionName(deviceId, packageName):
     """
     C:\_python\workspace\PycharmProjects\lmcst\CallRecordingTest>adb shell "dumpsys package com.google.android.googlequicksearchbox | grep versionName"
@@ -558,6 +582,13 @@ def getProc4LogCat(**options):
                     if isWriteFile == False and tag != None:
                         if tag in output:
                             isWriteFile = True
+
+                    if isWriteFile == False and tag != None:
+                        if tag in output:
+                            isWriteFile = True
+                    if isWriteFile == False and ' F ' in output:#Fatal Level은 무조건 출력
+                        isWriteFile = True
+
                     if searchWord != None:
                         if searchWord in output:
                             isWriteFile = True

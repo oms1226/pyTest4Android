@@ -158,6 +158,8 @@ class SELF:
         self.DIENUM = 0
         self.BATTERYLEVEL_START = getBatteryLevel(deviceID)
         self.LOGFILENAME = None
+        self.RSRP_SUM = 0
+        self.RSRP_COUNT = 0
     def setPartner(self, deviceID, num):
         self.PARTNERID = deviceID
         self.PARTNERNUM = num
@@ -166,6 +168,11 @@ class SELF:
         self.LOGINFO = LOGINFO
     def setStartTime(self, sTime):
         self.START______TIME = sTime
+    def checkRSRP(self):
+        intValue = getRSRPonMobileData(self.DEVICE_ID)
+        if intValue != None:
+            self.RSRP_SUM += intValue
+            self.RSRP_COUNT += 1
     def getAllInfo(self):
         reVal = dict()
         dummy = self.LOGINFO.getAllInfo()
@@ -215,7 +222,8 @@ class SELF:
         print("%s:%d / " % ("DIE#", self.DIENUM)),
         print("%s:%d" % ("KILL#", self.KILL_COUNT))
         print("%s:%d / " % ("BATTERYLEVEL_START", self.BATTERYLEVEL_START)),
-        print("%s:%d" % ("BATTERYLEVEL___END", self.BATTERYLEVEL___END))
+        print("%s:%d / " % ("BATTERYLEVEL___END", self.BATTERYLEVEL___END)),
+        print("%s:%f" % ("RSRP_AVERAGE", self.RSRP_SUM/self.RSRP_COUNT))
         print("<=============================================")
 
 if __name__ == "__main__":
@@ -225,6 +233,7 @@ if __name__ == "__main__":
     git_revcnt = -1
     during_mins = 10
     SETUP_SUCESS = True
+    NEED_SETUP = True
     while len(sys.argv) > 1:
         printEx("%s:%s" % ("sys.argv", sys.argv))
         if len(sys.argv) > 1 and '-apk' in sys.argv[1]:
@@ -247,7 +256,11 @@ if __name__ == "__main__":
             if len(sys.argv) > 1:
                 git_revcnt = sys.argv[1]
                 sys.argv.pop(1)
+        if len(sys.argv) > 1 and '-nosetup' in sys.argv[1]:
+            sys.argv.pop(1)
+            NEED_SETUP = False
 
+    printEx("%s:%s" % ("NEED_SETUP", NEED_SETUP))
     printEx("%s:%s" % ("git_hashcode", git_hashcode))
     printEx("%s:%s" % ("git_revcnt", git_revcnt))
     printEx("%s:%s" % ("during_mins", during_mins))
@@ -276,7 +289,7 @@ if __name__ == "__main__":
             if i != j:
                 selfs[i].setPartner(selfs[j].DEVICE_ID, selfs[j].MYNUM)
 
-    if True:#AUTOMODE == False:
+    if NEED_SETUP == True:
         for DEVICE_ID in connected_Devices:
             printEx("%s:%s" % ("phoneNum", str(selfs[DEVICE_ID].MYNUM)))
             printEx("%s:%s" % ("partnerNum", str(selfs[DEVICE_ID].PARTNERNUM)))
@@ -313,6 +326,9 @@ if __name__ == "__main__":
             printEx("%s:%s" % ("connected_Devices", connected_Devices))
             break
         else:
+            for DEVICE_ID in connected_Devices:
+                selfs[DEVICE_ID].checkRSRP()
+
             if False:
                 while NEED2RESET:
                     NEED2RESET = (processCallSetup(connected_Devices, selfs) == False)
