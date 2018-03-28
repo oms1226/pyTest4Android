@@ -18,11 +18,11 @@ sys.setdefaultencoding('utf-8')
 def getWindowHeightFromWM(deviceId):
     reVal = None
     # "Physical size: 1440x2560"
-    proc = subprocess.Popen("adb -s " + deviceId + " shell wm size", stdout=subprocess.PIPE)
+    proc = subprocess.Popen(("adb -s " + deviceId + " shell wm size").split(' '), stdout=subprocess.PIPE)
     fd_popen = proc.stdout
 
     content = fd_popen.read().strip()
-    for line in content.split('\r\n'):
+    for line in content.split('\n'):
         if 'Physical size: ' in line:
             reVal = line.strip('Physical size: ')
             break
@@ -38,11 +38,11 @@ def getWindowHeightFromWM(deviceId):
 def getWindowWidthFromWM(deviceId):
     reVal = None
     # "Physical size: 1440x2560"
-    proc = subprocess.Popen("adb -s " + deviceId + " shell wm size", stdout=subprocess.PIPE)
+    proc = subprocess.Popen(("adb -s " + deviceId + " shell wm size").split(' '), stdout=subprocess.PIPE)
     fd_popen = proc.stdout
 
     content = fd_popen.read().strip()
-    for line in content.split('\r\n'):
+    for line in content.split('\n'):
         if 'Physical size: ' in line:
             reVal = line.strip('Physical size: ')
             break
@@ -58,11 +58,11 @@ def getWindowWidthFromWM(deviceId):
 def getWindowDensityFromWM(deviceId):
     reVal = None
     # "Physical size: 1440x2560"
-    proc = subprocess.Popen("adb -s " + deviceId + " shell wm density", stdout=subprocess.PIPE)
+    proc = subprocess.Popen(("adb -s " + deviceId + " shell wm density").split(' '), stdout=subprocess.PIPE)
     fd_popen = proc.stdout
 
     content = fd_popen.read().strip()
-    for line in content.split('\r\n'):
+    for line in content.split('\n'):
         if 'density:' in line:
             reVal = line.split(' ')[-1]
 
@@ -80,11 +80,11 @@ def getWindowWidthFromDumpsys(deviceId):
     init=1440x2560 640dpi base=1080x1920 480dpi cur=1080x1920 app=1080x1920 rng=1080x1008-1920x1848
     """
     reVal = None
-    proc = subprocess.Popen("adb -s " + deviceId + " shell dumpsys window displays | grep dpi", stdout=subprocess.PIPE)
+    proc = subprocess.Popen(("adb -s " + deviceId + " shell dumpsys window displays | grep dpi").split(' '), stdout=subprocess.PIPE)
     fd_popen = proc.stdout
 
     content = fd_popen.read().strip()
-    for line in content.split('\r\n'):
+    for line in content.split('\n'):
         if 'cur=' in line:
             reVal = line.split('cur=')[1].split(' ')[0]
             if 'base=' in line:
@@ -104,11 +104,11 @@ def getWindowHeightFromDumpsys(deviceId):
     init=1440x2560 640dpi base=1080x1920 480dpi cur=1080x1920 app=1080x1920 rng=1080x1008-1920x1848
     """
     reVal = None
-    proc = subprocess.Popen("adb -s " + deviceId + " shell dumpsys window displays | grep dpi", stdout=subprocess.PIPE)
+    proc = subprocess.Popen(("adb -s " + deviceId + " shell dumpsys window displays | grep dpi").split(' '), stdout=subprocess.PIPE)
     fd_popen = proc.stdout
 
     content = fd_popen.read().strip()
-    for line in content.split('\r\n'):
+    for line in content.split('\n'):
         if 'cur=' in line:
             reVal = line.split('cur=')[1].split(' ')[0]
             if 'base=' in line:
@@ -128,11 +128,11 @@ def getWindowDensityFromDumpsys(deviceId):
     init=1440x2560 640dpi base=1080x1920 480dpi cur=1080x1920 app=1080x1920 rng=1080x1008-1920x1848
     """
     reVal = None
-    proc = subprocess.Popen("adb -s " + deviceId + " shell dumpsys window displays | grep dpi", stdout=subprocess.PIPE)
+    proc = subprocess.Popen(("adb -s " + deviceId + " shell dumpsys window displays | grep dpi").split(' '), stdout=subprocess.PIPE)
     fd_popen = proc.stdout
 
     content = fd_popen.read().strip()
-    for line in content.split('\r\n'):
+    for line in content.split('\n'):
         if 'cur=' in line:
             for word in line.split(' '):
                 if 'dpi' in word:
@@ -159,12 +159,12 @@ def getPhoneNumberFromDevice(deviceId):
 
     os_systemEx("adb -s " + deviceId + " root")
     for index in (14, 15, 16):
-        proc = subprocess.Popen("adb -s " + deviceId + " shell service call iphonesubinfo " + str(index), stdout=subprocess.PIPE)
+        proc = subprocess.Popen(("adb -s " + deviceId + " shell service call iphonesubinfo " + str(index)).split(' '), stdout=subprocess.PIPE)
         fd_popen = proc.stdout
 
         content = fd_popen.read().strip()
         prefix = False
-        for line in content.split('\r\n'):
+        for line in content.split('\n'):
             if '0x000000' in line:
                 reVal = reVal + line.split('\'')[1].replace('.', '')
                 if '010' in reVal and prefix == False:
@@ -194,11 +194,11 @@ def getManufacturerFromDevice(deviceId):
     [ro.product.manufacturer]: [samsung]
     """
     reVal = None
-    proc = subprocess.Popen("adb -s " + deviceId + " shell getprop | grep 'ro.product.manufacturer'", stdout=subprocess.PIPE)
+    proc = subprocess.Popen(("adb -s " + deviceId + " shell getprop | grep 'ro.product.manufacturer'").split(' '), stdout=subprocess.PIPE)
     fd_popen = proc.stdout
 
     content = fd_popen.read().strip()
-    for line in content.split('\r\n'):
+    for line in content.split('\n'):
         reVal = line.split(' ')[-1].replace('[', '').replace(']', '')
 
     if reVal == '':
@@ -216,11 +216,11 @@ def getModelNameFromDevice(deviceId):
     [ro.product.model]: [SM-N950N]
     """
     reVal = None
-    proc = subprocess.Popen("adb -s " + deviceId + " shell getprop | grep '\[ro.product.model\]'", stdout=subprocess.PIPE)
+    proc = subprocess.Popen(("adb -s " + deviceId + " shell getprop | grep '\[ro.product.model\]'").split(' '), stdout=subprocess.PIPE)
     fd_popen = proc.stdout
 
     content = fd_popen.read().strip()
-    for line in content.split('\r\n'):
+    for line in content.split('\n'):
         reVal = line.split(']:')[-1].replace('[', '').replace(']', '').replace('\r', '').replace('\n', '').replace(' ', '')
 
     if reVal == '':
@@ -241,11 +241,11 @@ def getOSVersionFromDevice(deviceId):
     """
     reVal = None
 
-    proc = subprocess.Popen("adb -s " + deviceId + " shell getprop | grep 'ro.build.version.release'", stdout=subprocess.PIPE)
+    proc = subprocess.Popen(("adb -s " + deviceId + " shell getprop | grep 'ro.build.version.release'").split(' '), stdout=subprocess.PIPE)
     fd_popen = proc.stdout
 
     content = fd_popen.read().strip()
-    for line in content.split('\r\n'):
+    for line in content.split('\n'):
         reVal = line.split(' ')[-1].replace('[', '').replace(']', '').replace(' ', '')
 
     if reVal == '':
@@ -264,11 +264,11 @@ def getManufactureVersionFromDevice(deviceId):
     """
     reVal = None
 
-    proc = subprocess.Popen("adb -s " + deviceId + " shell getprop | grep 'ro.build.version.incremental'", stdout=subprocess.PIPE)
+    proc = subprocess.Popen(("adb -s " + deviceId + " shell getprop | grep 'ro.build.version.incremental'").split(' '), stdout=subprocess.PIPE)
     fd_popen = proc.stdout
 
     content = fd_popen.read().strip()
-    for line in content.split('\r\n'):
+    for line in content.split('\n'):
         reVal = line.split(' ')[-1].replace('[', '').replace(']', '').replace('\r', '').replace('\n', '').replace(' ', '')
 
     if reVal == '':
@@ -283,11 +283,11 @@ def getManufactureVersionFromDevice(deviceId):
 def getAbiFromDevice(deviceId):
     reVal = None
 
-    proc = subprocess.Popen("adb -s " + deviceId + " shell getprop | grep '\[ro.product.cpu.abi\]'", stdout=subprocess.PIPE)
+    proc = subprocess.Popen(("adb -s " + deviceId + " shell getprop | grep '\[ro.product.cpu.abi\]'").split(' '), stdout=subprocess.PIPE)
     fd_popen = proc.stdout
 
     content = fd_popen.read().strip()
-    for line in content.split('\r\n'):
+    for line in content.split('\n'):
         reVal = line.split(' ')[-1].replace('[', '').replace(']', '').replace('\r', '').replace('\n', '').replace(' ', '')
         break
 
@@ -303,11 +303,11 @@ def getAbiFromDevice(deviceId):
 def getPlatformFromDevice(deviceId):
     reVal = None
 
-    proc = subprocess.Popen("adb -s " + deviceId + " shell getprop | grep '\[ro.board.platform\]'", stdout=subprocess.PIPE)
+    proc = subprocess.Popen(("adb -s " + deviceId + " shell getprop | grep '\[ro.board.platform\]'").split(' '), stdout=subprocess.PIPE)
     fd_popen = proc.stdout
 
     content = fd_popen.read().strip()
-    for line in content.split('\r\n'):
+    for line in content.split('\n'):
         reVal = line.split(' ')[-1].replace('[', '').replace(']', '').replace('\r', '').replace('\n', '').replace(' ', '')
         break
 
@@ -324,11 +324,11 @@ def getBoardFromDevice(deviceId):
     reVal = getPlatformFromDevice(deviceId)
 
     if reVal == None:
-        proc = subprocess.Popen("adb -s " + deviceId + " shell getprop | grep 'ro.product.board'", stdout=subprocess.PIPE)
+        proc = subprocess.Popen(("adb -s " + deviceId + " shell getprop | grep 'ro.product.board'").split(' '), stdout=subprocess.PIPE)
         fd_popen = proc.stdout
 
         content = fd_popen.read().strip()
-        for line in content.split('\r\n'):
+        for line in content.split('\n'):
             reVal = line.split(' ')[-1].replace('[', '').replace(']', '').replace('\r', '').replace('\n', '').replace(' ', '')
             break
 
@@ -344,11 +344,11 @@ def getBoardFromDevice(deviceId):
 def getValueFromDevice(deviceId, field):
     reVal = None
 
-    proc = subprocess.Popen("adb -s " + deviceId + " shell getprop | grep '\[" + field + "\]'", stdout=subprocess.PIPE)
+    proc = subprocess.Popen(("adb -s " + deviceId + " shell getprop | grep '\[" + field + "\]'").split(' '), stdout=subprocess.PIPE)
     fd_popen = proc.stdout
 
     content = fd_popen.read().strip()
-    for line in content.split('\r\n'):
+    for line in content.split('\n'):
         reVal = line.split(' ')[-1].replace('[', '').replace(']', '').replace('\r', '').replace('\n', '').replace(' ', '')
         break
 
@@ -370,11 +370,11 @@ def getPropFromDevice(deviceId):
     """
     reVal = "{"
 
-    proc = subprocess.Popen("adb -s " + deviceId + " shell getprop", stdout=subprocess.PIPE)
+    proc = subprocess.Popen(("adb -s " + deviceId + " shell getprop").split(' '), stdout=subprocess.PIPE)
     fd_popen = proc.stdout
 
     content = fd_popen.read().strip()
-    for line in content.split('\r\n'):
+    for line in content.split('\n'):
         reVal = reVal + line.replace('[', '"').replace(']', '"').replace('""0.pool.ntp.org""', '"0.pool.ntp.org"').replace('\r', '').replace('\n', '') + ','
     if reVal.endswith(','):
         reVal = reVal[:-1] + '}'
@@ -398,11 +398,11 @@ def getDevices():
     """
     reVal = []
 
-    proc = subprocess.Popen("adb devices", stdout=subprocess.PIPE)
+    proc = subprocess.Popen(("adb devices").split(' '), stdout=subprocess.PIPE)
     fd_popen = proc.stdout
 
     content = fd_popen.read().strip()
-    for line in content.split('\r\n'):
+    for line in content.split('\n'):
         #if "42f06002482d4f53" in line:
         #    continue
         if 'List of' not in line and 'device' in line:
@@ -423,11 +423,11 @@ def getBatteryLevel(deviceId):
     """
     reVal = None
 
-    proc = subprocess.Popen("adb -s " + deviceId + " shell dumpsys battery | grep level", stdout=subprocess.PIPE)
+    proc = subprocess.Popen(("adb -s " + deviceId + " shell dumpsys battery | grep level").split(' '), stdout=subprocess.PIPE)
     fd_popen = proc.stdout
 
     content = fd_popen.read().strip()
-    for line in content.split('\r\n'):
+    for line in content.split('\n'):
         if len(line.split(':')) >= 2:
             reVal = line.split(':')[1].strip()
     if reVal != None:
@@ -448,11 +448,11 @@ herolteskt:/ # dumpsys telephony.registry | grep mSignalStrength
     """
     reVal = None
 
-    proc = subprocess.Popen("adb -s " + deviceId + " shell dumpsys telephony.registry", stdout=subprocess.PIPE)
+    proc = subprocess.Popen(("adb -s " + deviceId + " shell dumpsys telephony.registry").split(' '), stdout=subprocess.PIPE)
     fd_popen = proc.stdout
 
     content = fd_popen.read().strip()
-    for line in content.split('\r\n'):
+    for line in content.split('\n'):
         if ('mSignalStrength' in line) and ('gsm|lte' in line):
             items = line.strip().split(' ')
             if len(items) == 16:
@@ -471,10 +471,10 @@ def getPackageVersionName(deviceId, packageName):
     versionName=6.12.25.21.arm64
     """
     reVal = None
-    proc = subprocess.Popen("adb -s " + deviceId + " shell dumpsys package " + packageName, stdout=subprocess.PIPE)
+    proc = subprocess.Popen(("adb -s " + deviceId + " shell dumpsys package " + packageName).split(' '), stdout=subprocess.PIPE)
 
     content = proc.stdout.read().strip()
-    for line in content.split('\r\n'):
+    for line in content.split('\n'):
         if 'versionName' in line:
             reVal = line.split('=')[1]
             break
@@ -492,10 +492,10 @@ def getPackageVersionCode(deviceId, packageName):
         versionCode=300729371 minSdk=21 targetSdk=24
     """
     reVal = None
-    proc = subprocess.Popen("adb -s " + deviceId + " shell dumpsys package " + packageName, stdout=subprocess.PIPE)
+    proc = subprocess.Popen(("adb -s " + deviceId + " shell dumpsys package " + packageName).split(' '), stdout=subprocess.PIPE)
 
     content = proc.stdout.read().strip()
-    for line in content.split('\r\n'):
+    for line in content.split('\n'):
         if 'versionCode' in line:
             reVal = line.split('=')[1].split(' ')[0]
             break
@@ -640,7 +640,7 @@ def getProc4LogCat(**options):
 
             #print output
 
-    proc = subprocess.Popen("adb -s " + options.get("DEVICE_ID") + " shell logcat -v threadtime", stdout=subprocess.PIPE)
+    proc = subprocess.Popen(("adb -s " + options.get("DEVICE_ID") + " shell logcat -v threadtime").split(' '), stdout=subprocess.PIPE)
     logI = logInfo()
     thread.start_new_thread(getLogCat, (proc, logI, options))
 
@@ -680,11 +680,11 @@ def getPropFromDeviceByNeedField(deviceId):
     """
     reVal = "{"
 
-    proc = subprocess.Popen("adb -s " + deviceId + " shell getprop", stdout=subprocess.PIPE)
+    proc = subprocess.Popen(("adb -s " + deviceId + " shell getprop").split(' '), stdout=subprocess.PIPE)
     fd_popen = proc.stdout
 
     content = fd_popen.read().strip()
-    for line in content.split('\r\n'):
+    for line in content.split('\n'):
         isNeed = False
         for field in NeedFields:
             if field in line:
