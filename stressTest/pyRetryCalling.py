@@ -4,11 +4,8 @@
 import datetime
 import random
 import socket
-import threading
 
-from CallRecordingTest.pyCallRecordingTestThread import pyCallRecordingTestThread
-from common.deviceCompat import getLocationOnDialPad, getLocationOnMainDialPad, getKey4LocationOnDialPad, \
-    getLocationXYOnMainDialPad
+from common.deviceCompat import *
 from common.deviceInfo import *
 from common.utils import *
 
