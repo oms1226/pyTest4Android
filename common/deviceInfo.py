@@ -547,7 +547,9 @@ class logInfo:
         if key == None:
             reVal = self.info
         else:
-            reVal = self.info[key]
+            reVal = None
+            if self.info.has_key(key):
+                reVal = self.info[key]
         return reVal
 
 def getProc4LogCat(**options):
