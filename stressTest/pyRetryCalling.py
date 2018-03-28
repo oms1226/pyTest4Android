@@ -30,14 +30,14 @@ def tapPhoneNumbOnDevice(mySelf, tapList):
     for num in tapList:
         time.sleep(SMALL_DELAY)
         printEx("%s:%s" % ("num", str(num)))
-        if int(mySelf.DENSITY) > 280:
+        if int(mySelf.DENSITY) > 320:
             tapOnDevice(mySelf.DEVICE_ID, getLocationOnMainDialPad(str(num),mySelf.DIALPAD_KEY))
         else:
             tapOnDevice(mySelf.DEVICE_ID, getLocationOnDialPad(str(num),mySelf.DIALPAD_KEY))
 
 def tapDialOnDevice(mySelf):
     x = getLocationXYOnMainDialPad('*', mySelf.DIALPAD_KEY, 0)
-    if int(mySelf.DENSITY) > 280:
+    if int(mySelf.DENSITY) > 320:
         y = getLocationXYOnMainDialPad('*', mySelf.DIALPAD_KEY, 1) + 500
     else:
         y = getLocationXYOnMainDialPad('*', mySelf.DIALPAD_KEY, 1) + 150
@@ -47,7 +47,7 @@ def tapDialOnDevice(mySelf):
 
 def tapReDialOnDevice(mySelf):
     x = getLocationXYOnMainDialPad('0', mySelf.DIALPAD_KEY, 0)
-    if int(mySelf.DENSITY) > 280:
+    if int(mySelf.DENSITY) > 320:
         y = getLocationXYOnMainDialPad('*', mySelf.DIALPAD_KEY, 1) + 500
     else:
         y = getLocationXYOnMainDialPad('*', mySelf.DIALPAD_KEY, 1) + 150
