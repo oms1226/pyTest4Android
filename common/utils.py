@@ -22,12 +22,12 @@ def selectLatestInAndroid(deviceId, path, word):
     command ="adb -s " + deviceId + " shell ls -1t " + path
     while ing:
         ing = False
-        proc = subprocess.Popen(command, stdout=subprocess.PIPE)
+        proc = subprocess.Popen(command.split(' '), stdout=subprocess.PIPE)
         printEx( command )
         fd_popen = proc.stdout
 
         fileList = fd_popen.read().strip()
-        for file in fileList.split('\r\n'):
+        for file in fileList.split('\n'):
             if (word == '' and '.' in file) or (word != '' and word in file):
                 fileName = file
                 fullfileName = path + file
@@ -53,11 +53,11 @@ def selectLatestInAndroid(deviceId, path, word):
     return fileName, fullfileName
 
 def tapOnDevice(deviceId, location):
-    proc = subprocess.Popen("adb -s " + deviceId + " shell input tap " + location,
+    proc = subprocess.Popen(("adb -s " + deviceId + " shell input tap " + location).split(' '),
                             stdout=subprocess.PIPE)
     fd_popen = proc.stdout
     content = fd_popen.read().strip()
-    for line in content.split('\r\n'):
+    for line in content.split('\n'):
         printEx( "tap " + location )
 
     try:
@@ -67,11 +67,11 @@ def tapOnDevice(deviceId, location):
 
 def getDateInDevice(deviceId):
     reVal = None
-    proc = subprocess.Popen("adb -s " + deviceId + " shell date +%H%M", stdout=subprocess.PIPE)
+    proc = subprocess.Popen(("adb -s " + deviceId + " shell date +%H%M").split(' '), stdout=subprocess.PIPE)
     fd_popen = proc.stdout
 
     content = fd_popen.read().strip()
-    for line in content.split('\r\n'):
+    for line in content.split('\n'):
         reVal = list(line)
     printEx( "%s:%s" % ("date +%H%M", str(reVal)) )
 
@@ -83,11 +83,11 @@ def getDateInDevice(deviceId):
 
 def getPidInDevice(deviceId, processName):
     reVal = 0
-    proc = subprocess.Popen("adb -s " + deviceId + " shell ps", stdout=subprocess.PIPE)
+    proc = subprocess.Popen(("adb -s " + deviceId + " shell ps").split(' '), stdout=subprocess.PIPE)
     fd_popen = proc.stdout
 
     content = fd_popen.read().strip()
-    for line in content.split('\r\n'):
+    for line in content.split('\n'):
         if processName in line:
             reVal = int(line.replace('  ', ' ').replace('  ', ' ').replace('  ', ' ').split(' ')[1])
             break
@@ -110,10 +110,10 @@ def getCurrentActivity(deviceId):
     reVal = 'None'
 
     proc = subprocess.Popen(
-        "adb -s " + deviceId + " shell dumpsys activity activities", stdout=subprocess.PIPE)
+        ("adb -s " + deviceId + " shell dumpsys activity activities").split(' '), stdout=subprocess.PIPE)
     content = proc.stdout.read().strip()
     mFocusedActivity = None
-    for line in content.split('\r\n'):
+    for line in content.split('\n'):
         if 'mFocusedActivity' in line:
             splitLine = line.split(' ')
             if (len(splitLine) - 2) >= 0:
@@ -124,11 +124,11 @@ def getCurrentActivity(deviceId):
         printError("%s:%s" % ("Unexpected error", getExceptionString(sys.exc_info())))
 
     proc = subprocess.Popen(
-        "adb -s " + deviceId + " shell dumpsys window windows", stdout=subprocess.PIPE)
+        ("adb -s " + deviceId + " shell dumpsys window windows").split(' '), stdout=subprocess.PIPE)
     content = proc.stdout.read().strip()
     mCurrentFocus = None
     mFocusedApp = None
-    for line in content.split('\r\n'):
+    for line in content.split('\n'):
         if 'mCurrentFocus' in line:
             mCurrentFocus = line.split(' ')[-1]
         elif 'mFocusedApp' in line:
@@ -153,9 +153,9 @@ def getCurrentActivity(deviceId):
 def isScreenON(deviceId):
     reVal = False
     proc = subprocess.Popen(
-        "adb -s " + deviceId + " shell dumpsys power", stdout=subprocess.PIPE)
+        ("adb -s " + deviceId + " shell dumpsys power").split(' '), stdout=subprocess.PIPE)
     content = proc.stdout.read().strip()
-    for line in content.split('\r\n'):
+    for line in content.split('\n'):
         if 'mScreenOn' in line:
             if 'ON' in line:
                 reVal = True
@@ -193,10 +193,10 @@ def startActivity(deviceId, componentName, repeatCount):
         printEx("%s(%s)" % ("repeatCount In inner_Process()", repeatCount))
         while count < repeatCount:
             count = count + 1
-            proc = subprocess.Popen("adb -s " + deviceId + " shell am start -a android.intent.action.MAIN -n " + componentName, stdout=subprocess.PIPE)
+            proc = subprocess.Popen(("adb -s " + deviceId + " shell am start -a android.intent.action.MAIN -n " + componentName).split(' '), stdout=subprocess.PIPE)
             printEx("%s(%s)" % ("count In inner_Process()", count))
             content = proc.stdout.read().strip()
-            for line in content.split('\r\n'):
+            for line in content.split('\n'):
                 if 'Starting' in line:
                     reVal = True
 
@@ -233,7 +233,7 @@ def installAPK(deviceId, fullpathName, packageName):
     printEx("%s(%s)" % (command, '__end'))
 
 def inputKeyEventInDevice(deviceId, key_event):
-    proc = subprocess.Popen("adb -s " + deviceId + " shell input keyevent " + key_event, stdout=subprocess.PIPE)
+    proc = subprocess.Popen(("adb -s " + deviceId + " shell input keyevent " + key_event).split(' '), stdout=subprocess.PIPE)
     time.sleep(5)
     try:
         proc.kill()
@@ -241,7 +241,7 @@ def inputKeyEventInDevice(deviceId, key_event):
         printError("%s:%s" % ("Unexpected error", getExceptionString(sys.exc_info())))
 
 def inputKeyEventInDevice(deviceId, key_event):
-    proc = subprocess.Popen("adb -s " + deviceId + " shell input keyevent " + key_event, stdout=subprocess.PIPE)
+    proc = subprocess.Popen(("adb -s " + deviceId + " shell input keyevent " + key_event).split(' '), stdout=subprocess.PIPE)
     time.sleep(5)
     try:
         proc.kill()
@@ -250,11 +250,11 @@ def inputKeyEventInDevice(deviceId, key_event):
 
 def killProcessInDevice(deviceId, pid):
     reVal = ''
-    proc = subprocess.Popen("adb -s " + deviceId + " shell kill -9 " + str(pid), stdout=subprocess.PIPE)
+    proc = subprocess.Popen(("adb -s " + deviceId + " shell kill -9 " + str(pid)).split(' '), stdout=subprocess.PIPE)
     fd_popen = proc.stdout
 
     content = fd_popen.read().strip()
-    for line in content.split('\r\n'):
+    for line in content.split('\n'):
             reVal = reVal + line
 
     try:
@@ -266,7 +266,7 @@ def killProcessInDevice(deviceId, pid):
 
 def execCmdBackground(command):
     try:
-        proc = subprocess.Popen(command, stdout=subprocess.PIPE)
+        proc = subprocess.Popen(command.split(' '), stdout=subprocess.PIPE)
         time.sleep(5)
         #proc.kill()
     except:
@@ -282,8 +282,8 @@ def runMonkeyInDevice(deviceId, context):
            context = '--throttle 3000 --pct-appswitch 100 -s 1 -p com.android.bluetooth -p com.samsung.android.contacts -p com.google.android.googlequicksearchbox -p com.skt.prod.dialer -p com.samsung.android.messaging -p com.samsung.android.app.dtv.dmb 9999999'
         #os_systemEx("adb -s " + deviceId + " monkey " + context + " &")
         print "adb -s " + deviceId + " shell monkey " + context + " &"
-        #proc = subprocess.Popen("adb -s " + deviceId + " shell monkey " + context + " &", stdout=subprocess.PIPE)
-        proc = subprocess.Popen("adb -s " + deviceId + " shell monkey " + context, stdout=subprocess.PIPE)
+        #proc = subprocess.Popen(("adb -s " + deviceId + " shell monkey " + context + " &").split(' '), stdout=subprocess.PIPE)
+        proc = subprocess.Popen(("adb -s " + deviceId + " shell monkey " + context).split(' '), stdout=subprocess.PIPE)
         time.sleep(5)
         try:
             proc.kill()
@@ -302,7 +302,7 @@ def runRestartApp(deviceId, packageName, activityName):
         killProcessInDevice(deviceId, pid)
         time.sleep(5)
 
-    proc = subprocess.Popen("adb -s " + deviceId + " shell am start -a android.intent.action.MAIN -n " + packageName + '/' + activityName, stdout=subprocess.PIPE)
+    proc = subprocess.Popen(("adb -s " + deviceId + " shell am start -a android.intent.action.MAIN -n " + packageName + '/' + activityName).split(' '), stdout=subprocess.PIPE)
     time.sleep(5)
     try:
         proc.kill()
