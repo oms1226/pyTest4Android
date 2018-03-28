@@ -42,7 +42,7 @@ def tapDialOnDevice(mySelf):
     if int(mySelf.DENSITY) > 320:
         y = getLocationXYOnMainDialPad('*', mySelf.DIALPAD_KEY, 1) + 500
     elif int(mySelf.DENSITY) > 280:
-        y = getLocationXYOnMainDialPad('*', mySelf.DIALPAD_KEY, 1) + 750
+        y = getLocationXYOnMainDialPad('*', mySelf.DIALPAD_KEY, 1) + 450
     else:
         y = getLocationXYOnMainDialPad('*', mySelf.DIALPAD_KEY, 1) + 150
     x_y = "%s %s" % (str(x), str(y))
@@ -54,7 +54,7 @@ def tapReDialOnDevice(mySelf):
     if int(mySelf.DENSITY) > 320:
         y = getLocationXYOnMainDialPad('*', mySelf.DIALPAD_KEY, 1) + 500
     elif int(mySelf.DENSITY) > 280:
-        y = getLocationXYOnMainDialPad('*', mySelf.DIALPAD_KEY, 1) + 750
+        y = getLocationXYOnMainDialPad('*', mySelf.DIALPAD_KEY, 1) + 450
     else:
         y = getLocationXYOnMainDialPad('*', mySelf.DIALPAD_KEY, 1) + 150
     x_y = "%s %s" % (str(x), str(y))

@@ -243,7 +243,7 @@ def getLocationOnMainDialPad(number, key, dpi):
         if dpi > 320:
             reVal = "%s %s" % (str(SECRETDIALPADs[key][number][0]), str(int(SECRETDIALPADs[key][number][1]) + 300))
         else:
-            reVal = "%s %s" % (str(SECRETDIALPADs[key][number][0]), str(int(SECRETDIALPADs[key][number][1]) + 550))
+            reVal = "%s %s" % (str(SECRETDIALPADs[key][number][0]), str(int(SECRETDIALPADs[key][number][1]) + 250))
     return reVal
 
 def getLocationXYOnMainDialPad(number, key, index):
