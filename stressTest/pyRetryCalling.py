@@ -201,6 +201,9 @@ class SELF:
         self.info['during_mins'] = self.during_mins
         self.info['BATTERYLEVEL_START'] = self.BATTERYLEVEL_START
         self.info['BATTERYLEVEL___END'] = self.BATTERYLEVEL___END
+        self.info['RSRP_AVERAGE'] = self.RSRP_SUM/self.RSRP_COUNT
+        self.info['LOGFILENAME'] = self.LOGFILENAME
+
         self.DIENUM = self.LOGINFO.getInfo('PIDS#') - self.KILL_COUNT -1
         self.info['DIE#'] = self.DIENUM
         reVal.update(self.info)
