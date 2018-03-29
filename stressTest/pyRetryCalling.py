@@ -47,7 +47,7 @@ def processCallSetup(connected_Devices, selfs):
         time.sleep(BASIC_DELAY)
         tapPhoneNumbOnDevice(selfs[DEVICE_ID], selfs[DEVICE_ID].PARTNERNUM)
         time.sleep(BASIC_DELAY)
-        tapDialOnDevice(selfs[DEVICE_ID])
+        tapDialOnDevice(selfs[DEVICE_ID], None)
         time.sleep(BASIC_DELAY * 2)
         while(True):
             CurrentActivityName = getCurrentActivity(selfs[DEVICE_ID].PARTNERID)
@@ -64,7 +64,7 @@ def processCallSetup(connected_Devices, selfs):
             break
 
         while(True):
-            tapEndCallOnDevice(selfs[DEVICE_ID])
+            tapEndCallOnDevice(selfs[DEVICE_ID], None)
             time.sleep(BASIC_DELAY*2)
             CurrentActivityName = getCurrentActivity(selfs[DEVICE_ID].PARTNERID)
             printEx("%s:%s" % ("getCurrentActivity", CurrentActivityName))
@@ -221,41 +221,59 @@ class SELF:
         print("%s:%s" % ("ERROR", self.ERROR))
         print("<=============================================")
 
-def tapReDialOnDevice(mySelf):
-    x = getLocationXYOnMainDialPad('0', mySelf.DIALPAD_KEY, 0)
-    if int(mySelf.DENSITY) > 320:
-        y = getLocationXYOnMainDialPad('*', mySelf.DIALPAD_KEY, 1) + 500
-    elif int(mySelf.DENSITY) > 280:
-        y = getLocationXYOnMainDialPad('*', mySelf.DIALPAD_KEY, 1) + 350
-    else:
-        y = getLocationXYOnMainDialPad('*', mySelf.DIALPAD_KEY, 1) + 150
-    x_y = "%s %s" % (str(x), str(y))
+def tapReDialOnDevice(mySelf, external):
+    x_y = getExternalXY(mySelf.MODEL, external, "D")
+    if x_y == None:
+        x = getLocationXYOnMainDialPad('0', mySelf.DIALPAD_KEY, 0)
+        if int(mySelf.DENSITY) > 320:
+            y = getLocationXYOnMainDialPad('*', mySelf.DIALPAD_KEY, 1) + 500
+        elif int(mySelf.DENSITY) > 280:
+            y = getLocationXYOnMainDialPad('*', mySelf.DIALPAD_KEY, 1) + 350
+        else:
+            y = getLocationXYOnMainDialPad('*', mySelf.DIALPAD_KEY, 1) + 150
+        x_y = "%s %s" % (str(x), str(y))
     time.sleep(SMALL_DELAY)
     tapOnDevice(mySelf.DEVICE_ID, x_y)
 
-def tapDialOnDevice(mySelf):
-    x = getLocationXYOnMainDialPad('*', mySelf.DIALPAD_KEY, 0)
-    if int(mySelf.DENSITY) > 320:
-        y = getLocationXYOnMainDialPad('*', mySelf.DIALPAD_KEY, 1) + 500
-    elif int(mySelf.DENSITY) > 280:
-        y = getLocationXYOnMainDialPad('*', mySelf.DIALPAD_KEY, 1) + 350
-    else:
-        y = getLocationXYOnMainDialPad('*', mySelf.DIALPAD_KEY, 1) + 150
-    x_y = "%s %s" % (str(x), str(y))
+def tapDialOnDevice(mySelf, external):
+    x_y = getExternalXY(mySelf.MODEL, external, "callarD")
+    if x_y == None:
+        x = getLocationXYOnMainDialPad('*', mySelf.DIALPAD_KEY, 0)
+        if int(mySelf.DENSITY) > 320:
+            y = getLocationXYOnMainDialPad('*', mySelf.DIALPAD_KEY, 1) + 500
+        elif int(mySelf.DENSITY) > 280:
+            y = getLocationXYOnMainDialPad('*', mySelf.DIALPAD_KEY, 1) + 350
+        else:
+            y = getLocationXYOnMainDialPad('*', mySelf.DIALPAD_KEY, 1) + 150
+        x_y = "%s %s" % (str(x), str(y))
     time.sleep(SMALL_DELAY)
     tapOnDevice(mySelf.DEVICE_ID, x_y)
 
-def tapEndCallOnDevice(mySelf):
-    x = getLocationXYOnMainDialPad('#', mySelf.DIALPAD_KEY, 0)
-    if int(mySelf.DENSITY) == 320:
-        x = getLocationXYOnMainDialPad('#', mySelf.DIALPAD_KEY, 0) + 50
-        y = getLocationXYOnMainDialPad('#', mySelf.DIALPAD_KEY, 1) + 350
-    else:
-        x = getLocationXYOnMainDialPad('#', mySelf.DIALPAD_KEY, 0) + 100
-        y = getLocationXYOnMainDialPad('#', mySelf.DIALPAD_KEY, 1) + 500
-    x_y = "%s %s" % (str(x), str(y))
+def tapEndCallOnDevice(mySelf, external):
+    x_y = getExternalXY(mySelf.MODEL, external, "E")
+    if x_y == None:
+        x = getLocationXYOnMainDialPad('#', mySelf.DIALPAD_KEY, 0)
+        if int(mySelf.DENSITY) == 320:
+            x = getLocationXYOnMainDialPad('#', mySelf.DIALPAD_KEY, 0) + 50
+            y = getLocationXYOnMainDialPad('#', mySelf.DIALPAD_KEY, 1) + 350
+        else:
+            x = getLocationXYOnMainDialPad('#', mySelf.DIALPAD_KEY, 0) + 100
+            y = getLocationXYOnMainDialPad('#', mySelf.DIALPAD_KEY, 1) + 500
+        x_y = "%s %s" % (str(x), str(y))
     time.sleep(SMALL_DELAY)
     tapOnDevice(mySelf.DEVICE_ID, x_y)
+
+def getExternalXY(modelName, dicts, type):
+    reVal = None
+    if dicts != None:
+        for m in dicts.keys():
+            if (m in modelName) or (modelName in m):
+                reVal = dicts[m].get(type)
+                if reVal != None:
+                    reVal = reVal.replace('X', ' ')
+                    break
+    return reVal
+
 
 def printHelp():
     """
@@ -276,12 +294,19 @@ general commands:
     print unicode(" -m MINIUTES             테스트 하고 싶은 시간을 분 단위로 설정한다.(ex. -m 60)")
     print unicode(" -hash HASHCODE          테스트 결과에 git commit hashcode를 명시하고 싶을 때 설정한다.")
     print unicode(" -revcnt REVISIOINNUM    테스트 결과에 git revision count를 명시하고 싶을 때 설정한다.")
-
+    print unicode(" -xy {'MODEL':{'D':'Dial좌표','callarD':'콜라Dial좌표','E':'종료좌표'},'MODEL':{'D':'Dial좌표','callarD':'콜라Dial좌표','E':'종료좌표'}}")
+    print unicode("                         시스템이 설정한 좌표 값을 쓰지 않고, 직접 쓰고 선택한 좌표를 쓰고 싶을 때 사용하며, 해당 값이 setting되면, -nosetup 도 같이 설정된다.")
+    print unicode("                         ex. -xy {'SM-G930':{'D':'500X1750','callarD':'100X1750','E':'1000X1750'},'SHV-E330':{'D':'500X1750','callarD':'100X1750','E':'1000X1750'}}")
 """
 <preCondition>
 1> 단말 두대만 연결
-2> 각 단말의 콜라 히든 메뉴에서 auto mute on, auto answer on
+2> 모든 권한 설정을 ON한다.
+3> 각 단말의 콜라 히든 메뉴에서 auto mute on, auto answer on
 """
+"""
+json.loads("{'SM-G930':'{'D':'500X1750','callarD':'100X1750','E':'1000X1750'}','SHV-E330':'{'D':'500X1750','callarD':'100X1750','E':'1000X1750'}'}")
+"""
+
 if __name__ == "__main__":
     AUTOMODE = True
     INSTALLAPKNAME = 'None'
@@ -290,6 +315,7 @@ if __name__ == "__main__":
     during_mins = 10
     SETUP_SUCESS = True
     NEED_SETUP = True
+    EXTERNAL_XY = dict()
     while len(sys.argv) > 1:
         if len(sys.argv) > 1 and '--h' in sys.argv[1]:
             sys.argv.pop(1)
@@ -320,12 +346,20 @@ if __name__ == "__main__":
         if len(sys.argv) > 1 and '-nosetup' in sys.argv[1]:
             sys.argv.pop(1)
             NEED_SETUP = False
+        if len(sys.argv) > 1 and '-xy' in sys.argv[1]:
+            sys.argv.pop(1)
+            if len(sys.argv) > 1:
+                print sys.argv[1]
+                EXTERNAL_XY = json.loads(sys.argv[1].replace("'", "\""))
+                NEED_SETUP = False
+                sys.argv.pop(1)
 
     printEx("%s:%s" % ("NEED_SETUP", NEED_SETUP))
     printEx("%s:%s" % ("git_hashcode", git_hashcode))
     printEx("%s:%s" % ("git_revcnt", git_revcnt))
     printEx("%s:%s" % ("during_mins", during_mins))
     printEx("%s:%s" % ("INSTALLAPKNAME", INSTALLAPKNAME))
+    printEx("%s:%s" % ("EXTERNAL_XY", EXTERNAL_XY))
     connected_Devices = getRealDevices()
 
     # printEx("%s:%s" % ("hashKeys", hashKeys))
@@ -431,9 +465,9 @@ if __name__ == "__main__":
                         break
 
 
-                tapReDialOnDevice(selfs[SELECTED_DEVICEID])
+                tapReDialOnDevice(selfs[SELECTED_DEVICEID], EXTERNAL_XY)
                 time.sleep(BASIC_DELAY)
-                tapDialOnDevice(selfs[SELECTED_DEVICEID])
+                tapDialOnDevice(selfs[SELECTED_DEVICEID], EXTERNAL_XY)
                 time.sleep(BASIC_DELAY * 2)
                 selfs[SELECTED_DEVICEID].TRY_COUNT_ARCALL_OUTGOING += 1
                 while (True):
@@ -466,7 +500,7 @@ if __name__ == "__main__":
                         break
 
                 while (True):
-                    tapEndCallOnDevice(selfs[SELECTED_DEVICEID])
+                    tapEndCallOnDevice(selfs[SELECTED_DEVICEID], EXTERNAL_XY)
                     time.sleep(BASIC_DELAY * 2)
                     CurrentActivityName = getCurrentActivity(selfs[SELECTED_DEVICEID].PARTNERID)
                     printEx("%s:%s" % ("getCurrentActivity", CurrentActivityName))
