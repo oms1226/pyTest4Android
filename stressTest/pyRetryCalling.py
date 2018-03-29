@@ -320,7 +320,7 @@ if __name__ == "__main__":
         if len(sys.argv) > 1 and '--h' in sys.argv[1]:
             sys.argv.pop(1)
             printHelp()
-            exit(0)
+            sys.exit(0)
 
         printEx("%s:%s" % ("sys.argv", sys.argv))
         if len(sys.argv) > 1 and '-apk' in sys.argv[1]:
@@ -365,7 +365,7 @@ if __name__ == "__main__":
     # printEx("%s:%s" % ("hashKeys", hashKeys))
     if len(connected_Devices) != 2:
         printError("len(connectingDevices) is " + str(len(connected_Devices)) + '! But, that is not available!')
-        exit(0)
+        sys.exit(0)
 
     phoneNum = []
     selfs = {}
@@ -393,7 +393,7 @@ if __name__ == "__main__":
         SETUP_SUCESS = processCallSetup(connected_Devices, selfs)
         if SETUP_SUCESS == False:
             printError("%s:%s" % ("SETUP_SUCESS", SETUP_SUCESS))
-            exit(0)
+            sys.exit(0)
 
         time.sleep(BASIC_DELAY)
 
