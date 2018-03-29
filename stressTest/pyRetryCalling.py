@@ -9,7 +9,8 @@ from common.deviceCompat import *
 from common.deviceInfo import *
 from common.utils import *
 from sys import platform as _platform
-
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 
 setDEBUG(True)
@@ -25,6 +26,7 @@ MAX_SLEEPTIME = 15 * 60
 EXISTED_FIELD_DEPEND = True
 MAX_RETRYCOUNT = 10
 THRESHOLD_BATTERY_MIN_LEVEL = 5
+THRESHOLD_FAULT_MAX_COUNT = 100
 
 def tapPhoneNumbOnDevice(mySelf, tapList):
     for num in tapList:
@@ -36,43 +38,6 @@ def tapPhoneNumbOnDevice(mySelf, tapList):
             tapOnDevice(mySelf.DEVICE_ID, getLocationOnMainDialPad(str(num),mySelf.DIALPAD_KEY, int(mySelf.DENSITY)))
         else:
             tapOnDevice(mySelf.DEVICE_ID, getLocationOnDialPad(str(num),mySelf.DIALPAD_KEY))
-
-def tapDialOnDevice(mySelf):
-    x = getLocationXYOnMainDialPad('*', mySelf.DIALPAD_KEY, 0)
-    if int(mySelf.DENSITY) > 320:
-        y = getLocationXYOnMainDialPad('*', mySelf.DIALPAD_KEY, 1) + 500
-    elif int(mySelf.DENSITY) > 280:
-        y = getLocationXYOnMainDialPad('*', mySelf.DIALPAD_KEY, 1) + 350
-    else:
-        y = getLocationXYOnMainDialPad('*', mySelf.DIALPAD_KEY, 1) + 150
-    x_y = "%s %s" % (str(x), str(y))
-    time.sleep(SMALL_DELAY)
-    tapOnDevice(mySelf.DEVICE_ID, x_y)
-
-def tapReDialOnDevice(mySelf):
-    x = getLocationXYOnMainDialPad('0', mySelf.DIALPAD_KEY, 0)
-    if int(mySelf.DENSITY) > 320:
-        y = getLocationXYOnMainDialPad('*', mySelf.DIALPAD_KEY, 1) + 500
-    elif int(mySelf.DENSITY) > 280:
-        y = getLocationXYOnMainDialPad('*', mySelf.DIALPAD_KEY, 1) + 350
-    else:
-        y = getLocationXYOnMainDialPad('*', mySelf.DIALPAD_KEY, 1) + 150
-    x_y = "%s %s" % (str(x), str(y))
-    time.sleep(SMALL_DELAY)
-    tapOnDevice(mySelf.DEVICE_ID, x_y)
-
-def tapEndCallOnDevice(mySelf):
-    x = getLocationXYOnMainDialPad('#', mySelf.DIALPAD_KEY, 0)
-    if int(mySelf.DENSITY) == 320:
-        x = getLocationXYOnMainDialPad('#', mySelf.DIALPAD_KEY, 0) + 50
-        y = getLocationXYOnMainDialPad('#', mySelf.DIALPAD_KEY, 1) + 350
-    else:
-        x = getLocationXYOnMainDialPad('#', mySelf.DIALPAD_KEY, 0) + 100
-        y = getLocationXYOnMainDialPad('#', mySelf.DIALPAD_KEY, 1) + 500
-    x_y = "%s %s" % (str(x), str(y))
-    time.sleep(SMALL_DELAY)
-    tapOnDevice(mySelf.DEVICE_ID, x_y)
-
 
 def processCallSetup(connected_Devices, selfs):
     setupCount = 0
@@ -218,7 +183,10 @@ class SELF:
         self.info['during_mins'] = self.during_mins
         self.info['BATTERYLEVEL_START'] = self.BATTERYLEVEL_START
         self.info['BATTERYLEVEL___END'] = self.BATTERYLEVEL___END
-        self.info['RSRP_AVERAGE'] = self.RSRP_SUM/self.RSRP_COUNT
+        if self.RSRP_COUNT > 0:
+            self.info['RSRP_AVERAGE'] = self.RSRP_SUM/self.RSRP_COUNT
+        else:
+            self.info['RSRP_AVERAGE'] = -1
         self.info['LOGFILENAME'] = self.LOGFILENAME
         self.info['ERROR'] = self.ERROR
 
@@ -246,9 +214,68 @@ class SELF:
         print("%s:%d" % ("KILL#", self.KILL_COUNT))
         print("%s:%d / " % ("BATTERYLEVEL_START", self.BATTERYLEVEL_START)),
         print("%s:%d / " % ("BATTERYLEVEL___END", self.BATTERYLEVEL___END)),
-        print("%s:%f" % ("RSRP_AVERAGE", self.RSRP_SUM/self.RSRP_COUNT))
+        if self.RSRP_COUNT > 0:
+            print("%s:%f" % ("RSRP_AVERAGE", self.RSRP_SUM / self.RSRP_COUNT))
+        else:
+            print("%s:%f" % ("RSRP_AVERAGE", -1))
         print("%s:%s" % ("ERROR", self.ERROR))
         print("<=============================================")
+
+def tapReDialOnDevice(mySelf):
+    x = getLocationXYOnMainDialPad('0', mySelf.DIALPAD_KEY, 0)
+    if int(mySelf.DENSITY) > 320:
+        y = getLocationXYOnMainDialPad('*', mySelf.DIALPAD_KEY, 1) + 500
+    elif int(mySelf.DENSITY) > 280:
+        y = getLocationXYOnMainDialPad('*', mySelf.DIALPAD_KEY, 1) + 350
+    else:
+        y = getLocationXYOnMainDialPad('*', mySelf.DIALPAD_KEY, 1) + 150
+    x_y = "%s %s" % (str(x), str(y))
+    time.sleep(SMALL_DELAY)
+    tapOnDevice(mySelf.DEVICE_ID, x_y)
+
+def tapDialOnDevice(mySelf):
+    x = getLocationXYOnMainDialPad('*', mySelf.DIALPAD_KEY, 0)
+    if int(mySelf.DENSITY) > 320:
+        y = getLocationXYOnMainDialPad('*', mySelf.DIALPAD_KEY, 1) + 500
+    elif int(mySelf.DENSITY) > 280:
+        y = getLocationXYOnMainDialPad('*', mySelf.DIALPAD_KEY, 1) + 350
+    else:
+        y = getLocationXYOnMainDialPad('*', mySelf.DIALPAD_KEY, 1) + 150
+    x_y = "%s %s" % (str(x), str(y))
+    time.sleep(SMALL_DELAY)
+    tapOnDevice(mySelf.DEVICE_ID, x_y)
+
+def tapEndCallOnDevice(mySelf):
+    x = getLocationXYOnMainDialPad('#', mySelf.DIALPAD_KEY, 0)
+    if int(mySelf.DENSITY) == 320:
+        x = getLocationXYOnMainDialPad('#', mySelf.DIALPAD_KEY, 0) + 50
+        y = getLocationXYOnMainDialPad('#', mySelf.DIALPAD_KEY, 1) + 350
+    else:
+        x = getLocationXYOnMainDialPad('#', mySelf.DIALPAD_KEY, 0) + 100
+        y = getLocationXYOnMainDialPad('#', mySelf.DIALPAD_KEY, 1) + 500
+    x_y = "%s %s" % (str(x), str(y))
+    time.sleep(SMALL_DELAY)
+    tapOnDevice(mySelf.DEVICE_ID, x_y)
+
+def printHelp():
+    """
+global options:
+ -a         listen on all network interfaces, not just localhost
+ -d         use USB device (error if multiple devices connected)
+ -e         use TCP/IP device (error if multiple TCP/IP devices available)
+ -s SERIAL  use device with given serial (overrides $ANDROID_SERIAL)
+ -t ID      use device with given transport id
+ -H         name of adb server host [default=localhost]
+ -P         port of adb server [default=5037]
+ -L SOCKET  listen on given socket for adb server [default=tcp:localhost:5037]
+general commands:
+    """
+    print unicode("global options:")
+    print unicode(" -apk FILEFULLPATH       test 전에 설치 대상 apk fullpath를 입력해주면, 해당 apk 설치 후 테스트를 진행하게 된다.")
+    print unicode(" -nosetup                상대방 단말을 인식하고, 상대방 번호를 확인하는 과정이 필요없다면, 선언한다.")
+    print unicode(" -m MINIUTES             테스트 하고 싶은 시간을 분 단위로 설정한다.(ex. -m 60)")
+    print unicode(" -hash HASHCODE          테스트 결과에 git commit hashcode를 명시하고 싶을 때 설정한다.")
+    print unicode(" -revcnt REVISIOINNUM    테스트 결과에 git revision count를 명시하고 싶을 때 설정한다.")
 
 """
 <preCondition>
@@ -264,6 +291,11 @@ if __name__ == "__main__":
     SETUP_SUCESS = True
     NEED_SETUP = True
     while len(sys.argv) > 1:
+        if len(sys.argv) > 1 and '--h' in sys.argv[1]:
+            sys.argv.pop(1)
+            printHelp()
+            exit(0)
+
         printEx("%s:%s" % ("sys.argv", sys.argv))
         if len(sys.argv) > 1 and '-apk' in sys.argv[1]:
             sys.argv.pop(1)
@@ -368,8 +400,11 @@ if __name__ == "__main__":
                 printError(msg)
                 setError(selfs, connectingDevices, msg)
                 break
-
-
+            if faultCount > THRESHOLD_FAULT_MAX_COUNT:
+                msg = "fault count(%d) reach the peak(%d). So test is stopped!" % (faultCount, THRESHOLD_FAULT_MAX_COUNT)
+                printError(msg)
+                setError(selfs, connectingDevices, msg)
+                break
             if False:
                 while NEED2RESET:
                     NEED2RESET = (processCallSetup(connected_Devices, selfs) == False)
