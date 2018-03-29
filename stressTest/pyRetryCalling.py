@@ -299,9 +299,10 @@ general commands:
     print unicode("                         ex. -xy {'SM-G930':{'D':'500X1750','callarD':'100X1750','E':'1000X1750'},'SHV-E330':{'D':'500X1750','callarD':'100X1750','E':'1000X1750'}}")
 """
 <preCondition>
-1> 단말 두대만 연결
-2> 모든 권한 설정을 ON한다.
-3> 각 단말의 콜라 히든 메뉴에서 auto mute on, auto answer on
+1> adb는 어떤 경로에서든 실행할 수 있어야 된다.
+2> adb devices로 잡히도록 단말 두대만 연결
+3> 모든 권한 설정을 ON한다.
+4> 각 단말의 콜라 히든 메뉴에서 auto mute on, auto answer on
 """
 """
 json.loads("{'SM-G930':'{'D':'500X1750','callarD':'100X1750','E':'1000X1750'}','SHV-E330':'{'D':'500X1750','callarD':'100X1750','E':'1000X1750'}'}")
