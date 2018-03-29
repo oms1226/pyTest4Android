@@ -455,7 +455,7 @@ herolteskt:/ # dumpsys telephony.registry | grep mSignalStrength
     for line in content.split('\n'):
         if ('mSignalStrength' in line) and ('gsm|lte' in line):
             items = line.strip().split(' ')
-            if len(items) == 16:
+            if len(items) >= 16:
                 reVal = int(items[9])
 
     try:
