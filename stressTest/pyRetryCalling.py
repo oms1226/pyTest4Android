@@ -24,7 +24,7 @@ MIN_SLEEPTIME = 60
 MAX_SLEEPTIME = 15 * 60
 EXISTED_FIELD_DEPEND = True
 MAX_RETRYCOUNT = 10
-
+THRESHOLD_BATTERY_MIN_LEVEL = 5
 
 def tapPhoneNumbOnDevice(mySelf, tapList):
     for num in tapList:
@@ -132,6 +132,11 @@ def setLogCat(SELF):
     args["tag"] = "TPhone "
     return getProc4LogCat(**args)
 
+def setError(SELF, connectingIDs, errorStr):
+    for id in connectingIDs:
+        if SELF.has_key(id):
+            SELF[id].ERROR = errorStr
+
 """
 아래를 pythonpath를 추가
   C:\_python\workspace\PycharmProjects\pyTest4AndroidonGithub
@@ -173,6 +178,7 @@ class SELF:
         self.LOGFILENAME = None
         self.RSRP_SUM = 0
         self.RSRP_COUNT = 0
+        self.ERROR = 'None'
     def setPartner(self, deviceID, num):
         self.PARTNERID = deviceID
         self.PARTNERNUM = num
@@ -214,6 +220,7 @@ class SELF:
         self.info['BATTERYLEVEL___END'] = self.BATTERYLEVEL___END
         self.info['RSRP_AVERAGE'] = self.RSRP_SUM/self.RSRP_COUNT
         self.info['LOGFILENAME'] = self.LOGFILENAME
+        self.info['ERROR'] = self.ERROR
 
         self.DIENUM = self.LOGINFO.getInfo('PIDS#') - self.KILL_COUNT -1
         self.info['DIE#'] = self.DIENUM
@@ -240,6 +247,7 @@ class SELF:
         print("%s:%d / " % ("BATTERYLEVEL_START", self.BATTERYLEVEL_START)),
         print("%s:%d / " % ("BATTERYLEVEL___END", self.BATTERYLEVEL___END)),
         print("%s:%f" % ("RSRP_AVERAGE", self.RSRP_SUM/self.RSRP_COUNT))
+        print("%s:%s" % ("ERROR", self.ERROR))
         print("<=============================================")
 
 """
@@ -340,15 +348,27 @@ if __name__ == "__main__":
 
         #printEx("%s:%s" % ("hashKeys", hashKeys))
         if len(connectingDevices) != 2:
-            printError("len(connectingDevices) is " + str(len(connectingDevices)) + '! But, that is not available!')
+            msg = "len(connectingDevices) is " + str(len(connectingDevices)) + '! But, that is not available!'
+            printError(msg)
+            setError(selfs, connectingDevices, msg)
             break
-
         if set(connected_Devices) != set(connectingDevices):
-            printEx("%s:%s" % ("connected_Devices", connected_Devices))
+            msg = "%s:%s is changed under testing" % ("connected_Devices", connected_Devices)
+            printEx(msg)
+            setError(selfs, connectingDevices, msg)
             break
         else:
+            DETECTID_4_LOW_BATTERY = None
             for DEVICE_ID in connected_Devices:
                 selfs[DEVICE_ID].checkRSRP()
+                if getBatteryLevel(DEVICE_ID) < THRESHOLD_BATTERY_MIN_LEVEL:
+                    DETECTID_4_LOW_BATTERY = DEVICE_ID
+            if DETECTID_4_LOW_BATTERY != None:
+                msg = "One(%s) of devices is under the lowbattery(<%d). So test is stopped!" % (DETECTID_4_LOW_BATTERY, THRESHOLD_BATTERY_MIN_LEVEL)
+                printError(msg)
+                setError(selfs, connectingDevices, msg)
+                break
+
 
             if False:
                 while NEED2RESET:
