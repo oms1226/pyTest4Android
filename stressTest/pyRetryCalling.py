@@ -548,9 +548,16 @@ if __name__ == "__main__":
                     CurrentActivityName = getCurrentActivity(selfs[SELECTED_DEVICEID].PARTNERID)
                     printEx("%s:%s" % ("getCurrentActivity", CurrentActivityName))
                     if LAUNCH_ACTIVITYNAME in CurrentActivityName:
+                        startActivity(selfs[SELECTED_DEVICEID].PARTNERID, ("%s/%s" % (TARGET_PACKAGENAME, LAUNCH_ACTIVITYNAME)), 1)
+                        time.sleep(BASIC_DELAY)
+                        CurrentActivityName = getCurrentActivity(selfs[SELECTED_DEVICEID].PARTNERID)
+                        printEx("%s:%s" % ("reGetCurrentActivity", CurrentActivityName))
+                        
+                    if LAUNCH_ACTIVITYNAME in CurrentActivityName:
                         break
                     else:
                         time.sleep(BASIC_DELAY)
+
                     faultCount = faultCount + 1
                     if faultCount > MAX_RETRYCOUNT:
                         NEED2RESET = True
