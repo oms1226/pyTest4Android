@@ -13,7 +13,7 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 
 
-setDEBUG(True)
+setDEBUG(False)
 TARGET_PACKAGENAME = 'com.skt.prod.dialer'
 LAUNCH_ACTIVITYNAME= 'com.skt.prod.dialer.activities.main.MainActivity'
 INCALL_ACTIVITYNAME= 'com.skt.prod.incall.lib.ui.activities.incall.InCallActivity'
@@ -144,6 +144,7 @@ class SELF:
         self.RSRP_SUM = 0
         self.RSRP_COUNT = 0
         self.ERROR = 'None'
+        self.TRACKINGDATA = []
     def setPartner(self, deviceID, num):
         self.PARTNERID = deviceID
         self.PARTNERNUM = num
@@ -153,10 +154,17 @@ class SELF:
     def setStartTime(self, sTime):
         self.START______TIME = sTime
     def checkRSRP(self):
-        intValue = getRSRPonMobileData(self.DEVICE_ID)
-        if intValue != None:
-            self.RSRP_SUM += intValue
+        slice = dict()
+        rsrpValue = getRSRPonMobileData(self.DEVICE_ID)
+        if rsrpValue != None:
+            self.RSRP_SUM += rsrpValue
             self.RSRP_COUNT += 1
+        slice["unixtime"] = time.time()
+        slice["rsrp"] = rsrpValue
+        slice["geoip.coordinates"] = getGEOIP(self.DEVICE_ID)
+        print("%s:%s" % ("slice", slice))
+        self.TRACKINGDATA.append(slice)
+
     def getAllInfo(self):
         reVal = dict()
         dummy = self.LOGINFO.getAllInfo()
@@ -187,6 +195,8 @@ class SELF:
             self.info['RSRP_AVERAGE'] = self.RSRP_SUM/self.RSRP_COUNT
         else:
             self.info['RSRP_AVERAGE'] = -1
+
+        self.info['RSRP'] = representRSRPValue(self.info['RSRP_AVERAGE'])
         self.info['LOGFILENAME'] = self.LOGFILENAME
         self.info['ERROR'] = self.ERROR
 
@@ -215,9 +225,11 @@ class SELF:
         print("%s:%d / " % ("BATTERYLEVEL_START", self.BATTERYLEVEL_START)),
         print("%s:%d / " % ("BATTERYLEVEL___END", self.BATTERYLEVEL___END)),
         if self.RSRP_COUNT > 0:
-            print("%s:%f" % ("RSRP_AVERAGE", self.RSRP_SUM / self.RSRP_COUNT))
+            print("%s:%f / " % ("RSRP_AVERAGE", self.RSRP_SUM / self.RSRP_COUNT)),
+            print("%s:%s" % ("RSRP", representRSRPValue(self.RSRP_SUM / self.RSRP_COUNT)))
         else:
-            print("%s:%f" % ("RSRP_AVERAGE", -1))
+            print("%s:%f / " % ("RSRP_AVERAGE", -1)),
+            print("%s:%s" % ("RSRP", representRSRPValue(-1)))
         print("%s:%s" % ("ERROR", self.ERROR))
         print("<=============================================")
 
@@ -290,7 +302,7 @@ general commands:
     """
     print unicode("global options:")
     print unicode(" -apk FILEFULLPATH       test 전에 설치 대상 apk fullpath를 입력해주면, 해당 apk 설치 후 테스트를 진행하게 된다.")
-    print unicode(" -nosetup                상대방 단말을 인식하고, 상대방 번호를 확인하는 과정이 필요없다면, 선언한다.")
+    print unicode(" -needsetup              상대방 단말을 인식하고, 상대방 번호를 확인하는 과정이 필요하다면, 선언한다.")
     print unicode(" -m MINIUTES             테스트 하고 싶은 시간을 분 단위로 설정한다.(ex. -m 60)")
     print unicode(" -hash HASHCODE          테스트 결과에 git commit hashcode를 명시하고 싶을 때 설정한다.")
     print unicode(" -revcnt REVISIOINNUM    테스트 결과에 git revision count를 명시하고 싶을 때 설정한다.")
@@ -301,8 +313,9 @@ general commands:
 <preCondition>
 1> adb는 어떤 경로에서든 실행할 수 있어야 된다.
 2> adb devices로 잡히도록 단말 두대만 연결
-3> 모든 권한 설정을 ON한다.
+3> 모든 권한 설정을 On한다.
 4> 각 단말의 콜라 히든 메뉴에서 auto mute on, auto answer on
+5> 서로 상대방 전화를 걸어 redial이 가능하게 설정해놓는다.
 """
 """
 json.loads("{'SM-G930':'{'D':'500X1750','callarD':'100X1750','E':'1000X1750'}','SHV-E330':'{'D':'500X1750','callarD':'100X1750','E':'1000X1750'}'}")
@@ -313,9 +326,9 @@ if __name__ == "__main__":
     INSTALLAPKNAME = 'None'
     git_hashcode = 'None'
     git_revcnt = -1
-    during_mins = 10
+    during_mins = 90
     SETUP_SUCESS = True
-    NEED_SETUP = True
+    NEED_SETUP = False
     EXTERNAL_XY = dict()
     while len(sys.argv) > 1:
         if len(sys.argv) > 1 and '--h' in sys.argv[1]:
@@ -344,15 +357,14 @@ if __name__ == "__main__":
             if len(sys.argv) > 1:
                 git_revcnt = sys.argv[1]
                 sys.argv.pop(1)
-        if len(sys.argv) > 1 and '-nosetup' in sys.argv[1]:
+        if len(sys.argv) > 1 and '-needsetup' in sys.argv[1]:
             sys.argv.pop(1)
-            NEED_SETUP = False
+            NEED_SETUP = True
         if len(sys.argv) > 1 and '-xy' in sys.argv[1]:
             sys.argv.pop(1)
             if len(sys.argv) > 1:
                 print sys.argv[1]
                 EXTERNAL_XY = json.loads(sys.argv[1].replace("'", "\""))
-                NEED_SETUP = False
                 sys.argv.pop(1)
 
     printEx("%s:%s" % ("NEED_SETUP", NEED_SETUP))
@@ -399,6 +411,11 @@ if __name__ == "__main__":
         time.sleep(BASIC_DELAY)
 
     NEED2RESET = (SETUP_SUCESS == False)
+
+    for DEVICE_ID in connected_Devices:
+        selfs[DEVICE_ID].checkRSRP()
+    sys.exit(0)
+
 
     START______TIME = (datetime.datetime.utcnow() + datetime.timedelta(hours=9)).strftime("%Y%m%d%H%M")
     for DEVICE_ID in connected_Devices:

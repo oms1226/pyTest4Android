@@ -441,6 +441,104 @@ def getBatteryLevel(deviceId):
 
     return reVal
 
+
+def isGPSOn(deviceId):
+    """
+herolteskt:/ # settings get secure location_providers_allowed
+network,gps
+    """
+    reVal = False
+
+    proc = subprocess.Popen(("adb -s " + deviceId + " shell settings get secure location_providers_allowed").split(' '), stdout=subprocess.PIPE)
+    fd_popen = proc.stdout
+
+    content = fd_popen.read().strip()
+    for line in content.split('\n'):
+        if 'gps' in line:
+            reVal = True
+
+    try:
+        proc.kill()
+    except:
+        printError("%s:%s" % ("Unexpected error", getExceptionString(sys.exc_info())))
+
+    return reVal
+
+def enableGPS(deviceId):
+    """
+herolteskt:/ # settings get secure location_providers_allowed
+network,gps
+    """
+    commands = {
+    "adb -s " + deviceId + " shell settings put secure location_providers_allowed +network",
+    "adb -s " + deviceId + " shell settings put secure location_providers_allowed +gps",
+    "adb -s " + deviceId + " shell settings put secure location_providers_allowed gps,network",
+    }
+    index = 0
+    tryCount = 0
+    while isGPSOn(deviceId) == False:
+        tryCount += 1
+        proc = subprocess.Popen(commands[index].split(' '), stdout=subprocess.PIPE)
+        fd_popen = proc.stdout
+
+        content = fd_popen.read().strip()
+        for line in content.split('\n'):
+            pass
+
+        try:
+            proc.kill()
+        except:
+            printError("%s:%s" % ("Unexpected error", getExceptionString(sys.exc_info())))
+        index += 1
+        if index >= len(commands):
+            index = 0
+        if tryCount > 30:
+            printError("deviceId(%s) is not setting on GPS", (deviceId))
+            sys.exit(1)
+
+
+def getGEOIP(deviceId):
+    """
+1|herolteskt:/ # dumpsys location | grep acc
+    network: Location[network 37.566489,126.985291 acc=19 et=+1d3h29m53s304ms alt=131.5 {Bundle[{networkLocationType=wifi, noGPSLocation=Location[network 37.566489,126.985291 acc=19 et=+1d3h29m53s304ms alt=131.5 {Bundle[mParcelledData.dataSize=592]}], nlpVersion=2023, verticalAccuracy=2.0}]}]
+    passive: Location[network 37.566489,126.985291 acc=19 et=+1d3h29m53s304ms alt=131.5 {Bundle[{networkLocationType=wifi, noGPSLocation=Location[network 37.566489,126.985291 acc=19 et=+1d3h29m53s304ms alt=131.5 {Bundle[mParcelledData.dataSize=592]}], nlpVersion=2023, verticalAccuracy=2.0}]}]
+    network: Location[network 37.566498,126.985295 acc=19 et=+1d3h29m42s699ms alt=131.5 {Bundle[{networkLocationType=wifi, noGPSLocation=Location[network 37.566498,126.985295 acc=19 et=+1d3h29m42s699ms alt=131.5 {Bundle[{networkLocationType=wifi, coarseLocation=Location[network 37.567568,126.979836 acc=2000 et=+1d3h29m42s699ms], wifiScan=[B@a8e3970, nlpVersion=2023, verticalAccuracy=2.600006}]}], nlpVersion=2023, verticalAccuracy=2.600006}]}]
+    passive: Location[network 37.566498,126.985295 acc=19 et=+1d3h29m42s699ms alt=131.5 {Bundle[{networkLocationType=wifi, noGPSLocation=Location[network 37.566498,126.985295 acc=19 et=+1d3h29m42s699ms alt=131.5 {Bundle[{networkLocationType=wifi, coarseLocation=Location[network 37.567568,126.979836 acc=2000 et=+1d3h29m42s699ms], wifiScan=[B@a8e3970, nlpVersion=2023, verticalAccuracy=2.600006}]}], nlpVersion=2023, verticalAccuracy=2.600006}]}]
+    """
+    reVal = None
+
+    proc = subprocess.Popen(("adb -s " + deviceId + " shell dumpsys location").split(' '), stdout=subprocess.PIPE)
+    fd_popen = proc.stdout
+
+    content = fd_popen.read().strip()
+    for line in content.split('\n'):
+        if 'acc' in line:
+            reVal = line.strip().split(' ')[2].split(',')
+            break
+
+    try:
+        proc.kill()
+    except:
+        printError("%s:%s" % ("Unexpected error", getExceptionString(sys.exc_info())))
+
+    if reVal == None:
+        enableGPS(deviceId)
+
+    return reVal
+
+
+def representRSRPValue(value):
+    reVal = "Unknown"
+    if -1 > value and value >= -80:
+        reVal = "Excellent"
+    elif -80 > value and value > -90:
+        reVal = "Good"
+    elif -90 >= value and value > -100:
+        reVal = "Mid Cell"
+    elif -100 >= value:
+        reVal = "Cell Edge"
+
+
 def getRSRPonMobileData(deviceId):
     """
 herolteskt:/ # dumpsys telephony.registry | grep mSignalStrength
