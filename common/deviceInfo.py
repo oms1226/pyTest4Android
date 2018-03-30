@@ -537,6 +537,7 @@ def representRSRPValue(value):
         reVal = "Mid Cell"
     elif -100 >= value:
         reVal = "Cell Edge"
+    return reVal
 
 
 def getRSRPonMobileData(deviceId):
@@ -629,7 +630,8 @@ class logInfo:
         if self.info.has_key('PIDS') and len(self.info['PIDS']) > 0:
             self.info['PIDS#'] = len(set(self.info['PIDS']))
         if self.info.has_key('PIDS'):
-            del self.info['PIDS']
+            #del self.info['PIDS']
+            pass
         if self.info.has_key('TIDS') and self.info['TIDS'] > 0:
             self.info['TIDS#'] = len(set(self.info['TIDS']))
         if self.info.has_key('TIDS'):
