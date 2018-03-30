@@ -253,6 +253,8 @@ class SELF:
         print("%s:%d /" % ("TRY_COUNT_ARCALL_INCOMING", self.TRY_COUNT_ARCALL_INCOMING)),
         print("%s:%d /" % ("SUCCCOUNT_ARCALL_INCOMING", self.SUCCCOUNT_ARCALL_INCOMING)),
         print("%s:%d" % ("FAILCOUNT_ARCALL_INCOMING", self.FAILCOUNT_ARCALL_INCOMING))
+        print("%s:%s /" % ("PIDS", self.LOGINFO.getInfo('PIDS'))),
+        print("%s:%d" % ("PID#", len(self.LOGINFO.getInfo('PIDS'))))
         print("<----------------------------------------------")
 
 def tapReDialOnDevice(mySelf, external):
