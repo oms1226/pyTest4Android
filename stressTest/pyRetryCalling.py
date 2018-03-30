@@ -206,7 +206,7 @@ class SELF:
         reVal.update(self.info)
         return json.dumps(reVal).replace('\\', '')
     def printWellformedInfo(self):
-        print("=============================================>")
+        print("===============TEST Results==============>")
         print("%s:%s /" % ("MODEL", self.MODEL)),
         print("%s:%s /" % ("OSVERSION", self.OSVERSION)),
         print("%s:%s /" % ("MANUFACTURER", self.MANUFACTURER)),
@@ -559,7 +559,8 @@ if __name__ == "__main__":
             finally:
                 excuteTime = (datetime.datetime.utcnow() + datetime.timedelta(hours=9)).strftime("%Y%m%d%H%M")
                 print("%s-%s." % ("running", excuteTime))
-
+                for DEVICE_ID in connected_Devices:
+                    selfs[DEVICE_ID].printSliceInfo()
 
     for DEVICE_ID in connected_Devices:
         if selfs[DEVICE_ID].LOGPROCESS != None:
