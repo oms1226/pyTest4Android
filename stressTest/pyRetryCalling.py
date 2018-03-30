@@ -412,11 +412,6 @@ if __name__ == "__main__":
 
     NEED2RESET = (SETUP_SUCESS == False)
 
-    for DEVICE_ID in connected_Devices:
-        selfs[DEVICE_ID].checkRSRP()
-    sys.exit(0)
-
-
     START______TIME = (datetime.datetime.utcnow() + datetime.timedelta(hours=9)).strftime("%Y%m%d%H%M")
     for DEVICE_ID in connected_Devices:
         LOGPROCESS, LOGINFO = setLogCat(selfs[DEVICE_ID])
