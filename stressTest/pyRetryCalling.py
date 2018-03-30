@@ -220,8 +220,10 @@ class SELF:
         print("%s:%d /" % ("TRY_COUNT_ARCALL_INCOMING", self.TRY_COUNT_ARCALL_INCOMING)),
         print("%s:%d /" % ("SUCCCOUNT_ARCALL_INCOMING", self.SUCCCOUNT_ARCALL_INCOMING)),
         print("%s:%d" % ("FAILCOUNT_ARCALL_INCOMING", self.FAILCOUNT_ARCALL_INCOMING))
+        print("%s:%s /" % ("PIDS", self.LOGINFO.getInfo('PIDS'))),
         print("%s:%d / " % ("PID#", self.LOGINFO.getInfo('PIDS#'))),
         print("%s:%d" % ("TID#", self.LOGINFO.getInfo('TIDS#')))
+
         print("%s:%d / " % ("DIE#", self.DIENUM)),
         print("%s:%d" % ("KILL#", self.KILL_COUNT))
         print("%s:%d / " % ("BATTERYLEVEL_START", self.BATTERYLEVEL_START)),
