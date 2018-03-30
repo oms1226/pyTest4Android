@@ -151,8 +151,9 @@ class SELF:
     def setLogCat(self, LOGPROCESS, LOGINFO):
         self.LOGPROCESS = LOGPROCESS
         self.LOGINFO = LOGINFO
-    def setStartTime(self, sTime):
+    def setTime(self, sTime, eTime):
         self.START______TIME = sTime
+        self.EXPECT_END_TIME = eTime
     def checkRSRP(self):
         slice = dict()
         rsrpValue = getRSRPonMobileData(self.DEVICE_ID)
@@ -210,7 +211,8 @@ class SELF:
         print("%s:%s /" % ("OSVERSION", self.OSVERSION)),
         print("%s:%s /" % ("MANUFACTURER", self.MANUFACTURER)),
         print("%s:%d /" % ("during_mins", self.during_mins)),
-        print("%s:%s" % ("START______TIME", self.START______TIME))
+        print("%s:%s / " % ("START______TIME", self.START______TIME))
+        print("%s:%s" % ("EXPECT_END_TIME", self.EXPECT_END_TIME))
         print("----------------------------------------------")
         print("%s:%d /" % ("TRY_COUNT_ARCALL_OUTGOING", self.TRY_COUNT_ARCALL_OUTGOING)),
         print("%s:%d /" % ("SUCCCOUNT_ARCALL_OUTGOING", self.SUCCCOUNT_ARCALL_OUTGOING)),
@@ -233,6 +235,23 @@ class SELF:
         print("%s:%s" % ("Location",  getGEOIP(self.DEVICE_ID)))
         print("%s:%s" % ("ERROR", self.ERROR))
         print("<=============================================")
+
+    def printSliceInfo(self):
+        print("---------------------------------------------->")
+        print("%s:%s /" % ("MODEL", self.MODEL)),
+        print("%s:%s /" % ("OSVERSION", self.OSVERSION)),
+        print("%s:%s /" % ("MANUFACTURER", self.MANUFACTURER)),
+        print("%s:%d /" % ("during_mins", self.during_mins)),
+        print("%s:%s / " % ("START______TIME", self.START______TIME))
+        print("%s:%s" % ("EXPECT_END_TIME", self.EXPECT_END_TIME))
+        print("----------------------------------------------")
+        print("%s:%d /" % ("TRY_COUNT_ARCALL_OUTGOING", self.TRY_COUNT_ARCALL_OUTGOING)),
+        print("%s:%d /" % ("SUCCCOUNT_ARCALL_OUTGOING", self.SUCCCOUNT_ARCALL_OUTGOING)),
+        print("%s:%d" % ("FAILCOUNT_ARCALL_OUTGOING", self.FAILCOUNT_ARCALL_OUTGOING))
+        print("%s:%d /" % ("TRY_COUNT_ARCALL_INCOMING", self.TRY_COUNT_ARCALL_INCOMING)),
+        print("%s:%d /" % ("SUCCCOUNT_ARCALL_INCOMING", self.SUCCCOUNT_ARCALL_INCOMING)),
+        print("%s:%d" % ("FAILCOUNT_ARCALL_INCOMING", self.FAILCOUNT_ARCALL_INCOMING))
+        print("<----------------------------------------------")
 
 def tapReDialOnDevice(mySelf, external):
     x_y = getExternalXY(mySelf.MODEL, external, "D")
@@ -419,13 +438,14 @@ if __name__ == "__main__":
     NEED2RESET = (SETUP_SUCESS == False)
 
     START______TIME = (datetime.datetime.utcnow() + datetime.timedelta(hours=9)).strftime("%Y%m%d%H%M")
+    endDatetime = (datetime.datetime.utcnow() + datetime.timedelta(hours=9, minutes=during_mins))
+    EXPECT_END_TIME = endDatetime.strftime("%Y%m%d%H%M")
+
     for DEVICE_ID in connected_Devices:
         LOGPROCESS, LOGINFO = setLogCat(selfs[DEVICE_ID])
         selfs[DEVICE_ID].setLogCat(LOGPROCESS, LOGINFO)
-        selfs[DEVICE_ID].setStartTime(START______TIME)
+        selfs[DEVICE_ID].setTime(START______TIME, EXPECT_END_TIME)
 
-    endDatetime = (datetime.datetime.utcnow() + datetime.timedelta(hours=9, minutes=during_mins))
-    EXPECT_END_TIME = endDatetime.strftime("%Y%m%d%H%M")
     retryCount4NEED2RESET = 0
     faultCount = 0
     while long(EXPECT_END_TIME) > long((datetime.datetime.utcnow() + datetime.timedelta(hours=9)).strftime("%Y%m%d%H%M")):
