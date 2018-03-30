@@ -301,23 +301,28 @@ global options:
  -L SOCKET  listen on given socket for adb server [default=tcp:localhost:5037]
 general commands:
     """
-    print unicode("global options:")
+    print unicode("#precondition:")
+    print unicode("  1> adb는 어떤 경로에서든 실행할 수 있어야 된다.")
+    print unicode("  2> adb devices로 잡히도록 단말 두대만 연결")
+    print unicode("  3> 해당 앱의 모든 권한 설정을 On한다.")
+    print unicode("  4> 각 단말의 콜라 히든 메뉴에서 auto mute on, auto answer on")
+    print unicode("  5> 서로 상대방 전화를 걸어 redial이 가능하게 설정해놓는다.")
+    print unicode("  6> 1~5를 다 수행했다면, command창에서 해당 파일을 실행한다.")
+    print unicode("#description:")
+    print unicode("  별도 옵션 설정을 하지 않는다면, 90분간 두대의 단말이 서로 간에 무작위로 수신과 발신을 반복한다.")
+    print unicode("  테스트가 완료되면, 각 단말의 테스트 결과가 테스트 창에 나오며 해당 파일이 위치한 곳에 각 단말의 로그 파일이 생성된다.")
+    print unicode("#global options:")
     print unicode(" -apk FILEFULLPATH       test 전에 설치 대상 apk fullpath를 입력해주면, 해당 apk 설치 후 테스트를 진행하게 된다.")
     print unicode(" -needsetup              상대방 단말을 인식하고, 상대방 번호를 확인하는 과정이 필요하다면, 선언한다.")
     print unicode(" -m MINIUTES             테스트 하고 싶은 시간을 분 단위로 설정한다.(ex. -m 60)")
     print unicode(" -hash HASHCODE          테스트 결과에 git commit hashcode를 명시하고 싶을 때 설정한다.")
     print unicode(" -revcnt REVISIOINNUM    테스트 결과에 git revision count를 명시하고 싶을 때 설정한다.")
     print unicode(" -xy {'MODEL':{'D':'Dial좌표','callarD':'콜라Dial좌표','E':'종료좌표'},'MODEL':{'D':'Dial좌표','callarD':'콜라Dial좌표','E':'종료좌표'}}")
-    print unicode("                         시스템이 설정한 좌표 값을 쓰지 않고, 직접 쓰고 선택한 좌표를 쓰고 싶을 때 사용하며, 해당 값이 setting되면, -nosetup 도 같이 설정된다.")
+    print unicode("                         시스템이 설정한 좌표 값을 쓰지 않고, 직접 커스텀한 좌표를 쓰고 싶을 때 사용하며,")
+    print unicode("                         아래와 같이 모델명(사업자 구분 필요없음)과 dial버튼, 콜라dial버튼, 종료버튼 좌표를 순서 상관없이 넣어주면 되며 복수 입력 가능하다.")
+    print unicode("                         단, 아래 예제와 같이 빈칸과 \" 는 사용하면 안된다!")
     print unicode("                         ex. -xy {'SM-G930':{'D':'500X1750','callarD':'100X1750','E':'1000X1750'},'SHV-E330':{'D':'500X1750','callarD':'100X1750','E':'1000X1750'}}")
-"""
-<preCondition>
-1> adb는 어떤 경로에서든 실행할 수 있어야 된다.
-2> adb devices로 잡히도록 단말 두대만 연결
-3> 모든 권한 설정을 On한다.
-4> 각 단말의 콜라 히든 메뉴에서 auto mute on, auto answer on
-5> 서로 상대방 전화를 걸어 redial이 가능하게 설정해놓는다.
-"""
+
 """
 json.loads("{'SM-G930':'{'D':'500X1750','callarD':'100X1750','E':'1000X1750'}','SHV-E330':'{'D':'500X1750','callarD':'100X1750','E':'1000X1750'}'}")
 """
