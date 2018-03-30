@@ -162,7 +162,7 @@ class SELF:
         slice["unixtime"] = time.time()
         slice["rsrp"] = rsrpValue
         slice["geoip.coordinates"] = getGEOIP(self.DEVICE_ID)
-        print("%s:%s" % ("slice", slice))
+        printEx("%s:%s" % ("slice", slice))
         self.TRACKINGDATA.append(slice)
 
     def getAllInfo(self):
@@ -230,6 +230,7 @@ class SELF:
         else:
             print("%s:%f / " % ("RSRP_AVERAGE", -1)),
             print("%s:%s" % ("RSRP", representRSRPValue(-1)))
+        print("%s:%s" % ("Location",  getGEOIP(self.DEVICE_ID)))
         print("%s:%s" % ("ERROR", self.ERROR))
         print("<=============================================")
 
