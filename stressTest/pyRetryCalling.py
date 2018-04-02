@@ -13,7 +13,7 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 
 
-setDEBUG(True)
+setDEBUG(False)
 TARGET_PACKAGENAME = 'com.skt.prod.dialer'
 LAUNCH_ACTIVITYNAME= 'com.skt.prod.dialer.activities.main.MainActivity'
 INCALL_ACTIVITYNAME= 'com.skt.prod.incall.lib.ui.activities.incall.InCallActivity'
@@ -26,7 +26,7 @@ MAX_SLEEPTIME = 15 * 60
 EXISTED_FIELD_DEPEND = True
 MAX_RETRYCOUNT = 10
 THRESHOLD_BATTERY_MIN_LEVEL = 5
-THRESHOLD_FAULT_MAX_COUNT = 100
+THRESHOLD_FAULT_MAX_COUNT = 300
 
 def tapPhoneNumbOnDevice(mySelf, tapList):
     for num in tapList:
