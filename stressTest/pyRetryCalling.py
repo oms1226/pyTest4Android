@@ -27,6 +27,7 @@ EXISTED_FIELD_DEPEND = True
 MAX_RETRYCOUNT = 10
 THRESHOLD_BATTERY_MIN_LEVEL = 5
 THRESHOLD_FAULT_MAX_COUNT = 300
+selfVersion = '1.0.0'
 
 def tapPhoneNumbOnDevice(mySelf, tapList):
     for num in tapList:
@@ -203,10 +204,12 @@ class SELF:
 
         self.DIENUM = self.LOGINFO.getInfo('PIDS#') - self.KILL_COUNT -1
         self.info['DIE#'] = self.DIENUM
+        self.info['selfVersion'] = selfVersion
         reVal.update(self.info)
         return json.dumps(reVal).replace('\\', '')
     def printWellformedInfo(self):
         print("===============TEST Results==============>")
+        print("%s:%s /" % ("selfVersion", selfVersion)),
         print("%s:%s /" % ("MODEL", self.MODEL)),
         print("%s:%s /" % ("OSVERSION", self.OSVERSION)),
         print("%s:%s /" % ("MANUFACTURER", self.MANUFACTURER)),
