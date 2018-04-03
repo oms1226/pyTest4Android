@@ -502,10 +502,13 @@ if __name__ == "__main__":
                 CurrentActivityName = getCurrentActivity(selfs[SELECTED_DEVICEID].DEVICE_ID)
                 while LAUNCH_ACTIVITYNAME not in CurrentActivityName:
                     inputKeyEventInDevice(selfs[SELECTED_DEVICEID].DEVICE_ID, 'KEYCODE_BACK')
+                    printEx("%s:%s" % ("KEYCODE_BACK", CurrentActivityName))
                     inputKeyEventInDevice(selfs[SELECTED_DEVICEID].DEVICE_ID, 'KEYCODE_HOME')
+                    printEx("%s:%s" % ("KEYCODE_HOME", CurrentActivityName))
                     startActivity(selfs[SELECTED_DEVICEID].DEVICE_ID, ("%s/%s" % (TARGET_PACKAGENAME, LAUNCH_ACTIVITYNAME)), 1)
                     time.sleep(BASIC_DELAY*2)
                     CurrentActivityName = getCurrentActivity(selfs[SELECTED_DEVICEID].DEVICE_ID)
+                    printEx("%s:%s" % ("CurrentActivityName", CurrentActivityName))
                     faultCount = faultCount + 1
                     if faultCount > MAX_RETRYCOUNT:
                         selfs[SELECTED_DEVICEID].FAILCOUNT_ARCALL_OUTGOING  += 1
