@@ -12,8 +12,7 @@ from sys import platform as _platform
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-
-
+setDEBUG(True)
 TARGET_PACKAGENAME = 'com.skt.prod.dialer'
 LAUNCH_ACTIVITYNAME= 'com.skt.prod.dialer.activities.main.MainActivity'
 INCALL_ACTIVITYNAME= 'com.skt.prod.incall.lib.ui.activities.incall.InCallActivity'
@@ -356,7 +355,6 @@ json.loads("{'SM-G930':'{'D':'500X1750','callarD':'100X1750','E':'1000X1750'}','
 """
 
 if __name__ == "__main__":
-    setDEBUG(True)
     AUTOMODE = True
     INSTALLAPKNAME = 'None'
     git_hashcode = 'None'
@@ -507,7 +505,7 @@ if __name__ == "__main__":
                     inputKeyEventInDevice(selfs[SELECTED_DEVICEID].DEVICE_ID, 'KEYCODE_HOME')
                     printEx("%s:%s" % ("KEYCODE_HOME", CurrentActivityName))
                     startActivity(selfs[SELECTED_DEVICEID].DEVICE_ID, ("%s/%s" % (TARGET_PACKAGENAME, LAUNCH_ACTIVITYNAME)), 1)
-                    time.sleep(BASIC_DELAY*2)
+                    time.sleep(BASIC_DELAY)
                     CurrentActivityName = getCurrentActivity(selfs[SELECTED_DEVICEID].DEVICE_ID)
                     printEx("%s:%s" % ("CurrentActivityName", CurrentActivityName))
                     faultCount = faultCount + 1
