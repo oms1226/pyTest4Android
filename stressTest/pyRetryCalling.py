@@ -348,8 +348,8 @@ general commands:
     print unicode("                         시스템이 설정한 좌표 값을 쓰지 않고, 직접 커스텀한 좌표를 쓰고 싶을 때 사용하며,")
     print unicode("                         아래와 같이 모델명(사업자 구분 필요없음)과 dial버튼, 콜라dial버튼, 종료버튼 좌표를 순서 상관없이 넣어주면 되며 복수 입력 가능하다.")
     print unicode("                         단, 아래 예제와 같이 빈칸과 \" 는 사용하면 안된다!")
-    print unicode("                         ex. -xy {'SM-G930':{'D':'500X1750','callarD':'100X1750','E':'1000X1750'},'SHV-E330':{'D':'500X1750','callarD':'100X1750','E':'1000X1750'}}")
-    print unicode("                         ex. -xy {'LM-G710':{'D':'750X2800','callarD':'180X2800','E':'1280X2800'},'LM-Q725':{'D':'500X1900','callarD':'100X1900','E':'1000X1900'}}")
+    print unicode("                         ex. -xy \"{'SM-G930':{'D':'500X1750','callarD':'100X1750','E':'1000X1750'},'SHV-E330':{'D':'500X1750','callarD':'100X1750','E':'1000X1750'}}\"")
+    print unicode("                         ex. -xy \"{'LM-G710':{'D':'750X2800','callarD':'180X2800','E':'1280X2800'},'LM-Q725':{'D':'500X1900','callarD':'100X1900','E':'1000X1900'}}\"")
 
 """
 json.loads("{'SM-G930':'{'D':'500X1750','callarD':'100X1750','E':'1000X1750'}','SHV-E330':'{'D':'500X1750','callarD':'100X1750','E':'1000X1750'}'}")
@@ -504,7 +504,7 @@ if __name__ == "__main__":
                     inputKeyEventInDevice(selfs[SELECTED_DEVICEID].DEVICE_ID, 'KEYCODE_BACK')
                     inputKeyEventInDevice(selfs[SELECTED_DEVICEID].DEVICE_ID, 'KEYCODE_HOME')
                     startActivity(selfs[SELECTED_DEVICEID].DEVICE_ID, ("%s/%s" % (TARGET_PACKAGENAME, LAUNCH_ACTIVITYNAME)), 1)
-                    time.sleep(BASIC_DELAY)
+                    time.sleep(BASIC_DELAY*2)
                     CurrentActivityName = getCurrentActivity(selfs[SELECTED_DEVICEID].DEVICE_ID)
                     faultCount = faultCount + 1
                     if faultCount > MAX_RETRYCOUNT:
