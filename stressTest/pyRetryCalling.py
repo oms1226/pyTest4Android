@@ -13,7 +13,7 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 
 
-setDEBUG(True)
+
 TARGET_PACKAGENAME = 'com.skt.prod.dialer'
 LAUNCH_ACTIVITYNAME= 'com.skt.prod.dialer.activities.main.MainActivity'
 INCALL_ACTIVITYNAME= 'com.skt.prod.incall.lib.ui.activities.incall.InCallActivity'
@@ -356,6 +356,7 @@ json.loads("{'SM-G930':'{'D':'500X1750','callarD':'100X1750','E':'1000X1750'}','
 """
 
 if __name__ == "__main__":
+    setDEBUG(True)
     AUTOMODE = True
     INSTALLAPKNAME = 'None'
     git_hashcode = 'None'
