@@ -32,7 +32,7 @@ cd C:\_android\workspace\tphone_android.git
 gradlew clean dialer:devReleaseSigningTaskReal_dialer
 
 if exist C:\_android\workspace\tphone_android.git\dialer\build\outputs\apk\real\dialer-real-unsigned-signed.apk (
-    call adb -d install -r C:\_android\workspace\tphone_android.git\dialer\build\outputs\apk\real\dialer-real-unsigned-signed.apk
+    call adb -d install -r -d C:\_android\workspace\tphone_android.git\dialer\build\outputs\apk\real\dialer-real-unsigned-signed.apk
 ) else (
     echo "build failed!"
 )
