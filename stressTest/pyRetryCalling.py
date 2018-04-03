@@ -352,6 +352,7 @@ general commands:
 
 """
 json.loads("{'SM-G930':'{'D':'500X1750','callarD':'100X1750','E':'1000X1750'}','SHV-E330':'{'D':'500X1750','callarD':'100X1750','E':'1000X1750'}'}")
+C:\_python\workspace\PycharmProjects\pyTest4AndroidonGithub\stressTest>python pyRetryCalling.py -xy "{'LM-G710':{'D':'750X2800','callarD':'180X2800','E':'1280X2800'},'LM-Q725':{'D':'500X1900','callarD':'100X1900','E':'1000X1900'}}" -m 10
 """
 
 if __name__ == "__main__":

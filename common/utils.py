@@ -146,7 +146,7 @@ def getCurrentActivity(deviceId):
 
     if mFocusedActivity != None and mFocusedActivity == mFocusedApp: #and mFocusedApp in mCurrentFocus:
         reVal = mFocusedActivity.replace('/', '')
-    if reVal != 'None' and mFocusedApp != None:
+    if reVal == 'None' and mFocusedApp != None:
         reVal = mFocusedApp.replace('/', '')
 
     return reVal
