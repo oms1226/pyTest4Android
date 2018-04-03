@@ -12,7 +12,7 @@ from sys import platform as _platform
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-setDEBUG(True)
+setDEBUG(False)
 TARGET_PACKAGENAME = 'com.skt.prod.dialer'
 LAUNCH_ACTIVITYNAME= 'com.skt.prod.dialer.activities.main.MainActivity'
 INCALL_ACTIVITYNAME= 'com.skt.prod.incall.lib.ui.activities.incall.InCallActivity'
