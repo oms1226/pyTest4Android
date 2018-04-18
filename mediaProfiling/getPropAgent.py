@@ -13,7 +13,7 @@ INFO_FILEFULLNAME = "data\\modelInfo4getprop.data"
 HASHKEY_FILEFULLNAME = "data\\modelInfo4getprop.hashkey"
 FIELDS_FILEFULLNAME = "data\\modelInfo4getprop.fields"
 MIN_SLEEPTIME = 60
-MAX_SLEEPTIME = 15 * 60
+MAX_SLEEPTIME = 60
 EXISTED_FIELD_DEPEND = True
 
 def getPropRefinded4ELK(deviceId):
