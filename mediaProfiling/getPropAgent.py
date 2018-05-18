@@ -6,7 +6,7 @@ import threading
 from common.contant import *
 from common.deviceInfo import *
 
-setDEBUG(False)
+setDEBUG(True)
 
 JSON_LOCAL_FILE = None
 INFO_FILEFULLNAME = "data\\modelInfo4getprop.data"

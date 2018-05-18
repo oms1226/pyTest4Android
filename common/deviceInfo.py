@@ -398,22 +398,24 @@ def getDevices():
     """
     reVal = []
 
-    proc = subprocess.Popen(("adb devices").split(' '), stdout=subprocess.PIPE)
-    fd_popen = proc.stdout
-
-    content = fd_popen.read().strip()
-    for line in content.split('\n'):
-        #if "42f06002482d4f53" in line:
-        #    continue
-        if 'List of' not in line and 'device' in line:
-            reVal.append(line.split('\t')[0])
-
-    #printEx( "%s:%s" % ("type(reVal)", type(reVal)) )
     try:
-        proc.kill()
+        proc = subprocess.Popen(("adb devices").split(' '), stdout=subprocess.PIPE)
+        fd_popen = proc.stdout
+
+        content = fd_popen.read().strip()
+        for line in content.split('\n'):
+            #if "42f06002482d4f53" in line:
+            #    continue
+            if 'List of' not in line and 'device' in line:
+                reVal.append(line.split('\t')[0])
+
+        #printEx( "%s:%s" % ("type(reVal)", type(reVal)) )
+        try:
+            proc.kill()
+        except:
+            printError("%s:%s" % ("Unexpected error in proc.kill()", getExceptionString(sys.exc_info())))
     except:
         printError("%s:%s" % ("Unexpected error", getExceptionString(sys.exc_info())))
-
     return reVal
 
 def getBatteryLevel(deviceId):

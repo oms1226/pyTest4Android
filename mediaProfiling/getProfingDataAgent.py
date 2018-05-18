@@ -12,7 +12,7 @@ MIN_SLEEPTIME = 60
 MAX_SLEEPTIME = 15 * 60
 PROFILE_FILEFULLNAME = "data\\trtc.profile"
 PROFILE_RAW_FILEFOLDER = "rawdata"
-setDEBUG(False)
+setDEBUG(True)
 
 Trtr_Target_fileName_Subfixs = [
     "_trtc.profile",
