@@ -11,7 +11,7 @@ call trtc_cache_delete.bat -np
 
 set ERROR_DETECT=false
 
-cd C:\_android\workspace\tphone_android.git\trtcLib
+cd C:\_android\workspace\tphone_android\trtcLib
 FOR /F "delims=" %%A in ('dir /S /B *.aar') DO (
     set TARGETFILE="%%~fA"
 )
@@ -28,11 +28,11 @@ if exist %SOURCEFILE% (
 )
 
 if %ERROR_DETECT% == false (
-cd C:\_android\workspace\tphone_android.git
+cd C:\_android\workspace\tphone_android
 gradlew clean dialer:devReleaseSigningTaskBeta_dialer
 
-if exist C:\_android\workspace\tphone_android.git\dialer\build\outputs\apk\beta\dialer-beta-unsigned-signed.apk (
-    call adb -d install -r -d C:\_android\workspace\tphone_android.git\dialer\build\outputs\apk\beta\dialer-beta-unsigned-signed.apk
+if exist C:\_android\workspace\tphone_android\dialer\build\outputs\apk\beta\dialer-beta-unsigned-signed.apk (
+    call adb -d install -r -d C:\_android\workspace\tphone_android\dialer\build\outputs\apk\beta\dialer-beta-unsigned-signed.apk
 ) else (
     echo "build failed!"
 )
