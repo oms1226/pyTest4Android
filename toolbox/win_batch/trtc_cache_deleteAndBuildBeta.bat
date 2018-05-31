@@ -29,10 +29,10 @@ if exist %SOURCEFILE% (
 
 if %ERROR_DETECT% == false (
 cd C:\_android\workspace\tphone_android
-gradlew clean dialer:devReleaseSigningTaskBeta_dialer
+gradlew clean dialer:devReleaseSigningTaskBetaDebug_dialer
 
-if exist C:\_android\workspace\tphone_android\dialer\build\outputs\apk\beta\dialer-beta-unsigned-signed.apk (
-    call adb -d install -r -d C:\_android\workspace\tphone_android\dialer\build\outputs\apk\beta\dialer-beta-unsigned-signed.apk
+if exist C:\_android\workspace\tphone_android\dialer\build\outputs\apk\beta\debug\dialer-beta-debug-unsigned-signed.apk (
+    call adb -d install -r -d C:\_android\workspace\tphone_android\dialer\build\outputs\apk\beta\debug\dialer-beta-debug-unsigned-signed.apk
 ) else (
     echo "build failed!"
 )
