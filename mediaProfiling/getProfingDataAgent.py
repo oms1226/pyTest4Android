@@ -10,7 +10,8 @@ from os import walk
 
 MIN_SLEEPTIME = 60
 MAX_SLEEPTIME = 15 * 60
-PROFILE_FILEFULLNAME = "data\\trtc.profile"
+START______TIME = (datetime.datetime.utcnow() + datetime.timedelta(hours=9)).strftime("%Y%m%d%H%M")
+PROFILE_FILEFULLNAME = "data\\trtc_" + START______TIME + ".profile"
 PROFILE_RAW_FILEFOLDER = "rawdata"
 setDEBUG(True)
 
