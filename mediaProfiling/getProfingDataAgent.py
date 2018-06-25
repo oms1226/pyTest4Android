@@ -11,6 +11,8 @@ from os import walk
 MIN_SLEEPTIME = 60
 MAX_SLEEPTIME = 15 * 60
 START______TIME = (datetime.datetime.utcnow() + datetime.timedelta(hours=9)).strftime("%Y%m%d%H%M")
+CURRENT_WRITE_LINE = 0
+MAX_WRITE_LINE = 5000
 PROFILE_FILEFULLNAME = "data\\trtc_" + START______TIME + ".profile"
 PROFILE_RAW_FILEFOLDER = "rawdata"
 setDEBUG(True)
@@ -89,19 +91,32 @@ if __name__ == "__main__":
                         if '/' in trtc_git_hashcode:
                             trtc_git_revcnt = int(trtc_git_hashcode.split('/')[0])
                             trtc_git_hashcode = ''.join(trtc_git_hashcode.split('/')[1:])
+                        elif '|' in trtc_git_hashcode:
+                            trtc_git_revcnt = int(trtc_git_hashcode.split('|')[0])
+                            trtc_git_hashcode = ''.join(trtc_git_hashcode.split('|')[1:])
                         trtc_git_hashcode = trtc_git_hashcode.replace(']', '')
                     elif '/' in trtc_version:
                         trtc_git_revcnt = int(trtc_version.split('/')[0])
                         trtc_git_hashcode = ''.join(trtc_version.split('/')[1:])
+                    elif '|' in trtc_version:
+                        trtc_git_revcnt = int(trtc_version.split('|')[0])
+                        trtc_git_hashcode = ''.join(trtc_version.split('|')[1:])
                     else:
                         trtc_git_hashcode = trtc_version
 
                     if '/' in trtc_git_hashcode:
                         trtc_git_hashcode = trtc_git_hashcode.split('/')[0]
                         trtc_build_pc = ''.join(trtc_git_hashcode.split('/')[1:])
+                    elif '|' in trtc_git_hashcode:
+                        trtc_git_hashcode = trtc_git_hashcode.split('|')[0]
+                        trtc_build_pc = ''.join(trtc_git_hashcode.split('|')[1:])
+
                     if '/' in trtc_build_pc:
                         trtc_build_pc = trtc_git_hashcode.split('/')[0]
                         trtc_build_time = ''.join(trtc_git_hashcode.split('/')[1:])
+                    elif '|' in trtc_build_pc:
+                        trtc_build_pc = trtc_git_hashcode.split('|')[0]
+                        trtc_build_time = ''.join(trtc_git_hashcode.split('|')[1:])
 
                     RawDataJson['trtc_version_name'] = trtc_version_name
                     RawDataJson['trtc_git_hashcode'] = trtc_git_hashcode
@@ -110,7 +125,14 @@ if __name__ == "__main__":
                     RawDataJson['trtc_build_time'] = trtc_build_time
                     with codecs.open(PROFILE_FILEFULLNAME, 'a', 'utf-8') as f:
                         f.write(json.dumps(RawDataJson, ensure_ascii=False) + "\r\n")
+                        CURRENT_WRITE_LINE += 1
                         f.close()
+
+                    if CURRENT_WRITE_LINE > MAX_WRITE_LINE :
+                        CURRENT_WRITE_LINE = 0
+                        START______TIME = str(int(START______TIME) + 1)
+                        # PROFILE_FILEFULLNAME = "data\\trtc_" + (datetime.datetime.utcnow() + datetime.timedelta(hours=9, minutes=1)).strftime("%Y%m%d%H%M") + ".profile"
+                        PROFILE_FILEFULLNAME = "data\\trtc_" + START______TIME + ".profile"
 
                 excuteTime = (datetime.datetime.utcnow() + datetime.timedelta(hours=9)).strftime("%Y%m%d%H%M")
                 # os_systemEx("..\\filebeat\\filebeat-6.1.3-windows-x86_64\\filebeat.exe --once -e -c " + "sys\\filebeat.yml")

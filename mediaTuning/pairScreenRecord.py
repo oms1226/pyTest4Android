@@ -81,7 +81,10 @@ for id in connectIds:
         if trtc__trtc_engine_version == None:
             printError("%s[%s:%s]" % (id, "trtc__trtc_engine_version", trtc__trtc_engine_version))
             exit(0)
-        trtc_git_revcnt = "v" + trtc__trtc_engine_version.split('/')[0]
+        if '/' in trtc__trtc_engine_version:
+            trtc_git_revcnt = "v" + trtc__trtc_engine_version.split('/')[0]
+        elif '|' in trtc__trtc_engine_version:
+            trtc_git_revcnt = "v" + trtc__trtc_engine_version.split('|')[0]
 
         trtc_video_quality_resol = getShardPreference("com.skt.trtc.sample_preferences.xml", "string", "trtc_video_quality_resol")
         if trtc_video_quality_resol == None:
