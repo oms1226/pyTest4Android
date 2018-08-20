@@ -28,3 +28,5 @@ filebeat/filebeat-6\.1\.3-windows-x86_64/data/
 *\dist\*
 
 *.spec
+
+filebeat/filebeat-6\.3\.2-windows-x86_64/data/
