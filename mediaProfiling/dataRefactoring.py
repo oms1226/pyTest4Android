@@ -24,6 +24,8 @@ def inspectAndRefactoring(path):
                     line = f.readline()
                     if not line: break
 
+                    line = line.replace('geo_point', 'location')
+
                     if 'goog' in line:
                         words = line.split(' ')
                         index = 0
