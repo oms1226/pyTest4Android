@@ -158,7 +158,10 @@ setup.kibana:
 output.logstash:
   # The Logstash hosts
   # hosts: ["172.23.148.68:5044"]
-  hosts: ["172.23.149.173:5044"]
+  hosts: ["tdds1:5044"]
+  #hosts: ["172.23.149.173:5044"]
+  #hosts: ["tdds1:5044", "172.23.149.173:5044"]
+  #loadbalance: true
   #hosts: ["localhost:5044"]
 
   # Optional SSL. By default is off.
