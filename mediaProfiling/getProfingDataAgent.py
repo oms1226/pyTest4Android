@@ -22,6 +22,22 @@ Trtr_Target_fileName_Subfixs = [
     "_trtc.setting",
 ]
 
+def getFileListInAndroidDevice(cmd, subfixs):
+    fd_popen = subprocess.Popen(cmd, stdout=subprocess.PIPE).stdout
+    #data = fd_popen.read().strip()
+    reVal = []
+    while 1:
+        line = fd_popen.readline()
+        if not line:
+            break
+        line = str(line).strip("\r").strip("\n").strip()
+        for subfix in subfixs:
+            if line.endswith(subfix):
+                reVal.append(line)
+    fd_popen.close()
+
+    return reVal
+
 if __name__ == "__main__":
     AUTOMODE = False
     while len(sys.argv) > 1:
@@ -53,8 +69,10 @@ if __name__ == "__main__":
                         os.remove(rawFullFilename)
 
             for id in getRealDevices():
-                for Trtr_Target_fileName_Subfix in Trtr_Target_fileName_Subfixs:
-                    Trtr_Profiling_fileName = getModelNameFromDevice(id) + Trtr_Target_fileName_Subfix
+                Trtr_Profiling_fileNames = getFileListInAndroidDevice("adb -s " + id + " shell ls " + "/sdcard/trtc_logs", Trtr_Target_fileName_Subfixs)
+                #for Trtr_Target_fileName_Subfix in Trtr_Target_fileName_Subfixs:
+                #    Trtr_Profiling_fileName = getModelNameFromDevice(id) + Trtr_Target_fileName_Subfix
+                for Trtr_Profiling_fileName in Trtr_Profiling_fileNames:
                     if os.path.isfile(Trtr_Profiling_fileName):
                         os.remove(Trtr_Profiling_fileName)
 
@@ -79,50 +97,53 @@ if __name__ == "__main__":
                   71b17b3ae41bc256f43da5d666d63d36a16f1ea7
                   0.8.0[1236/d15b794d54348969b8e9021aaee2840dc1adbb08]
                   """
-                    trtc_version_name = "None"
-                    trtc_git_hashcode = "None"
-                    trtc_git_revcnt = 0
-                    trtc_build_pc = "None"
-                    trtc_build_time = "None"
-                    trtc_version = RawDataJson["trtc_version"]
-                    if '[' in trtc_version:
-                        trtc_version_name = trtc_version.split('[')[0]
-                        trtc_git_hashcode = trtc_version.split('[')[1]
+                    if "trtc_version" in RawDataJson:
+                        trtc_version_name = "None"
+                        trtc_git_hashcode = "None"
+                        trtc_git_revcnt = 0
+                        trtc_build_pc = "None"
+                        trtc_build_time = "None"
+
+                        trtc_version = RawDataJson["trtc_version"]
+                        if '[' in trtc_version:
+                            trtc_version_name = trtc_version.split('[')[0]
+                            trtc_git_hashcode = trtc_version.split('[')[1]
+                            if '/' in trtc_git_hashcode:
+                                trtc_git_revcnt = int(trtc_git_hashcode.split('/')[0])
+                                trtc_git_hashcode = ''.join(trtc_git_hashcode.split('/')[1:])
+                            elif '|' in trtc_git_hashcode:
+                                trtc_git_revcnt = int(trtc_git_hashcode.split('|')[0])
+                                trtc_git_hashcode = ''.join(trtc_git_hashcode.split('|')[1:])
+                            trtc_git_hashcode = trtc_git_hashcode.replace(']', '')
+                        elif '/' in trtc_version:
+                            trtc_git_revcnt = int(trtc_version.split('/')[0])
+                            trtc_git_hashcode = ''.join(trtc_version.split('/')[1:])
+                        elif '|' in trtc_version:
+                            trtc_git_revcnt = int(trtc_version.split('|')[0])
+                            trtc_git_hashcode = ''.join(trtc_version.split('|')[1:])
+                        else:
+                            trtc_git_hashcode = trtc_version
+
                         if '/' in trtc_git_hashcode:
-                            trtc_git_revcnt = int(trtc_git_hashcode.split('/')[0])
-                            trtc_git_hashcode = ''.join(trtc_git_hashcode.split('/')[1:])
+                            trtc_git_hashcode = trtc_git_hashcode.split('/')[0]
+                            trtc_build_pc = ''.join(trtc_git_hashcode.split('/')[1:])
                         elif '|' in trtc_git_hashcode:
-                            trtc_git_revcnt = int(trtc_git_hashcode.split('|')[0])
-                            trtc_git_hashcode = ''.join(trtc_git_hashcode.split('|')[1:])
-                        trtc_git_hashcode = trtc_git_hashcode.replace(']', '')
-                    elif '/' in trtc_version:
-                        trtc_git_revcnt = int(trtc_version.split('/')[0])
-                        trtc_git_hashcode = ''.join(trtc_version.split('/')[1:])
-                    elif '|' in trtc_version:
-                        trtc_git_revcnt = int(trtc_version.split('|')[0])
-                        trtc_git_hashcode = ''.join(trtc_version.split('|')[1:])
-                    else:
-                        trtc_git_hashcode = trtc_version
+                            trtc_git_hashcode = trtc_git_hashcode.split('|')[0]
+                            trtc_build_pc = ''.join(trtc_git_hashcode.split('|')[1:])
 
-                    if '/' in trtc_git_hashcode:
-                        trtc_git_hashcode = trtc_git_hashcode.split('/')[0]
-                        trtc_build_pc = ''.join(trtc_git_hashcode.split('/')[1:])
-                    elif '|' in trtc_git_hashcode:
-                        trtc_git_hashcode = trtc_git_hashcode.split('|')[0]
-                        trtc_build_pc = ''.join(trtc_git_hashcode.split('|')[1:])
+                        if '/' in trtc_build_pc:
+                            trtc_build_pc = trtc_git_hashcode.split('/')[0]
+                            trtc_build_time = ''.join(trtc_git_hashcode.split('/')[1:])
+                        elif '|' in trtc_build_pc:
+                            trtc_build_pc = trtc_git_hashcode.split('|')[0]
+                            trtc_build_time = ''.join(trtc_git_hashcode.split('|')[1:])
 
-                    if '/' in trtc_build_pc:
-                        trtc_build_pc = trtc_git_hashcode.split('/')[0]
-                        trtc_build_time = ''.join(trtc_git_hashcode.split('/')[1:])
-                    elif '|' in trtc_build_pc:
-                        trtc_build_pc = trtc_git_hashcode.split('|')[0]
-                        trtc_build_time = ''.join(trtc_git_hashcode.split('|')[1:])
+                        RawDataJson['trtc_version_name'] = trtc_version_name
+                        RawDataJson['trtc_git_hashcode'] = trtc_git_hashcode
+                        RawDataJson['trtc_git_revcnt'] = trtc_git_revcnt
+                        RawDataJson['trtc_build_pc'] = trtc_build_pc
+                        RawDataJson['trtc_build_time'] = trtc_build_time
 
-                    RawDataJson['trtc_version_name'] = trtc_version_name
-                    RawDataJson['trtc_git_hashcode'] = trtc_git_hashcode
-                    RawDataJson['trtc_git_revcnt'] = trtc_git_revcnt
-                    RawDataJson['trtc_build_pc'] = trtc_build_pc
-                    RawDataJson['trtc_build_time'] = trtc_build_time
                     with codecs.open(PROFILE_FILEFULLNAME, 'a', 'utf-8') as f:
                         f.write(json.dumps(RawDataJson, ensure_ascii=False) + "\r\n")
                         CURRENT_WRITE_LINE += 1
@@ -137,8 +158,8 @@ if __name__ == "__main__":
                 excuteTime = (datetime.datetime.utcnow() + datetime.timedelta(hours=9)).strftime("%Y%m%d%H%M")
                 # os_systemEx("..\\filebeat\\filebeat-6.1.3-windows-x86_64\\filebeat.exe --once -e -c " + "sys\\filebeat.yml")
                 #os.system("..\\filebeat\\filebeat-6.1.3-windows-x86_64\\filebeat.exe --once -e -c " + "sys\\filebeat.yml")
-                os.system("..\\filebeat\\filebeat-6.4.0-windows-x86_64\\filebeat.exe --once -e -c " + "sys\\filebeat.yml")
-                os.system("..\\filebeat\\filebeat-6.3.2-windows-x86_64\\filebeat.exe --once -e -c " + "sys\\filebeat_imac.yml")
+                os.system("..\\filebeat\\filebeat-6.4.0-windows-x86_64\\filebeat.exe --once -e -c " + "sys\\filebeat_6.4.0.yml")
+                os.system("..\\filebeat\\filebeat-6.3.2-windows-x86_64\\filebeat.exe --once -e -c " + "sys\\filebeat_6.3.2.yml")
                 print("%s-%s." % ("awake", excuteTime)),
             else:
                 print(str(sleepTime) + "sec-sleeping."),

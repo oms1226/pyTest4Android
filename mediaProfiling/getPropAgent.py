@@ -245,7 +245,7 @@ if __name__ == "__main__":
             if fReport:
                 # os_systemEx("..\\filebeat\\filebeat-6.1.3-windows-x86_64\\filebeat.exe --once -e -c " + "sys\\filebeat.yml")
                 #os.system("..\\filebeat\\filebeat-6.1.3-windows-x86_64\\filebeat.exe --once -e -c " + "sys\\filebeat.yml")
-                os.system("..\\filebeat\\filebeat-6.4.0-windows-x86_64\\filebeat.exe --once -e -c " + "sys\\filebeat.yml")
-                os.system("..\\filebeat\\filebeat-6.3.2-windows-x86_64\\filebeat.exe --once -e -c " + "sys\\filebeat_imac.yml")
+                os.system("..\\filebeat\\filebeat-6.4.0-windows-x86_64\\filebeat.exe --once -e -c " + "sys\\filebeat_6.4.0.yml")
+                os.system("..\\filebeat\\filebeat-6.3.2-windows-x86_64\\filebeat.exe --once -e -c " + "sys\\filebeat_6.3.2.yml")
         if AUTOMODE == False:
             break
