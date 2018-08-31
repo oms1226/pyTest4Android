@@ -92,7 +92,13 @@ if __name__ == "__main__":
         finally:
             if len(RawDatas) > 0:
                 for RawData in RawDatas:
-                    RawDataJson = json.loads(RawData)
+                    try:
+                        RawDataJson = json.loads(RawData)
+                    except:
+                        printError("expected error for json-format: ", sys.exc_info()[0], sys.exc_info()[1])
+                        printEx("%s:%s" % ("RawData", RawData))
+                        continue
+
                     """
                   71b17b3ae41bc256f43da5d666d63d36a16f1ea7
                   0.8.0[1236/d15b794d54348969b8e9021aaee2840dc1adbb08]
