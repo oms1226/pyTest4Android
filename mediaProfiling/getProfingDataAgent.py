@@ -103,6 +103,26 @@ if __name__ == "__main__":
                   71b17b3ae41bc256f43da5d666d63d36a16f1ea7
                   0.8.0[1236/d15b794d54348969b8e9021aaee2840dc1adbb08]
                   """
+                    if "os" in RawDataJson.keys() and RawDataJson["os"] == "ios":
+                        if "os_sdk_int" in RawDataJson.keys() and "os_sdk_str" not in RawDataJson.keys():
+                            RawDataJson['os_sdk_str'] = RawDataJson['os_sdk_int']
+                            del RawDataJson['os_sdk_int']
+                        if "googTypingNoiseState" in RawDataJson.keys():
+                            if RawDataJson["googTypingNoiseState"] == "true":
+                                RawDataJson["googTypingNoiseState"] = True
+                            elif RawDataJson["googTypingNoiseState"] == "false":
+                                RawDataJson["googTypingNoiseState"] = False
+                        if "googInitiator" in RawDataJson.keys():
+                            if RawDataJson["googInitiator"] == "true":
+                                RawDataJson["googInitiator"] = True
+                            elif RawDataJson["googInitiator"] == "false":
+                                RawDataJson["googInitiator"] = False
+                        if "googWritable" in RawDataJson.keys():
+                            if RawDataJson["googWritable"] == "true":
+                                RawDataJson["googWritable"] = True
+                            elif RawDataJson["googWritable"] == "false":
+                                RawDataJson["googWritable"] = False
+
                     if "trtc_version" in RawDataJson:
                         trtc_version_name = "None"
                         trtc_git_hashcode = "None"
