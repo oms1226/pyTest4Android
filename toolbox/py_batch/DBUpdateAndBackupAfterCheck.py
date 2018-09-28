@@ -91,7 +91,7 @@ def readFileAboutTableLastTimeInCloudBerry(dirname):
         for (dirpath, dirnames, filenames) in walk(dirname):
             for filename in filenames:
                 filefullname = os.path.join(dirpath, filename)
-                if CLOUDBERRY_MYSQL_FULLFILENAME_PREFIX in filefullname:
+                if CLOUDBERRY_MYSQL_FULLFILENAME_PREFIX in filefullname and '.backup' not in filefullname and '.current' not in filefullname:
                     lastTimeInCloud = getDateFromDBFileNameInCloudBerry(filefullname)
 
                     if reVal == None:
@@ -122,6 +122,7 @@ def writeFileAboutTableLastTimeInDB(filefullname, content):
     return reVal
 
 TABLE_NAME = 'my_wiki'
+MIN_DB_SIZE =  250*1024*1024
 HISTORY_UPDATEDATEinLOCAL_FILENAME = '%s.latest_updatetime.local' % TABLE_NAME
 CLOUDBERRY_MYSQL_DIRECTORY = 'T:\\_wikibackup'
 CLOUDBERRY_MYSQL_FULLFILENAME_PREFIX = '%s\\%s.%s' % (CLOUDBERRY_MYSQL_DIRECTORY, TABLE_NAME, 'sql')
@@ -175,11 +176,11 @@ if __name__ == "__main__":
         printEx("Error; %s is not found in local-pc!" % TABLE_NAME)
         ArithmeticError("lastTimeInDB is " + lastTimeInDB)
 
-    if 'notFound' in lastTimeInCloud:
-        printEx("Error; %s is not found!" % CLOUDBERRY_MYSQL_DIRECTORY)
-        ArithmeticError("lastTimeInCloud is " + lastTimeInCloud)
-    elif lastTimeInCloud == None:
+    if lastTimeInCloud == None:
         printEx(execMysqlDump('%s.%s' % (CLOUDBERRY_MYSQL_FULLFILENAME_PREFIX, lastTimeInDB)))
+    elif 'notFound' in lastTimeInCloud:
+        printEx("Error; %s is not found!" % CLOUDBERRY_MYSQL_DIRECTORY)
+        ArithmeticError("lastTimeInCloud is " + lastTimeInCloud)		
     elif int(lastTimeInCloud) == int(lastTimeInDB):
         printEx("Nothing; lastTimeInCloud is equal to lastTimeInDB!")
         pass
@@ -209,6 +210,12 @@ if __name__ == "__main__":
                 printEx("Error; %s is not bigger than %s!" % (createFilefullname, previous_filefullnameInCloud))
                 shutil.move('%s' % previous_filefullnameInCloud,
                             '%s.%s' % (previous_filefullnameInCloud, 'backup'))
+
+            if os.path.getsize(createFilefullname) <= MIN_DB_SIZE:
+                printEx("Error; %s is not reach to MIN_DB_SIZE(%s)!" % (createFilefullname, MIN_DB_SIZE))
+                shutil.move('%s' % createFilefullname,
+                            '%s.%s' % (createFilefullname, 'current'))
+
 
     elif int(lastTimeInCloud) > int(lastTimeInDB):
         printEx("Update-Cloud; lastTimeInCloud is upper to lastTimeInDB!")
