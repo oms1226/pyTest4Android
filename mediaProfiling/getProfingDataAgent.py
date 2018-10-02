@@ -6,6 +6,7 @@ import threading
 from common.contant import *
 from common.deviceInfo import *
 from os import walk
+import pandas as pd
 
 
 MIN_SLEEPTIME = 60
@@ -38,7 +39,7 @@ def getFileListInAndroidDevice(cmd, subfixs):
 
     return reVal
 
-def getRawDatasInLocalPC():
+def getRawDatasInLocalPC(subfixs):
     reVal = []
     for (dirpath, dirnames, rawFilenames) in walk(PROFILE_RAW_FILEFOLDER):
         printEx("%s:%s" % ("dirpath", dirpath))
@@ -47,6 +48,12 @@ def getRawDatasInLocalPC():
         break
     if len(rawFilenames) > 0:
         for rawFilename in rawFilenames:
+            isGet = False
+            for subfix in subfixs:
+                if rawFilename.endswith(subfix):
+                    isGet = True
+            if isGet == False:
+                continue
             rawFullFilename = PROFILE_RAW_FILEFOLDER + "\\" + rawFilename
             if os.path.isfile(rawFullFilename):
                 with open(rawFullFilename) as f:
@@ -82,6 +89,53 @@ def getRawDatasInDevice():
                 os.remove(Trtr_Profiling_fileName)
     return reVal
 
+def getRawCSVsInLocalPC():
+    reVal = []
+    for (dirpath, dirnames, rawFilenames) in walk(PROFILE_RAW_FILEFOLDER):
+        printEx("%s:%s" % ("dirpath", dirpath))
+        printEx("%s:%s" % ("dirnames", dirnames))
+        printEx("%s:%s" % ("rawFilenames", rawFilenames))
+        break
+    if len(rawFilenames) > 0:
+        for rawFilename in rawFilenames:
+            if rawFilename.endswith('.csv') == False:
+                continue
+
+            rawFullFilename = PROFILE_RAW_FILEFOLDER + "\\" + rawFilename
+            if os.path.isfile(rawFullFilename):
+                templateDataJson = {}
+                filenameSplit = rawFilename.split('_')
+                if len(filenameSplit) != 4:
+                    printError("%s 's split_length is %s" % (rawFilename, len(filenameSplit)))
+                    continue
+                templateDataJson["catagory"] = filenameSplit[0]
+                templateDataJson["execTime"] = filenameSplit[1]
+                templateDataJson["Destination"] = filenameSplit[2]
+                templateDataJson["model"] = filenameSplit[3].split('.')[0]
+
+                data = pd.read_csv(rawFullFilename)
+                rowDataJson = {}
+                for index, row in data[(data['Active Level'] != '-')].iterrows():
+                    if row['Destination'].replace(" ", "") == templateDataJson["Destination"]:
+                        if row['Source'].replace(" ", "") == 'GPSRemote':
+                            if templateDataJson["Destination"] == 'GPSA':
+                                rowDataJson["Source"] = 'GPSB'
+                            else:
+                                rowDataJson["Source"] = 'GPSA'
+
+                            rowDataJson["ActiveLevel.float"] = float(row['Active Level'])
+                            rowDataJson["NoiseLevel.float"] = float(row['Noise Level'])
+                            rowDataJson["POLQASWBv2.4.float"] = float(row['POLQA SWB v2.4'])
+                            rowDataJson["Offset.float"] = float(row['Offset'])
+                            rowDataJson["OffsetMinimum.float"] = float(row['Offset Minimum'])
+                            rowDataJson["OffsetMaximum.float"] = float(row['Offset Maximum'])
+                            rowDataJson.update(templateDataJson)
+                            reVal.append(json.dumps(rowDataJson, ensure_ascii=False))
+
+                os.remove(rawFullFilename)
+    return reVal
+
+
 if __name__ == "__main__":
     AUTOMODE = False
     while len(sys.argv) > 1:
@@ -95,8 +149,9 @@ if __name__ == "__main__":
     while True:
         RawDatas = []
         try:
-            RawDatas = RawDatas + getRawDatasInLocalPC()
+            RawDatas = RawDatas + getRawDatasInLocalPC(Trtr_Target_fileName_Subfixs)
             RawDatas = RawDatas + getRawDatasInDevice()
+            RawDatas = RawDatas + getRawCSVsInLocalPC()
 
         except:
             printError("Main Logic Unexpected error: ", sys.exc_info()[0], sys.exc_info()[1])
