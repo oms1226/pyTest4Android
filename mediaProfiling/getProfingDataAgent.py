@@ -38,6 +38,50 @@ def getFileListInAndroidDevice(cmd, subfixs):
 
     return reVal
 
+def getRawDatasInLocalPC():
+    reVal = []
+    for (dirpath, dirnames, rawFilenames) in walk(PROFILE_RAW_FILEFOLDER):
+        printEx("%s:%s" % ("dirpath", dirpath))
+        printEx("%s:%s" % ("dirnames", dirnames))
+        printEx("%s:%s" % ("rawFilenames", rawFilenames))
+        break
+    if len(rawFilenames) > 0:
+        for rawFilename in rawFilenames:
+            rawFullFilename = PROFILE_RAW_FILEFOLDER + "\\" + rawFilename
+            if os.path.isfile(rawFullFilename):
+                with open(rawFullFilename) as f:
+                    while True:
+                        line = f.readline().replace('\r', '').replace('\n', '')
+                        if not line: break
+                        reVal.append(line)
+                    f.close()
+                os.remove(rawFullFilename)
+    return reVal
+
+def getRawDatasInDevice():
+    reVal = []
+    for id in getRealDevices():
+        Trtr_Profiling_fileNames = getFileListInAndroidDevice("adb -s " + id + " shell ls " + "/sdcard/trtc_logs",
+                                                              Trtr_Target_fileName_Subfixs)
+        # for Trtr_Target_fileName_Subfix in Trtr_Target_fileName_Subfixs:
+        #    Trtr_Profiling_fileName = getModelNameFromDevice(id) + Trtr_Target_fileName_Subfix
+        for Trtr_Profiling_fileName in Trtr_Profiling_fileNames:
+            if os.path.isfile(Trtr_Profiling_fileName):
+                os.remove(Trtr_Profiling_fileName)
+
+            os.system("adb -s " + id + " pull " + "/sdcard/trtc_logs/" + Trtr_Profiling_fileName)
+
+            if os.path.isfile(Trtr_Profiling_fileName):
+                os.system("adb -s " + id + " shell rm -f " + "/sdcard/trtc_logs/" + Trtr_Profiling_fileName)
+                with open(Trtr_Profiling_fileName) as f:
+                    while True:
+                        line = f.readline().replace('\r', '').replace('\n', '')
+                        if not line: break
+                        reVal.append(line)
+                    f.close()
+                os.remove(Trtr_Profiling_fileName)
+    return reVal
+
 if __name__ == "__main__":
     AUTOMODE = False
     while len(sys.argv) > 1:
@@ -51,42 +95,9 @@ if __name__ == "__main__":
     while True:
         RawDatas = []
         try:
-            for (dirpath, dirnames, rawFilenames) in walk(PROFILE_RAW_FILEFOLDER):
-                printEx("%s:%s" % ("dirpath", dirpath))
-                printEx("%s:%s" % ("dirnames", dirnames))
-                printEx("%s:%s" % ("rawFilenames", rawFilenames))
-                break
-            if len(rawFilenames) > 0:
-                for rawFilename in rawFilenames:
-                    rawFullFilename = PROFILE_RAW_FILEFOLDER + "\\" + rawFilename
-                    if os.path.isfile(rawFullFilename):
-                        with open(rawFullFilename) as f:
-                            while True:
-                                line = f.readline().replace('\r', '').replace('\n', '')
-                                if not line: break
-                                RawDatas.append(line)
-                            f.close()
-                        os.remove(rawFullFilename)
+            RawDatas = RawDatas + getRawDatasInLocalPC()
+            RawDatas = RawDatas + getRawDatasInDevice()
 
-            for id in getRealDevices():
-                Trtr_Profiling_fileNames = getFileListInAndroidDevice("adb -s " + id + " shell ls " + "/sdcard/trtc_logs", Trtr_Target_fileName_Subfixs)
-                #for Trtr_Target_fileName_Subfix in Trtr_Target_fileName_Subfixs:
-                #    Trtr_Profiling_fileName = getModelNameFromDevice(id) + Trtr_Target_fileName_Subfix
-                for Trtr_Profiling_fileName in Trtr_Profiling_fileNames:
-                    if os.path.isfile(Trtr_Profiling_fileName):
-                        os.remove(Trtr_Profiling_fileName)
-
-                    os.system("adb -s " + id + " pull " + "/sdcard/trtc_logs/" + Trtr_Profiling_fileName)
-
-                    if os.path.isfile(Trtr_Profiling_fileName):
-                        os.system("adb -s " + id + " shell rm -f " + "/sdcard/trtc_logs/" + Trtr_Profiling_fileName)
-                        with open(Trtr_Profiling_fileName) as f:
-                            while True:
-                                line = f.readline().replace('\r', '').replace('\n', '')
-                                if not line: break
-                                RawDatas.append(line)
-                            f.close()
-                        os.remove(Trtr_Profiling_fileName)
         except:
             printError("Main Logic Unexpected error: ", sys.exc_info()[0], sys.exc_info()[1])
         finally:
