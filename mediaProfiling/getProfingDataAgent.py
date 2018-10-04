@@ -7,6 +7,7 @@ from common.contant import *
 from common.deviceInfo import *
 from os import walk
 import pandas as pd
+from sys import platform as _platform
 
 
 MIN_SLEEPTIME = 60
@@ -14,7 +15,11 @@ MAX_SLEEPTIME = 15 * 60
 START______TIME = (datetime.datetime.utcnow() + datetime.timedelta(hours=9)).strftime("%Y%m%d%H%M")
 CURRENT_WRITE_LINE = 0
 MAX_WRITE_LINE = 5000
-PROFILE_FILEFULLNAME = "data\\trtc_" + START______TIME + ".profile"
+if _platform == "linux" or _platform == "linux2" or _platform == "darwin":
+    PROFILE_FILEFULLNAME = "../../delasticRawDatas/refinedDatas4MyCom/trtc_" + START______TIME + ".profile"
+elif _platform == "win32" or _platform == "win64":
+    PROFILE_FILEFULLNAME = "..\\..\\elasticRawDatas\\refinedDatas4MyCom\\trtc_" + START______TIME + ".profile"
+
 PROFILE_RAW_FILEFOLDER = "rawdata"
 setDEBUG(True)
 
@@ -108,10 +113,18 @@ def getRawCSVsInLocalPC():
                 if len(filenameSplit) != 4:
                     printError("%s 's split_length is %s" % (rawFilename, len(filenameSplit)))
                     continue
+                templateDataJson["filename"] = rawFilename
                 templateDataJson["catagory"] = filenameSplit[0]
                 templateDataJson["execTime"] = filenameSplit[1]
-                templateDataJson["Destination"] = filenameSplit[2]
-                templateDataJson["model"] = filenameSplit[3].split('.')[0]
+
+                templateDataJson["Combination"] = filenameSplit[2]
+                templateDataJson["Destination"] = filenameSplit[3].split('.')[0]
+
+                for comb in templateDataJson["Combination"].split('.'):
+                    if templateDataJson["Destination"] in comb:
+                        templateDataJson["model"] = comb.replace(templateDataJson["Destination"], "").replace("(", "").replace(")", "")
+                    else:
+                        templateDataJson["partnerModel"] = comb.replace("GPSA", "").replace("GPSB", "").replace("(", "").replace(")", "")
 
                 data = pd.read_csv(rawFullFilename)
                 rowDataJson = {}
