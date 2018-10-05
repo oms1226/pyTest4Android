@@ -15,15 +15,24 @@ MAX_SLEEPTIME = 15 * 60
 START______TIME = (datetime.datetime.utcnow() + datetime.timedelta(hours=9)).strftime("%Y%m%d%H%M")
 CURRENT_WRITE_LINE = 0
 MAX_WRITE_LINE = 5000
-if _platform == "linux" or _platform == "linux2" or _platform == "darwin":
-    PROFILE_FILEFULLNAME = "../../delasticRawDatas/refinedDatas4MyCom/trtc_" + START______TIME + ".profile"
-elif _platform == "win32" or _platform == "win64":
-    PROFILE_FILEFULLNAME = "..\\..\\elasticRawDatas\\refinedDatas4MyCom\\trtc_" + START______TIME + ".profile"
 
+def getPROFILE_FILEFULLNAME(time):
+    if _platform == "linux" or _platform == "linux2" or _platform == "darwin":
+        reVal = ("../../delasticRawDatas/refinedDatas4MyCom/trtc_%s.profile" % time)
+    elif _platform == "win32" or _platform == "win64":
+        reVal = ("..\\..\\elasticRawDatas\\refinedDatas4MyCom\\trtc_%s.profile" % time)
+
+    return reVal
+
+PROFILE_FILEFULLNAME=getPROFILE_FILEFULLNAME(START______TIME)
 PROFILE_RAW_FILEFOLDER = "rawdata"
 setDEBUG(True)
 
 Trtr_Target_fileName_Subfixs = [
+    ".profile",
+    ".setting",
+]
+Trtr_Target_fileName_Subfixs_InDevice = [
     "_trtc.profile",
     "_trtc.setting",
 ]
@@ -59,7 +68,12 @@ def getRawDatasInLocalPC(subfixs):
                     isGet = True
             if isGet == False:
                 continue
-            rawFullFilename = PROFILE_RAW_FILEFOLDER + "\\" + rawFilename
+
+            if _platform == "linux" or _platform == "linux2" or _platform == "darwin":
+                rawFullFilename = PROFILE_RAW_FILEFOLDER + "/" + rawFilename
+            elif _platform == "win32" or _platform == "win64":
+                rawFullFilename = PROFILE_RAW_FILEFOLDER + "\\" + rawFilename
+
             if os.path.isfile(rawFullFilename):
                 with open(rawFullFilename) as f:
                     while True:
@@ -74,8 +88,8 @@ def getRawDatasInDevice():
     reVal = []
     for id in getRealDevices():
         Trtr_Profiling_fileNames = getFileListInAndroidDevice("adb -s " + id + " shell ls " + "/sdcard/trtc_logs",
-                                                              Trtr_Target_fileName_Subfixs)
-        # for Trtr_Target_fileName_Subfix in Trtr_Target_fileName_Subfixs:
+                                                              Trtr_Target_fileName_Subfixs_InDevice)
+        # for Trtr_Target_fileName_Subfix in Trtr_Target_fileName_Subfixs_InDevice:
         #    Trtr_Profiling_fileName = getModelNameFromDevice(id) + Trtr_Target_fileName_Subfix
         for Trtr_Profiling_fileName in Trtr_Profiling_fileNames:
             if os.path.isfile(Trtr_Profiling_fileName):
@@ -106,7 +120,11 @@ def getRawCSVsInLocalPC():
             if rawFilename.endswith('.csv') == False:
                 continue
 
-            rawFullFilename = PROFILE_RAW_FILEFOLDER + "\\" + rawFilename
+            if _platform == "linux" or _platform == "linux2" or _platform == "darwin":
+                rawFullFilename = PROFILE_RAW_FILEFOLDER + "/" + rawFilename
+            elif _platform == "win32" or _platform == "win64":
+                rawFullFilename = PROFILE_RAW_FILEFOLDER + "\\" + rawFilename
+
             if os.path.isfile(rawFullFilename):
                 templateDataJson = {}
                 filenameSplit = rawFilename.split('_')
@@ -258,13 +276,16 @@ if __name__ == "__main__":
                         CURRENT_WRITE_LINE = 0
                         START______TIME = str(int(START______TIME) + 1)
                         # PROFILE_FILEFULLNAME = "data\\trtc_" + (datetime.datetime.utcnow() + datetime.timedelta(hours=9, minutes=1)).strftime("%Y%m%d%H%M") + ".profile"
-                        PROFILE_FILEFULLNAME = "data\\trtc_" + START______TIME + ".profile"
+                        PROFILE_FILEFULLNAME = getPROFILE_FILEFULLNAME(START______TIME)
 
                 excuteTime = (datetime.datetime.utcnow() + datetime.timedelta(hours=9)).strftime("%Y%m%d%H%M")
-                # os_systemEx("..\\filebeat\\filebeat-6.1.3-windows-x86_64\\filebeat.exe --once -e -c " + "sys\\filebeat.yml")
-                #os.system("..\\filebeat\\filebeat-6.1.3-windows-x86_64\\filebeat.exe --once -e -c " + "sys\\filebeat.yml")
-                #os.system("..\\filebeat\\filebeat-6.3.2-windows-x86_64\\filebeat.exe --once -e -c " + "sys\\filebeat_6.3.2.yml")
-                os.system("..\\filebeat\\filebeat-6.4.0-windows-x86_64\\filebeat.exe --once -e -c " + "sys\\filebeat_6.4.0.yml")
+                if _platform == "linux" or _platform == "linux2" or _platform == "darwin":
+                    os.system("../filebeat/filebeat-6.4.2-darwin-x86_64/filebeat --once -e -c " + "sys/filebeat_6.4.2_darwin.yml")
+                elif _platform == "win32" or _platform == "win64":
+                    # os_systemEx("..\\filebeat\\filebeat-6.1.3-windows-x86_64\\filebeat.exe --once -e -c " + "sys\\filebeat.yml")
+                    #os.system("..\\filebeat\\filebeat-6.1.3-windows-x86_64\\filebeat.exe --once -e -c " + "sys\\filebeat.yml")
+                    #os.system("..\\filebeat\\filebeat-6.3.2-windows-x86_64\\filebeat.exe --once -e -c " + "sys\\filebeat_6.3.2.yml")
+                    os.system("..\\filebeat\\filebeat-6.4.0-windows-x86_64\\filebeat.exe --once -e -c " + "sys\\filebeat_6.4.0.yml")
                 print("%s-%s." % ("awake", excuteTime)),
             else:
                 print(str(sleepTime) + "sec-sleeping."),
