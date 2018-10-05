@@ -110,6 +110,7 @@ def getRawDatasInDevice():
 
 def getRawCSVsInLocalPC():
     reVal = []
+    #ex. DSLAII_20181005180000_GPSA(SM-G950N).GPSB(SM-G930S)_com.skt.trtc.sample_GPSA.csv, DSLAII_20181005180000_GPSA(SM-G950N).GPSB(SM-G930S)_com.skt.trtc.sample_GPSB.csv
     for (dirpath, dirnames, rawFilenames) in walk(PROFILE_RAW_FILEFOLDER):
         printEx("%s:%s" % ("dirpath", dirpath))
         printEx("%s:%s" % ("dirnames", dirnames))
@@ -128,15 +129,15 @@ def getRawCSVsInLocalPC():
             if os.path.isfile(rawFullFilename):
                 templateDataJson = {}
                 filenameSplit = rawFilename.split('_')
-                if len(filenameSplit) != 4:
+                if len(filenameSplit) != 5:
                     printError("%s 's split_length is %s" % (rawFilename, len(filenameSplit)))
                     continue
                 templateDataJson["filename"] = rawFilename
                 templateDataJson["catagory"] = filenameSplit[0]
-                templateDataJson["execTime"] = filenameSplit[1]
-
+                templateDataJson["explicitTime"] = filenameSplit[1]
                 templateDataJson["Combination"] = filenameSplit[2]
-                templateDataJson["Destination"] = filenameSplit[3].split('.')[0]
+                templateDataJson["app_name"] = filenameSplit[3]
+                templateDataJson["Destination"] = filenameSplit[4].split('.')[0]
 
                 for comb in templateDataJson["Combination"].split('.'):
                     if templateDataJson["Destination"] in comb:
@@ -153,13 +154,29 @@ def getRawCSVsInLocalPC():
                                 rowDataJson["Source"] = 'GPSB'
                             else:
                                 rowDataJson["Source"] = 'GPSA'
+                            if row['Active Level'] != '-':
+                                rowDataJson["ActiveLevel.float"] = float(row['Active Level'])
+                            if row['Noise Level'] != '-':
+                                rowDataJson["NoiseLevel.float"] = float(row['Noise Level'])
+                            if row['POLQA SWB v2.4'] != '-':
+                                rowDataJson["POLQASWBv2.4.float"] = float(row['POLQA SWB v2.4'])
+                            if row['Offset'] != '-':
+                                rowDataJson["Offset.float"] = float(row['Offset'])
+                            if row['Offset Minimum'] != '-':
+                                rowDataJson["OffsetMinimum.float"] = float(row['Offset Minimum'])
+                            if row['Offset Maximum'] != '-':
+                                rowDataJson["OffsetMaximum.float"] = float(row['Offset Maximum'])
+                            if row['Latitude (Destination)'] != '-' and row['Longitude (Destination)'] != '-':
+                                rowDataJson["location"] = "%s,%s" % (row['Latitude (Destination)'], row['Longitude (Destination)'])
+                            if row['Time (Destination)'] != '-':
+                                try:
+                                    # https://docs.python.org/2/library/time.html#time.strftime
+                                    Time_Destination = datetime.datetime.strptime(row['Time (Destination)'], "%d %m %Y %H:%M:%S")#ex. 4 10 2018 17:35:31
+                                    rowDataJson["execTime"] = Time_Destination.strftime('%Y-%m-%d %H:%M:%S')#"execTime": "2018-10-04 16:49:01.889"
+                                except:
+                                    printError("expected error for time-data-format: ", sys.exc_info()[0], sys.exc_info()[1])
+                                    rowDataJson["execTime"] = templateDataJson["explicitTime"]
 
-                            rowDataJson["ActiveLevel.float"] = float(row['Active Level'])
-                            rowDataJson["NoiseLevel.float"] = float(row['Noise Level'])
-                            rowDataJson["POLQASWBv2.4.float"] = float(row['POLQA SWB v2.4'])
-                            rowDataJson["Offset.float"] = float(row['Offset'])
-                            rowDataJson["OffsetMinimum.float"] = float(row['Offset Minimum'])
-                            rowDataJson["OffsetMaximum.float"] = float(row['Offset Maximum'])
                             rowDataJson.update(templateDataJson)
                             reVal.append(json.dumps(rowDataJson, ensure_ascii=False))
 
