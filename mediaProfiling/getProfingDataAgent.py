@@ -18,7 +18,7 @@ MAX_WRITE_LINE = 5000
 
 def getPROFILE_FILEFULLNAME(time):
     if _platform == "linux" or _platform == "linux2" or _platform == "darwin":
-        reVal = ("../../delasticRawDatas/refinedDatas4MyCom/trtc_%s.profile" % time)
+        reVal = ("../../elasticRawDatas/refinedDatas4MyCom/trtc_%s.profile" % time)
     elif _platform == "win32" or _platform == "win64":
         reVal = ("..\\..\\elasticRawDatas\\refinedDatas4MyCom\\trtc_%s.profile" % time)
 
@@ -38,7 +38,8 @@ Trtr_Target_fileName_Subfixs_InDevice = [
 ]
 
 def getFileListInAndroidDevice(cmd, subfixs):
-    fd_popen = subprocess.Popen(cmd, stdout=subprocess.PIPE).stdout
+    fd_popen = subprocess.Popen(cmd.split(' '), stdout=subprocess.PIPE).stdout
+
     #data = fd_popen.read().strip()
     reVal = []
     while 1:

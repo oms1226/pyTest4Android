@@ -31,8 +31,10 @@ filebeat.inputs:
     #- C:\_python\workspace\PycharmProjects\pyTest4AndroidonGithub\mediaProfiling\data\*.profile
     #- C:\_python\workspace\PycharmProjects\elasticRawDatas\refinedDatas4MyCom\*.data
     #- C:\_python\workspace\PycharmProjects\elasticRawDatas\refinedDatas4MyCom\*.profile
-    - /Users/oms1226/_workspace/pyTest4Android/mediaProfiling/data
-    - /Users/oms1226/_workspace/elasticRawDatas/refinedDatas4MyCom
+    - /Users/oms1226/_workspace/pyTest4Android/mediaProfiling/data/*.data
+    - /Users/oms1226/_workspace/pyTest4Android/mediaProfiling/data/*.profile
+    - /Users/oms1226/_workspace/elasticRawDatas/refinedDatas4MyCom/*.data
+    - /Users/oms1226/_workspace/elasticRawDatas/refinedDatas4MyCom/*.profile
 
   # Exclude lines. A list of regular expressions to match. It drops the lines that are
   # matching any regular expression from the list.
