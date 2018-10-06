@@ -17,7 +17,7 @@ def getTableLastTimeInDB(tablename):
     if _platform == "linux" or _platform == "linux2" or _platform == "darwin":
         fd_popen = subprocess.Popen(""" mysql -uroot -p0000  -e "SELECT UPDATE_TIME FROM INFORMATION_SCHEMA.TABLES WHERE table_schema='%s';" """ % tablename, shell=True, stdout=subprocess.PIPE).stdout
     elif _platform == "win32" or _platform == "win64":
-        fd_popen = subprocess.Popen(""" mysql -uroot -p0000  -e "SELECT UPDATE_TIME FROM INFORMATION_SCHEMA.TABLES WHERE table_schema='%s';" """ % tablename, stdout=subprocess.PIPE).stdout
+        fd_popen = subprocess.Popen("""mysql -uroot -p0000  -e \"SELECT UPDATE_TIME FROM INFORMATION_SCHEMA.TABLES WHERE table_schema='%s';\"""" % tablename, stdout=subprocess.PIPE).stdout
     while 1:
        line = fd_popen.readline()
        if not line :
