@@ -169,6 +169,7 @@ def getRawCSVsInLocalPC():
                                 rowDataJson["OffsetMaximum.float"] = float(row['Offset Maximum'])
                             if row['Latitude (Destination)'] != '-' and row['Longitude (Destination)'] != '-':
                                 rowDataJson["location"] = "%s,%s" % (row['Latitude (Destination)'], row['Longitude (Destination)'])
+
                             if row['Time (Destination)'] != '-':
                                 try:
                                     # https://docs.python.org/2/library/time.html#time.strftime
@@ -177,6 +178,8 @@ def getRawCSVsInLocalPC():
                                 except:
                                     printError("expected error for time-data-format: ", sys.exc_info()[0], sys.exc_info()[1])
                                     rowDataJson["execTime"] = templateDataJson["explicitTime"]
+                            else:
+                                rowDataJson["execTime"] = templateDataJson["explicitTime"]
 
                             rowDataJson.update(templateDataJson)
                             reVal.append(json.dumps(rowDataJson, ensure_ascii=False))
