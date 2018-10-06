@@ -7,6 +7,7 @@ import shutil
 from dateutil import parser
 import datetime
 import codecs
+from sys import platform as _platform
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -115,8 +116,8 @@ def writeFileAboutTableLastTimeInDB(filefullname, content):
 
     reVal = readFileAboutTableLastTimeInDB(filefullname)
     if content != reVal:
-        printEx("%s:%s" % ("cotent", cotent))
-        printEx("%s:%s" % ("reVal", rreVal))
+        printEx("%s:%s" % ("content", content))
+        printEx("%s:%s" % ("reVal", reVal))
         reVal = 'write fail!'
 
     return reVal
@@ -129,6 +130,7 @@ CLOUDBERRY_MYSQL_FULLFILENAME_PREFIX = '%s\\%s.%s' % (CLOUDBERRY_MYSQL_DIRECTORY
 CLOUDBERRY_HISTORY_LOG_FILENAME = '%s\\%s.%s' % (CLOUDBERRY_MYSQL_DIRECTORY, TABLE_NAME, 'log')
 LOCAL______HISTORY_LOG_FILENAME = '%s\\%s.%s' % ('.', TABLE_NAME, 'log')
 WHEREISSCRIPT = None
+LOCALHOST_TARGETPATH = None
 
 def printEx (*strs):
     if os.path.exists(CLOUDBERRY_HISTORY_LOG_FILENAME):
@@ -158,10 +160,41 @@ if __name__ == "__main__":
                 if argfullname[0] == '--where':
                     WHEREISSCRIPT = argfullname[1]
             sys.argv.pop(1)
+        #python DBUpdateAndBackupAfterCheck.py --localhost=/Users/oms1226/Downloads
+        elif len(sys.argv) > 1 and '--localhost' in sys.argv[1]:
+            argfullname = sys.argv[1].split('=')
+            if len(argfullname) == 2:
+                if argfullname[0] == '--localhost':
+                    LOCALHOST_TARGETPATH = argfullname[1]
+            sys.argv.pop(1)
         else:
             sys.argv.pop(1)
 
     print("%s:%s" % ("WHEREISSCRIPT", WHEREISSCRIPT))
+    print("%s:%s" % ("LOCALHOST_TARGETPATH", LOCALHOST_TARGETPATH))
+    if LOCALHOST_TARGETPATH != None:
+        lastTimeInDB = getTableLastTimeInDB(TABLE_NAME)
+        if 'my_wiki.sql' in LOCALHOST_TARGETPATH:
+            fileTime = getDateFromDBFileNameInCloudBerry(LOCALHOST_TARGETPATH)
+            if lastTimeInDB == None or fileTime == None:
+                print("%s:%s" % ("lastTimeInDB", lastTimeInDB))
+                print("%s:%s" % ("fileTime", fileTime))
+                print("%s:%s" % ("LOCALHOST_ONLY", 'ERROR_DUE_TO_NONE'))
+            elif int(lastTimeInDB) >= int(fileTime):
+                print("%s:%s" % ("LOCALHOST_ONLY", 'ERROR_DUE_TO_DBisMoreRecent'))
+            else:
+                print("%s:%s" % ("LOCALHOST_ONLY", 'MY_WIKI_UPDATE'))
+                printEx(execMysqlUpdate(LOCALHOST_TARGETPATH))
+        else:
+            print("%s:%s" % ("LOCALHOST_ONLY", 'MY_WIKI_DUMP'))
+            if _platform == "linux" or _platform == "linux2" or _platform == "darwin":
+                print(execMysqlDump('%s.%s' % ('%s/%s.%s' % (LOCALHOST_TARGETPATH, TABLE_NAME, 'sql'), lastTimeInDB)))
+            elif _platform == "win32" or _platform == "win64":
+                print(execMysqlDump('%s.%s' % ('%s\\%s.%s' % (LOCALHOST_TARGETPATH, TABLE_NAME, 'sql'), lastTimeInDB)))
+
+
+        print("%s:%s" % ("LOCALHOST_ONLY", 'END'))
+        exit(0)
 
     START______TIME = (datetime.datetime.utcnow() + datetime.timedelta(hours=9)).strftime("%Y%m%d%H%M")
     printEx("%s:%s" % ("START______TIME", START______TIME))
