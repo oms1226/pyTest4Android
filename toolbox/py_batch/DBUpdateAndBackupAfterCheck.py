@@ -14,7 +14,10 @@ sys.setdefaultencoding('utf-8')
 
 def getTableLastTimeInDB(tablename):
     reVal = None
-    fd_popen = subprocess.Popen("""mysql -uroot -p0000  -e "SELECT UPDATE_TIME FROM INFORMATION_SCHEMA.TABLES WHERE table_schema='%s';""" % tablename, stdout=subprocess.PIPE).stdout
+    if _platform == "linux" or _platform == "linux2" or _platform == "darwin":
+        fd_popen = subprocess.Popen(""" mysql -uroot -p0000  -e "SELECT UPDATE_TIME FROM INFORMATION_SCHEMA.TABLES WHERE table_schema='%s';" """ % tablename, shell=True, stdout=subprocess.PIPE).stdout
+    elif _platform == "win32" or _platform == "win64":
+        fd_popen = subprocess.Popen(""" mysql -uroot -p0000  -e "SELECT UPDATE_TIME FROM INFORMATION_SCHEMA.TABLES WHERE table_schema='%s';" """ % tablename, stdout=subprocess.PIPE).stdout
     while 1:
        line = fd_popen.readline()
        if not line :
@@ -145,9 +148,10 @@ def printEx (*strs):
     print tot
 
     #with open(CLOUDBERRY_HISTORY_LOG_FILENAME, 'a') as f:
-    with codecs.open(LOCAL______HISTORY_LOG_FILENAME, 'a', 'utf-8') as f:
-        f.write("%s> %s" % (WHEREISSCRIPT, tot) + "\r\n")
-        f.close()
+    if _platform == "win32" or _platform == "win64":
+        with codecs.open(LOCAL______HISTORY_LOG_FILENAME, 'a', 'utf-8') as f:
+            f.write("%s> %s" % (WHEREISSCRIPT, tot) + "\r\n")
+            f.close()
 
     if os.path.exists(LOCAL______HISTORY_LOG_FILENAME):
         shutil.move(LOCAL______HISTORY_LOG_FILENAME, CLOUDBERRY_HISTORY_LOG_FILENAME)
@@ -161,6 +165,8 @@ if __name__ == "__main__":
                     WHEREISSCRIPT = argfullname[1]
             sys.argv.pop(1)
         #python DBUpdateAndBackupAfterCheck.py --localhost=/Users/oms1226/Downloads
+        #python /Users/oms1226/_workspace/pyTest4Android/toolbox/py_batch/DBUpdateAndBackupAfterCheck.py --localhost=/Users/oms1226/Downloads
+        #python /Users/oms1226/_workspace/pyTest4Android/toolbox/py_batch/DBUpdateAndBackupAfterCheck.py --localhost=/Users/oms1226/Downloads/_wikibackup
         elif len(sys.argv) > 1 and '--localhost' in sys.argv[1]:
             argfullname = sys.argv[1].split('=')
             if len(argfullname) == 2:
@@ -176,9 +182,9 @@ if __name__ == "__main__":
         lastTimeInDB = getTableLastTimeInDB(TABLE_NAME)
         if 'my_wiki.sql' in LOCALHOST_TARGETPATH:
             fileTime = getDateFromDBFileNameInCloudBerry(LOCALHOST_TARGETPATH)
+            print("%s:%s" % ("lastTimeInDB", lastTimeInDB))
+            print("%s:%s" % ("fileTime", fileTime))
             if lastTimeInDB == None or fileTime == None:
-                print("%s:%s" % ("lastTimeInDB", lastTimeInDB))
-                print("%s:%s" % ("fileTime", fileTime))
                 print("%s:%s" % ("LOCALHOST_ONLY", 'ERROR_DUE_TO_NONE'))
             elif int(lastTimeInDB) >= int(fileTime):
                 print("%s:%s" % ("LOCALHOST_ONLY", 'ERROR_DUE_TO_DBisMoreRecent'))
@@ -189,8 +195,10 @@ if __name__ == "__main__":
             print("%s:%s" % ("LOCALHOST_ONLY", 'MY_WIKI_DUMP'))
             if _platform == "linux" or _platform == "linux2" or _platform == "darwin":
                 print(execMysqlDump('%s.%s' % ('%s/%s.%s' % (LOCALHOST_TARGETPATH, TABLE_NAME, 'sql'), lastTimeInDB)))
+                print("%s:%s" % ("LOCALHOST_ONLY", ('%s.%s' % ('%s/%s.%s' % (LOCALHOST_TARGETPATH, TABLE_NAME, 'sql'), lastTimeInDB))))
             elif _platform == "win32" or _platform == "win64":
                 print(execMysqlDump('%s.%s' % ('%s\\%s.%s' % (LOCALHOST_TARGETPATH, TABLE_NAME, 'sql'), lastTimeInDB)))
+                print("%s:%s" % ("LOCALHOST_ONLY", ('%s.%s' % ('%s\\%s.%s' % (LOCALHOST_TARGETPATH, TABLE_NAME, 'sql'), lastTimeInDB))))
 
 
         print("%s:%s" % ("LOCALHOST_ONLY", 'END'))
