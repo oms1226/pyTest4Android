@@ -137,14 +137,14 @@ def getRawCSVsInLocalPC():
                 templateDataJson["catagory"] = filenameSplit[0]
                 templateDataJson["explicitTime"] = filenameSplit[1]
                 templateDataJson["Combination"] = filenameSplit[2]
-                templateDataJson["app_name"] = filenameSplit[3]
+                templateDataJson["app_name"] = filenameSplit[3].lower()
                 templateDataJson["Destination"] = filenameSplit[4].split('.')[0]
 
                 for comb in templateDataJson["Combination"].split('.'):
                     if templateDataJson["Destination"] in comb:
-                        templateDataJson["model"] = comb.replace(templateDataJson["Destination"], "").replace("(", "").replace(")", "")
+                        templateDataJson["model"] = comb.replace(templateDataJson["Destination"], "").replace("(", "").replace(")", "").upper()
                     else:
-                        templateDataJson["partnerModel"] = comb.replace("GPSA", "").replace("GPSB", "").replace("(", "").replace(")", "")
+                        templateDataJson["partnerModel"] = comb.replace("GPSA", "").replace("GPSB", "").replace("(", "").replace(")", "").upper()
 
                 data = pd.read_csv(rawFullFilename)
                 rowDataJson = {}
