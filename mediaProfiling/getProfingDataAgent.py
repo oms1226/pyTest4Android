@@ -139,6 +139,7 @@ def getRawCSVsInLocalPC():
                 templateDataJson["Combination"] = filenameSplit[2]
                 templateDataJson["app_name"] = filenameSplit[3].lower()
                 templateDataJson["Destination"] = filenameSplit[4].split('.')[0]
+                templateDataJson["Identifier"] = filenameSplit[0:3]
 
                 for comb in templateDataJson["Combination"].split('.'):
                     if templateDataJson["Destination"] in comb:
