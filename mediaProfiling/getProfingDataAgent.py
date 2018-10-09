@@ -8,7 +8,7 @@ from common.deviceInfo import *
 from os import walk
 import pandas as pd
 from sys import platform as _platform
-
+from os import chdir
 
 MIN_SLEEPTIME = 60
 MAX_SLEEPTIME = 15 * 60
@@ -190,6 +190,25 @@ def getRawCSVsInLocalPC():
 
 
 if __name__ == "__main__":
+    print ("%s:%s" % ("os.getcwd()", os.getcwd()))
+    currentPath = sys.argv[0]
+    print ("%s:%s" % ("currentPath", currentPath))
+
+    if _platform == "linux" or _platform == "linux2" or _platform == "darwin":
+        if len(currentPath.split('/')) > 1:
+            chgCurrentPath = '/'.join(currentPath.split('/')[:-1])
+        else:
+            chgCurrentPath = None
+    elif _platform == "win32" or _platform == "win64":
+        if len(currentPath.split('\\')) > 1:
+            chgCurrentPath = '\\'.join(currentPath.split('\\')[:-1])
+        else:
+            chgCurrentPath = None
+    print ("%s:%s" % ("chgCurrentPath", chgCurrentPath))
+    if chgCurrentPath != None:
+        chdir(chgCurrentPath)
+        print ("%s:%s" % ("os.getcwd()", os.getcwd()))
+
     AUTOMODE = False
     while len(sys.argv) > 1:
         if len(sys.argv) > 1 and '-a' in sys.argv[1]:
