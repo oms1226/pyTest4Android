@@ -137,7 +137,7 @@ def getRawCSVsInLocalPC():
                 templateDataJson["catagory"] = filenameSplit[0]
                 templateDataJson["explicitTime"] = filenameSplit[1]
                 templateDataJson["Combination"] = filenameSplit[2]
-                templateDataJson["app_name"] = filenameSplit[3].lower()
+                templateDataJson["service_name"] = filenameSplit[3].lower()
                 templateDataJson["Destination"] = filenameSplit[4].split('.')[0]
                 templateDataJson["Identifier"] = filenameSplit[0:3]
 
@@ -151,6 +151,9 @@ def getRawCSVsInLocalPC():
                 rowDataJson = {}
                 for index, row in data[(data['Active Level'] != '-')].iterrows():
                     if row['Destination'].replace(" ", "") == templateDataJson["Destination"]:
+                        if float(row['Offset']) < 0:
+                            continue
+
                         if row['Source'].replace(" ", "") == 'GPSRemote':
                             if templateDataJson["Destination"] == 'GPSA':
                                 rowDataJson["Source"] = 'GPSB'
