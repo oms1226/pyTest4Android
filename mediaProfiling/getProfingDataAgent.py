@@ -134,9 +134,13 @@ def getRawCSVsInLocalPC():
                     printError("%s 's split_length is %s" % (rawFilename, len(filenameSplit)))
                     continue
                 templateDataJson["filename"] = rawFilename
+                if 'DSLAIIv1' == filenameSplit[0]:
+                    filenameSplit[0] == 'DSLAIIv2'
                 templateDataJson["catagory"] = filenameSplit[0]
                 templateDataJson["explicitTime"] = filenameSplit[1]
                 templateDataJson["Combination"] = filenameSplit[2]
+                if filenameSplit[3].lower() == 'com.skt.trtc.sample':
+                    filenameSplit[3] = 'trtc.roaming'
                 templateDataJson["service_name"] = filenameSplit[3].lower()
                 templateDataJson["Destination"] = filenameSplit[4].split('.')[0]
                 templateDataJson["Identifier"] = filenameSplit[0:3]
