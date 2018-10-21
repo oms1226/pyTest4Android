@@ -12,25 +12,31 @@ from sys import platform as _platform
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
+
 def getTableLastTimeInDB(tablename):
     reVal = None
     if _platform == "linux" or _platform == "linux2" or _platform == "darwin":
-        fd_popen = subprocess.Popen(""" mysql -uroot -p0000  -e "SELECT UPDATE_TIME FROM INFORMATION_SCHEMA.TABLES WHERE table_schema='%s';" """ % tablename, shell=True, stdout=subprocess.PIPE).stdout
+        fd_popen = subprocess.Popen(
+            """ mysql -uroot -p0000  -e "SELECT UPDATE_TIME FROM INFORMATION_SCHEMA.TABLES WHERE table_schema='%s';" """ % tablename,
+            shell=True, stdout=subprocess.PIPE).stdout
     elif _platform == "win32" or _platform == "win64":
-        fd_popen = subprocess.Popen("""mysql -uroot -p0000  -e \"SELECT UPDATE_TIME FROM INFORMATION_SCHEMA.TABLES WHERE table_schema='%s';\"""" % tablename, stdout=subprocess.PIPE).stdout
+        fd_popen = subprocess.Popen(
+            """mysql -uroot -p0000  -e \"SELECT UPDATE_TIME FROM INFORMATION_SCHEMA.TABLES WHERE table_schema='%s';\"""" % tablename,
+            stdout=subprocess.PIPE).stdout
     while 1:
-       line = fd_popen.readline()
-       if not line :
-           break
-       elif ('NULL' in line) or ('----' in line) or  ('UPDATE_TIME' in line) :
-           pass
-       else:
-           printEx("%s:%s" % ("line", line))
-           dt = parser.parse(line)
-           reVal = dt.strftime("%Y%m%d%H%M%S")
-           break
+        line = fd_popen.readline()
+        if not line:
+            break
+        elif ('NULL' in line) or ('----' in line) or ('UPDATE_TIME' in line):
+            pass
+        else:
+            #printEx("%s:%s" % ("line", line))
+            dt = parser.parse(line)
+            if reVal == None or reVal < dt.strftime("%Y%m%d%H%M%S"):
+                reVal = dt.strftime("%Y%m%d%H%M%S")
+            # break
     fd_popen.close()
-
+    printEx("%s:%s" % ("reVal", reVal))
     return reVal
 
 def execMysqlDump(filefullname):
