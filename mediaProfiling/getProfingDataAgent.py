@@ -195,6 +195,15 @@ def getRawCSVsInLocalPC():
                 os.remove(rawFullFilename)
     return reVal
 
+def doFilebeatOnce():
+    if _platform == "linux" or _platform == "linux2" or _platform == "darwin":
+        os.system("../filebeat/filebeat-6.4.2-darwin-x86_64/filebeat --once -e -c " + "sys/filebeat_6.4.2_darwin.yml")
+    elif _platform == "win32" or _platform == "win64":
+        # os_systemEx("..\\filebeat\\filebeat-6.1.3-windows-x86_64\\filebeat.exe --once -e -c " + "sys\\filebeat.yml")
+        # os.system("..\\filebeat\\filebeat-6.1.3-windows-x86_64\\filebeat.exe --once -e -c " + "sys\\filebeat.yml")
+        # os.system("..\\filebeat\\filebeat-6.3.2-windows-x86_64\\filebeat.exe --once -e -c " + "sys\\filebeat_6.3.2.yml")
+        # os.system("..\\filebeat\\filebeat-6.4.0-windows-x86_64\\filebeat.exe --once -e -c " + "sys\\filebeat_6.4.0.yml")
+        os.system("..\\filebeat\\filebeat-6.4.2-windows-x86_64\\filebeat.exe --once -e -c " + "sys\\filebeat_6.4.2.yml")
 
 if __name__ == "__main__":
     print ("%s:%s" % ("os.getcwd()", os.getcwd()))
@@ -217,12 +226,25 @@ if __name__ == "__main__":
         print ("%s:%s" % ("os.getcwd()", os.getcwd()))
 
     AUTOMODE = False
+    FORCEMODE = False
     while len(sys.argv) > 1:
         if len(sys.argv) > 1 and '-a' in sys.argv[1]:
             AUTOMODE = True
             sys.argv.pop(1)
+        elif len(sys.argv) > 1 and '-f' in sys.argv[1]:
+            FORCEMODE = True
+            sys.argv.pop(1)
+        else:
+            sys.argv.pop(1)
 
     printEx("%s:%s" % ("AUTOMODE", AUTOMODE))
+    printEx("%s:%s" % ("FORCEMODE", FORCEMODE))
+
+    if FORCEMODE:
+        doFilebeatOnce()
+        printEx("%s:%s" % ("FORCEMODE", "COMPLETE!"))
+        exit(0)
+
 
     sleepTime = MIN_SLEEPTIME
     while True:
@@ -327,13 +349,7 @@ if __name__ == "__main__":
                         PROFILE_FILEFULLNAME = getPROFILE_FILEFULLNAME(START______TIME)
 
                 excuteTime = (datetime.datetime.utcnow() + datetime.timedelta(hours=9)).strftime("%Y%m%d%H%M")
-                if _platform == "linux" or _platform == "linux2" or _platform == "darwin":
-                    os.system("../filebeat/filebeat-6.4.2-darwin-x86_64/filebeat --once -e -c " + "sys/filebeat_6.4.2_darwin.yml")
-                elif _platform == "win32" or _platform == "win64":
-                    # os_systemEx("..\\filebeat\\filebeat-6.1.3-windows-x86_64\\filebeat.exe --once -e -c " + "sys\\filebeat.yml")
-                    #os.system("..\\filebeat\\filebeat-6.1.3-windows-x86_64\\filebeat.exe --once -e -c " + "sys\\filebeat.yml")
-                    #os.system("..\\filebeat\\filebeat-6.3.2-windows-x86_64\\filebeat.exe --once -e -c " + "sys\\filebeat_6.3.2.yml")
-                    os.system("..\\filebeat\\filebeat-6.4.0-windows-x86_64\\filebeat.exe --once -e -c " + "sys\\filebeat_6.4.0.yml")
+                doFilebeatOnce()
                 print("%s-%s." % ("awake", excuteTime)),
             else:
                 print(str(sleepTime) + "sec-sleeping."),
