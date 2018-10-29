@@ -136,7 +136,7 @@ def getRawCSVsInLocalPC():
                 templateDataJson["filename"] = rawFilename
                 if 'DSLAIIv1' == filenameSplit[0]:
                     filenameSplit[0] == 'DSLAIIv2'
-                templateDataJson["catagory"] = filenameSplit[0]
+                templateDataJson["category"] = filenameSplit[0]
                 templateDataJson["explicitTime"] = filenameSplit[1]
                 templateDataJson["Combination"] = filenameSplit[2]
                 if filenameSplit[3].lower() == 'com.skt.trtc.sample':
