@@ -375,10 +375,14 @@ def getPropFromDevice(deviceId):
 
     content = fd_popen.read().strip()
     for line in content.split('\n'):
-        reVal = reVal + line.replace('[', '"').replace(']', '"').replace('""0.pool.ntp.org""', '"0.pool.ntp.org"').replace('\r', '').replace('\n', '') + ','
+        if (line.count('[') == 2)\
+                and (line.count(']') == 2)\
+                and ('{' not in line)\
+                and ('}' not in line):
+            reVal = reVal + line.replace('[', '"').replace(']', '"').replace('""0.pool.ntp.org""', '"0.pool.ntp.org"').replace('\r', '').replace('\n', '').replace('\\u8712', '') + ','
     if reVal.endswith(','):
         reVal = reVal[:-1] + '}'
-
+    print reVal
     reVal = json.loads(reVal)
 
     printEx( "%s:%s" % ("type(reVal)", type(reVal)) )
