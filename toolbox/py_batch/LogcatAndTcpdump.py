@@ -33,7 +33,7 @@ def kill_meAndchild_processes(pid, sig=signal.SIGTERM):
         assert retcode == 0, "ps command returned %d" % retcode
         for line in ps_output.split("\n")[:-1]:
             if 'ps -e -o pid -o ppid -o command' not in line and "grep" not in line:
-                iPid = int(line.split(' ')[0])
+                iPid = int(line.strip(' ').split(' ')[0])
                 print("%s:%s" % ('iPid', iPid))
                 os.kill(iPid, sig)
 
