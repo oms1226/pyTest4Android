@@ -42,6 +42,7 @@ if __name__ == "__main__":
     procs = []
     tcpdumpfiles = {}
     SAVEDIR = '/Users/oms1226/_log'
+    CUSTOM_NAME = ''
     myName = sys.argv[0].split('/')[-1].split('.')[0]
     print("%s:%s" % ("myName", myName))
     while len(sys.argv) > 1:
@@ -51,11 +52,21 @@ if __name__ == "__main__":
                 if argfullname[0] == '--where':
                     SAVEDIR = argfullname[1]
             sys.argv.pop(1)
+        elif len(sys.argv) > 1 and '--name' in sys.argv[1]:
+            argfullname = sys.argv[1].split('=')
+            if len(argfullname) == 2:
+                if argfullname[0] == '--name':
+                    CUSTOM_NAME = argfullname[1]
+            sys.argv.pop(1)
         else:
             sys.argv.pop(1)
     print("%s:%s" % ('SAVEDIR', SAVEDIR))
+    print("%s:%s" % ('CUSTOM_NAME', CUSTOM_NAME))
     connectIds = getRealDevices()
-    TARGET_DIR = SAVEDIR + "/" + myName + "_" + START______TIME
+    if CUSTOM_NAME == '':
+        TARGET_DIR = SAVEDIR + "/" + myName + "_" + START______TIME
+    else:
+        TARGET_DIR = SAVEDIR + "/" + myName + "_" + START______TIME + "_" + CUSTOM_NAME
     if len(connectIds) > 0:
         if not os.path.exists(TARGET_DIR):
             os.makedirs(TARGET_DIR)
