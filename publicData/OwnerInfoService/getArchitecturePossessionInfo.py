@@ -67,16 +67,27 @@ if __name__ == "__main__":
             response_body = getArchitecturePossessionInfo(sigungu_cd, bjdong_cd, plat_gb_cd, bun, ji)
             #print response_body
             xpars = xmltodict.parse(response_body)
-            with open(result_filename, 'a') as csv_file:
-                writer = csv.writer(csv_file)
-                for item in xpars['response']['body']['items']['item']:
-                    if help_print == False:
-                        writer.writerow(item.keys())
-                        help_print = True
-                    writer.writerow(item.values())
-            break
+            try:
+                with open(result_filename, 'a') as csv_file:
+                    writer = csv.writer(csv_file)
+                    for item in xpars['response']['body']['items']['item']:
+                        if not isinstance(item, dict):#type(item) != dict --> is not working
+                            continue
+                        if help_print == False:
+                            writer.writerow(item.keys())
+                            help_print = True
 
-
-
+                        writer.writerow(item.values())
+                        #writer.write(item.values())
+                #break
+            except:
+                print "Unexpected error: ", sys.exc_info()[0], sys.exc_info()[1]
 
     exit(0)
+
+columns = list()
+for key in item.keys():
+    if type(item[key]) is str:
+        columns.append(unicode(item[key], 'utf-8'))
+    else:
+        columns.append(item[key])
