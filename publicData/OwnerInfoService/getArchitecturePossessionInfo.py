@@ -78,7 +78,7 @@ if __name__ == "__main__":
             if index <= previousIndex:
                 continue
             pk, regstr_gb_cd, regstr_gb_nm, regstr_kind_cd, regstr_kind_nm, sigungu_cd, bjdong_cd, plat_gb_cd, bun, ji = row
-            print sigungu_cd, bjdong_cd, plat_gb_cd, bun, ji
+            print 'request:', sigungu_cd, bjdong_cd, plat_gb_cd, bun, ji
             response_body = getArchitecturePossessionInfo(sigungu_cd, bjdong_cd, plat_gb_cd, bun, ji)
             #print response_body
             xpars = xmltodict.parse(response_body)
