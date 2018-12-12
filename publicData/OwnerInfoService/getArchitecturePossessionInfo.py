@@ -12,6 +12,7 @@ from urllib import urlencode, quote_plus
 from urllib2 import Request, urlopen
 import datetime
 import xmltodict
+import time
 
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -35,13 +36,13 @@ def getArchitecturePossessionInfo():
     response_body = urlopen(request).read()
     print response_body
 
-def getArchitecturePossessionInfo(sigungu_cd, bjdong_cd, plat_gb_cd, bun, ji):
+def getArchitecturePossessionInfo(sigungu_cd, bjdong_cd, plat_gb_cd, bun, ji, dong_nm):
 
     queryParams = urlencode({
-                                   quote_plus('pageNo'): '1', quote_plus('numOfRows'): '10',
+                                   quote_plus('pageNo'): '1', quote_plus('numOfRows'): '1000',
                                    quote_plus('sigungu_cd'): sigungu_cd, quote_plus('bjdong_cd'): bjdong_cd,
                                    quote_plus('plat_gb_cd'): plat_gb_cd, quote_plus('bun'): bun, quote_plus('ji'): ji,
-                                   quote_plus('dong_nm'): '', quote_plus('ho_nm'): ''
+                                   quote_plus('dong_nm'): dong_nm, quote_plus('ho_nm'): ''
     })
 
     # request = Request(url + queryParams)
@@ -56,7 +57,7 @@ if __name__ == "__main__":
     #exit(0);
     START______TIME = (datetime.datetime.utcnow() + datetime.timedelta(hours=9)).strftime("%Y%m%d%H%M")
     help_print = False
-    result_filename = 'response4houseAddressInSeoul.csv'
+    result_filename = 'response4houseAddressInSeoul_201812102000.csv'
     if os.path.exists(result_filename):
         help_print = True
 
@@ -68,7 +69,7 @@ if __name__ == "__main__":
             except:
                 print "Unexpected error: ", sys.exc_info()[0], sys.exc_info()[1]
 
-    with open('houseAddressInSeoul.csv') as f:
+    with open('201812102000_sub_seoul_house_api.csv') as f:
         csv_reader = csv.reader(f)
         for index, row in enumerate(csv_reader):
             print "%s:%s" % ("START______TIME", START______TIME)
@@ -77,9 +78,16 @@ if __name__ == "__main__":
                 continue
             if index <= previousIndex:
                 continue
-            pk, regstr_gb_cd, regstr_gb_nm, regstr_kind_cd, regstr_kind_nm, sigungu_cd, bjdong_cd, plat_gb_cd, bun, ji = row
-            print 'request:', sigungu_cd, bjdong_cd, plat_gb_cd, bun, ji
-            response_body = getArchitecturePossessionInfo(sigungu_cd, bjdong_cd, plat_gb_cd, bun, ji)
+            #pk, regstr_gb_cd, regstr_gb_nm, regstr_kind_cd, regstr_kind_nm, sigungu_cd, bjdong_cd, plat_gb_cd, bun, ji = row
+            mgm_bldrgst_pk, sigungu_cd, bjdong_cd, plat_gb_cd, bun, ji, dong_nm = row
+            dong_nm.strip()
+            if dong_nm == None:
+                dong_nm = ''
+            else:
+                dong_nm = dong_nm.strip()
+            print 'request:', sigungu_cd, bjdong_cd, plat_gb_cd, bun, ji, "[%s:%s]" % ("dong_nm", dong_nm)
+
+            response_body = getArchitecturePossessionInfo(sigungu_cd, bjdong_cd, plat_gb_cd, bun, ji, dong_nm)
             #print response_body
             xpars = xmltodict.parse(response_body)
             try:
@@ -103,6 +111,8 @@ if __name__ == "__main__":
                     f.write(str(index))
                 finally:
                     f.close()
+
+            time.sleep(1)
 
     END________TIME = (datetime.datetime.utcnow() + datetime.timedelta(hours=9)).strftime("%Y%m%d%H%M")
     print "%s:%s" % ("START______TIME", START______TIME)
