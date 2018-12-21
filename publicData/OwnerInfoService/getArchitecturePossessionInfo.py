@@ -13,6 +13,7 @@ from urllib2 import Request, urlopen
 import datetime
 import xmltodict
 import time
+import codecs
 
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -57,7 +58,7 @@ if __name__ == "__main__":
     #exit(0);
     START______TIME = (datetime.datetime.utcnow() + datetime.timedelta(hours=9)).strftime("%Y%m%d%H%M")
     help_print = False
-    result_filename = 'response4houseAddressInSeoul_201812102000.csv'
+    result_filename = 'response4seoul_700over_201812201900.csv'
     if os.path.exists(result_filename):
         help_print = True
 
@@ -69,7 +70,8 @@ if __name__ == "__main__":
             except:
                 print "Unexpected error: ", sys.exc_info()[0], sys.exc_info()[1]
 
-    with open('201812102000_sub_seoul_house_api.csv') as f:
+    with open('seoul_700over.csv') as f:
+    #with codecs.open('seoul_700over.csv', 'r',encoding='utf8') as f:
         csv_reader = csv.reader(f)
         for index, row in enumerate(csv_reader):
             print "%s:%s" % ("START______TIME", START______TIME)
@@ -79,13 +81,23 @@ if __name__ == "__main__":
             if index <= previousIndex:
                 continue
             #pk, regstr_gb_cd, regstr_gb_nm, regstr_kind_cd, regstr_kind_nm, sigungu_cd, bjdong_cd, plat_gb_cd, bun, ji = row
-            mgm_bldrgst_pk, sigungu_cd, bjdong_cd, plat_gb_cd, bun, ji, dong_nm = row
+            #mgm_bldrgst_pk, sigungu_cd, bjdong_cd, plat_gb_cd, bun, ji, dong_nm = row
+
+
+            ####################
+            mgm_bldrgst_pk, sigungu_cd, bjdong_cd, plat_gb_cd, bun, ji, dong_nm, t_unit = row#seoul_700over.csv
             dong_nm.strip()
+            dong_nm = dong_nm.decode('cp949')
             if dong_nm == None:
                 dong_nm = ''
             else:
                 dong_nm = dong_nm.strip()
             print 'request:', sigungu_cd, bjdong_cd, plat_gb_cd, bun, ji, "[%s:%s]" % ("dong_nm", dong_nm)
+            ####################
+
+            #mgm_bldrgst_pk, sigungu_cd, bjdong_cd, plat_gb_cd, bun, ji, t_unit = row#seoul_700under.csv
+
+
 
             response_body = getArchitecturePossessionInfo(sigungu_cd, bjdong_cd, plat_gb_cd, bun, ji, dong_nm)
             #print response_body
@@ -112,7 +124,7 @@ if __name__ == "__main__":
                 finally:
                     f.close()
 
-            time.sleep(1)
+            #time.sleep(1)
 
     END________TIME = (datetime.datetime.utcnow() + datetime.timedelta(hours=9)).strftime("%Y%m%d%H%M")
     print "%s:%s" % ("START______TIME", START______TIME)
