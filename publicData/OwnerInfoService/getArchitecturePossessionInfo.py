@@ -58,7 +58,7 @@ if __name__ == "__main__":
     #exit(0);
     START______TIME = (datetime.datetime.utcnow() + datetime.timedelta(hours=9)).strftime("%Y%m%d%H%M")
     help_print = False
-    result_filename = 'response4seoul_700over_201812201900.csv'
+    result_filename = 'response4seoul_700under_201812211200_1.csv'
     if os.path.exists(result_filename):
         help_print = True
 
@@ -70,7 +70,7 @@ if __name__ == "__main__":
             except:
                 print "Unexpected error: ", sys.exc_info()[0], sys.exc_info()[1]
 
-    with open('seoul_700over.csv') as f:
+    with open('seoul_700under_1.csv') as f:
     #with codecs.open('seoul_700over.csv', 'r',encoding='utf8') as f:
         csv_reader = csv.reader(f)
         for index, row in enumerate(csv_reader):
@@ -84,20 +84,20 @@ if __name__ == "__main__":
             #mgm_bldrgst_pk, sigungu_cd, bjdong_cd, plat_gb_cd, bun, ji, dong_nm = row
 
 
+            ########seoul_700over.csv############
+            # mgm_bldrgst_pk, sigungu_cd, bjdong_cd, plat_gb_cd, bun, ji, dong_nm, t_unit = row#seoul_700over.csv
+            # dong_nm.strip()
+            # dong_nm = dong_nm.decode('cp949')
+            # if dong_nm == None:
+            #     dong_nm = ''
+            # else:
+            #     dong_nm = dong_nm.strip()
+            # print 'request:', sigungu_cd, bjdong_cd, plat_gb_cd, bun, ji, "[%s:%s]" % ("dong_nm", dong_nm)
+            #######seoul_700under.csv#############
+
+            mgm_bldrgst_pk, sigungu_cd, bjdong_cd, plat_gb_cd, bun, ji, t_unit = row#seoul_700under.csv
+            dong_nm = ''
             ####################
-            mgm_bldrgst_pk, sigungu_cd, bjdong_cd, plat_gb_cd, bun, ji, dong_nm, t_unit = row#seoul_700over.csv
-            dong_nm.strip()
-            dong_nm = dong_nm.decode('cp949')
-            if dong_nm == None:
-                dong_nm = ''
-            else:
-                dong_nm = dong_nm.strip()
-            print 'request:', sigungu_cd, bjdong_cd, plat_gb_cd, bun, ji, "[%s:%s]" % ("dong_nm", dong_nm)
-            ####################
-
-            #mgm_bldrgst_pk, sigungu_cd, bjdong_cd, plat_gb_cd, bun, ji, t_unit = row#seoul_700under.csv
-
-
 
             response_body = getArchitecturePossessionInfo(sigungu_cd, bjdong_cd, plat_gb_cd, bun, ji, dong_nm)
             #print response_body
