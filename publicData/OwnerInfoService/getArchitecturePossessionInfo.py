@@ -58,7 +58,7 @@ if __name__ == "__main__":
     #exit(0);
     START______TIME = (datetime.datetime.utcnow() + datetime.timedelta(hours=9)).strftime("%Y%m%d%H%M")
     help_print = False
-    result_filename = 'response4seoul_700under_201812211200_1.csv'
+    result_filename = 'response4seoul_700under_re_1_201812241400.csv'
     if os.path.exists(result_filename):
         help_print = True
 
@@ -70,7 +70,7 @@ if __name__ == "__main__":
             except:
                 print "Unexpected error: ", sys.exc_info()[0], sys.exc_info()[1]
 
-    with open('seoul_700under_1.csv') as f:
+    with open('seoul_700under_re_1.csv') as f:
     #with codecs.open('seoul_700over.csv', 'r',encoding='utf8') as f:
         csv_reader = csv.reader(f)
         for index, row in enumerate(csv_reader):
