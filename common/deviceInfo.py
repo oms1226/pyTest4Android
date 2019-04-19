@@ -361,6 +361,26 @@ def getValueFromDevice(deviceId, field):
 
     return reVal
 
+def getGpuInfoFromDevice(deviceId):
+    reVal = None
+
+    proc = subprocess.Popen(("adb -s " + deviceId + " shell dumpsys SurfaceFlinger | grep GLES").split(' '), stdout=subprocess.PIPE)
+    fd_popen = proc.stdout
+
+    content = fd_popen.read().strip()
+    for line in content.split('\n'):
+        reVal = line.replace('[', '').replace(']', '').replace('\r', '').replace('\n', '').replace(' ', '')
+        break
+
+    if reVal == '':
+        reVal = None
+    try:
+        proc.kill()
+    except:
+        printError("%s:%s" % ("Unexpected error", getExceptionString(sys.exc_info())))
+
+    return reVal
+
 def getPropFromDevice(deviceId):
     """
     greatlteks:/ $ getprop
@@ -384,7 +404,7 @@ def getPropFromDevice(deviceId):
         reVal = reVal[:-1] + '}'
     print reVal
     reVal = json.loads(reVal)
-
+    reVal['gpuinfo']=getGpuInfoFromDevice(deviceId)
     printEx( "%s:%s" % ("type(reVal)", type(reVal)) )
     try:
         proc.kill()
