@@ -379,7 +379,7 @@ def getPropFromDevice(deviceId):
                 and (line.count(']') == 2)\
                 and ('{' not in line)\
                 and ('}' not in line):
-            reVal = reVal + line.replace('[', '"').replace(']', '"').replace('""0.pool.ntp.org""', '"0.pool.ntp.org"').replace('\r', '').replace('\n', '').replace('\\u8712', '') + ','
+            reVal = reVal + line.replace('"', '').replace('[', '"').replace(']', '"').replace('""0.pool.ntp.org""', '"0.pool.ntp.org"').replace('\r', '').replace('\n', '').replace('\\u8712', '') + ','
     if reVal.endswith(','):
         reVal = reVal[:-1] + '}'
     print reVal
