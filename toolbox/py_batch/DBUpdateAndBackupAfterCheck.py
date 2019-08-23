@@ -8,6 +8,7 @@ from dateutil import parser
 import datetime
 import codecs
 from sys import platform as _platform
+import time
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -206,7 +207,7 @@ if __name__ == "__main__":
                 print(execMysqlDump('%s.%s' % ('%s\\%s.%s' % (LOCALHOST_TARGETPATH, TABLE_NAME, 'sql'), lastTimeInDB)))
                 print("%s:%s" % ("LOCALHOST_ONLY", ('%s.%s' % ('%s\\%s.%s' % (LOCALHOST_TARGETPATH, TABLE_NAME, 'sql'), lastTimeInDB))))
 
-
+        time.sleep(5)
         print("%s:%s" % ("LOCALHOST_ONLY", 'END'))
         exit(0)
 
@@ -274,6 +275,7 @@ if __name__ == "__main__":
         printEx("%s:%s" % ("write_result", write_result))
         pass
 
+    time.sleep(5)
     END_________TIME = (datetime.datetime.utcnow() + datetime.timedelta(hours=9)).strftime("%Y%m%d%H%M")
     printEx("%s:%s" % ("END_________TIME", END_________TIME))
 
