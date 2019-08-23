@@ -22,7 +22,8 @@ myTime = time.strftime('%H%M%S')
 print type(myTime)
 print myTime
 print int(myTime)
-while int(myTime) < 80700:
+#네이버 시계보다 1초 더 빠르다고 판단해서 설정하니 2019.08.20일 추석 예매 실패 그래서 2초 앞으로 세팅해둠
+while int(myTime) < 70002:#7시 00분 02초
     myTime = time.strftime('%H%M%S')
 
 
@@ -31,11 +32,11 @@ while int(myTime) < 80700:
 #elem = driver.find_element_by_class_name("menu_01")
 #elem = driver.find_element_by_name('menu1')
 try:
-    target = u'설 승차권 예약'
+    target = u'추석 승차권 예약'
     elem = driver.find_element_by_partial_link_text(target)
 except:
     print 'not found -> (target:%s)' % (target)
-    target = u'추석 승차권 예약'
+    target = u'설 승차권 예약'
     elem = driver.find_element_by_partial_link_text(target)
 
 #elem = driver.find_element_by_partial_link_text('06:00~15:00')
