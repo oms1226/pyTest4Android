@@ -103,6 +103,7 @@ def getHashkeyThisDevice4ELK(deviceId):
         "ro.product.cpu.abi",
         "ro.build.version.release",
         "ro.build.version.sdk",
+        "ro.hardware.egl",
     ]
 
     hashKey = str(len(needFields))

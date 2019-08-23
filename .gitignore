@@ -35,3 +35,4 @@ filebeat/filebeat-6\.4\.0-windows-x86_64/data/
 toolbox/win_batch/build/
 toolbox/win_batch/dist/
 filebeat/filebeat-6.4.2-windows-x86_64/data/
+publicData/OwnerInfoService/seoul_700under_re.xlsx

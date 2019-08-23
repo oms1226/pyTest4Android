@@ -361,6 +361,26 @@ def getValueFromDevice(deviceId, field):
 
     return reVal
 
+def getGpuInfoFromDevice(deviceId):
+    reVal = None
+
+    proc = subprocess.Popen(("adb -s " + deviceId + " shell dumpsys SurfaceFlinger | grep GLES").split(' '), stdout=subprocess.PIPE)
+    fd_popen = proc.stdout
+
+    content = fd_popen.read().strip()
+    for line in content.split('\n'):
+        reVal = line.replace('[', '').replace(']', '').replace('\r', '').replace('\n', '').replace(' ', '')
+        break
+
+    if reVal == '':
+        reVal = None
+    try:
+        proc.kill()
+    except:
+        printError("%s:%s" % ("Unexpected error", getExceptionString(sys.exc_info())))
+
+    return reVal
+
 def getPropFromDevice(deviceId):
     """
     greatlteks:/ $ getprop
@@ -379,12 +399,12 @@ def getPropFromDevice(deviceId):
                 and (line.count(']') == 2)\
                 and ('{' not in line)\
                 and ('}' not in line):
-            reVal = reVal + line.replace('[', '"').replace(']', '"').replace('""0.pool.ntp.org""', '"0.pool.ntp.org"').replace('\r', '').replace('\n', '').replace('\\u8712', '') + ','
+            reVal = reVal + line.replace('"', '').replace('[', '"').replace(']', '"').replace('""0.pool.ntp.org""', '"0.pool.ntp.org"').replace('\r', '').replace('\n', '').replace('\\u8712', '') + ','
     if reVal.endswith(','):
         reVal = reVal[:-1] + '}'
     print reVal
     reVal = json.loads(reVal)
-
+    reVal['gpuinfo']=getGpuInfoFromDevice(deviceId)
     printEx( "%s:%s" % ("type(reVal)", type(reVal)) )
     try:
         proc.kill()

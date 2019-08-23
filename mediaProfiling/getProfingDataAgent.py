@@ -54,6 +54,38 @@ def getFileListInAndroidDevice(cmd, subfixs):
 
     return reVal
 
+def getRecursiveRawDatasInLocalPC(subfixs):
+    reVal = []
+    rawFullFilenames = []
+    for (dirpath, dirnames, rawFilenames) in walk(PROFILE_RAW_FILEFOLDER):
+        printEx("%s:%s" % ("dirpath", dirpath))
+        printEx("%s:%s" % ("dirnames", dirnames))
+        printEx("%s:%s" % ("rawFilenames", rawFilenames))
+
+        if len(rawFilenames) > 0:
+            for rawFilename in rawFilenames:
+                isGet = False
+                for subfix in subfixs:
+                    if rawFilename.endswith(subfix):
+                        isGet = True
+                if isGet == False:
+                    continue
+
+                print os.path.join(dirpath, rawFilename)
+                if os.path.join(dirpath, rawFilename) not in rawFullFilenames:
+                    rawFullFilenames.append(os.path.join(dirpath, rawFilename))
+
+    for rawFullFilename in rawFullFilenames:
+        if os.path.isfile(rawFullFilename):
+            with open(rawFullFilename) as f:
+                while True:
+                    line = f.readline().replace('\r', '').replace('\n', '')
+                    if not line: break
+                    reVal.append(line)
+                f.close()
+            os.remove(rawFullFilename)
+    return reVal
+
 def getRawDatasInLocalPC(subfixs):
     reVal = []
     for (dirpath, dirnames, rawFilenames) in walk(PROFILE_RAW_FILEFOLDER):
@@ -250,7 +282,7 @@ if __name__ == "__main__":
     while True:
         RawDatas = []
         try:
-            RawDatas = RawDatas + getRawDatasInLocalPC(Trtr_Target_fileName_Subfixs)
+            RawDatas = RawDatas + getRecursiveRawDatasInLocalPC(Trtr_Target_fileName_Subfixs)
             RawDatas = RawDatas + getRawDatasInDevice()
             RawDatas = RawDatas + getRawCSVsInLocalPC()
 
