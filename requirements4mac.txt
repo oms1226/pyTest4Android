@@ -22,7 +22,7 @@ openpyxl==2.4.5
 pandas==0.19.2
 pefile==2017.11.5
 Pillow==4.1.1
-psutil==5.3.1
+psutil==5.6.6
 pygame==1.9.3
 PyInstaller==3.3.1
 pyparsing==2.1.10
