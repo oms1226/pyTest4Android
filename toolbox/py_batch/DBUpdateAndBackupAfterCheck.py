@@ -135,10 +135,17 @@ def writeFileAboutTableLastTimeInDB(filefullname, content):
 TABLE_NAME = 'my_wiki'
 MIN_DB_SIZE =  250*1024*1024
 HISTORY_UPDATEDATEinLOCAL_FILENAME = '%s.latest_updatetime.local' % TABLE_NAME
-CLOUDBERRY_MYSQL_DIRECTORY = 'T:\\_wikibackup'
-CLOUDBERRY_MYSQL_FULLFILENAME_PREFIX = '%s\\%s.%s' % (CLOUDBERRY_MYSQL_DIRECTORY, TABLE_NAME, 'sql')
-CLOUDBERRY_HISTORY_LOG_FILENAME = '%s\\%s.%s' % (CLOUDBERRY_MYSQL_DIRECTORY, TABLE_NAME, 'log')
-LOCAL______HISTORY_LOG_FILENAME = '%s\\%s.%s' % ('.', TABLE_NAME, 'log')
+if _platform == "win32" or _platform == "win64":
+    CLOUDBERRY_MYSQL_DIRECTORY = 'D:\\_wikibackup'
+    CLOUDBERRY_MYSQL_FULLFILENAME_PREFIX = '%s\\%s.%s' % (CLOUDBERRY_MYSQL_DIRECTORY, TABLE_NAME, 'sql')
+    CLOUDBERRY_HISTORY_LOG_FILENAME = '%s\\%s.%s' % (CLOUDBERRY_MYSQL_DIRECTORY, TABLE_NAME, 'log')
+    LOCAL______HISTORY_LOG_FILENAME = '%s\\%s.%s' % ('.', TABLE_NAME, 'log')
+else:
+    CLOUDBERRY_MYSQL_DIRECTORY = '/Users/oms1226/_google/_wikibackup'
+    CLOUDBERRY_MYSQL_FULLFILENAME_PREFIX = '%s/%s.%s' % (CLOUDBERRY_MYSQL_DIRECTORY, TABLE_NAME, 'sql')
+    CLOUDBERRY_HISTORY_LOG_FILENAME = '%s/%s.%s' % (CLOUDBERRY_MYSQL_DIRECTORY, TABLE_NAME, 'log')
+    LOCAL______HISTORY_LOG_FILENAME = '%s/%s.%s' % ('.', TABLE_NAME, 'log')
+
 WHEREISSCRIPT = None
 LOCALHOST_TARGETPATH = None
 
@@ -155,10 +162,9 @@ def printEx (*strs):
     print tot
 
     #with open(CLOUDBERRY_HISTORY_LOG_FILENAME, 'a') as f:
-    if _platform == "win32" or _platform == "win64":
-        with codecs.open(LOCAL______HISTORY_LOG_FILENAME, 'a', 'utf-8') as f:
-            f.write("%s> %s" % (WHEREISSCRIPT, tot) + "\r\n")
-            f.close()
+    with codecs.open(LOCAL______HISTORY_LOG_FILENAME, 'a', 'utf-8') as f:
+        f.write("%s> %s" % (WHEREISSCRIPT, tot) + "\r\n")
+        f.close()
 
     if os.path.exists(LOCAL______HISTORY_LOG_FILENAME):
         shutil.move(LOCAL______HISTORY_LOG_FILENAME, CLOUDBERRY_HISTORY_LOG_FILENAME)
