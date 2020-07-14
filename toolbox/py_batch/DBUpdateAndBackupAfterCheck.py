@@ -13,16 +13,21 @@ import time
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
+mysql_cmd = '/usr/local/opt/mysql@5.7/bin/mysql'
+mysqldump_cmd = '/usr/local/opt/mysql@5.7/bin/mysqldump'
+if _platform == "win32" or _platform == "win64":
+    mysql_cmd='mysql'
+    mysqldump_cmd='mysqldump'
 
 def getTableLastTimeInDB(tablename):
     reVal = None
     if _platform == "linux" or _platform == "linux2" or _platform == "darwin":
         fd_popen = subprocess.Popen(
-            """ mysql -uroot -p0000  -e "SELECT UPDATE_TIME FROM INFORMATION_SCHEMA.TABLES WHERE table_schema='%s';" """ % tablename,
+            """ %s -uroot -p0000  -e "SELECT UPDATE_TIME FROM INFORMATION_SCHEMA.TABLES WHERE table_schema='%s';" """ % (mysql_cmd, tablename),
             shell=True, stdout=subprocess.PIPE).stdout
     elif _platform == "win32" or _platform == "win64":
         fd_popen = subprocess.Popen(
-            """mysql -uroot -p0000  -e \"SELECT UPDATE_TIME FROM INFORMATION_SCHEMA.TABLES WHERE table_schema='%s';\"""" % tablename,
+            """%s -uroot -p0000  -e \"SELECT UPDATE_TIME FROM INFORMATION_SCHEMA.TABLES WHERE table_schema='%s';\"""" % (mysql_cmd, tablename),
             stdout=subprocess.PIPE).stdout
     while 1:
         line = fd_popen.readline()
@@ -46,7 +51,7 @@ def execMysqlDump(filefullname):
     if os.path.exists(filefullname):
         os.unlink(filefullname)
     printEx('start::mysqldump'),
-    os.system("""mysqldump -uroot -p0000 my_wiki > %s""" % filefullname)
+    os.system("""%s -uroot -p0000 my_wiki > %s""" % (mysqldump_cmd, filefullname))
     printEx('end::mysqldump')
 
     if os.path.exists(filefullname):
@@ -61,7 +66,7 @@ def execMysqlUpdate(filefullname):
 
     p_lastTimeInDB = getTableLastTimeInDB(TABLE_NAME)
     printEx('start::mysql-update'),
-    os.system("""mysql -uroot -p0000 my_wiki < %s""" % filefullname)
+    os.system("""%s -uroot -p0000 my_wiki < %s""" % (mysql_cmd, filefullname))
     printEx('end::mysql-update')
     lastTimeInDB = getTableLastTimeInDB(TABLE_NAME)
 
@@ -138,13 +143,13 @@ HISTORY_UPDATEDATEinLOCAL_FILENAME = '%s.latest_updatetime.local' % TABLE_NAME
 if _platform == "win32" or _platform == "win64":
     CLOUDBERRY_MYSQL_DIRECTORY = 'D:\\_wikibackup'
     CLOUDBERRY_MYSQL_FULLFILENAME_PREFIX = '%s\\%s.%s' % (CLOUDBERRY_MYSQL_DIRECTORY, TABLE_NAME, 'sql')
-    CLOUDBERRY_HISTORY_LOG_FILENAME = '%s\\%s.%s' % (CLOUDBERRY_MYSQL_DIRECTORY, TABLE_NAME, 'log')
-    LOCAL______HISTORY_LOG_FILENAME = '%s\\%s.%s' % ('.', TABLE_NAME, 'log')
+    CLOUDBERRY_HISTORY_LOG_FILENAME = '%s\\%s.%s' % (CLOUDBERRY_MYSQL_DIRECTORY, TABLE_NAME, 'log')#구글드라이버로 변경되면서 같아서 더 이상 사용할 필요가 없는데 그냥 뒀다.
+    LOCAL______HISTORY_LOG_FILENAME = '%s\\%s.%s' % (CLOUDBERRY_MYSQL_DIRECTORY, TABLE_NAME, 'log')
 else:
     CLOUDBERRY_MYSQL_DIRECTORY = '/Users/oms1226/_google/_wikibackup'
     CLOUDBERRY_MYSQL_FULLFILENAME_PREFIX = '%s/%s.%s' % (CLOUDBERRY_MYSQL_DIRECTORY, TABLE_NAME, 'sql')
-    CLOUDBERRY_HISTORY_LOG_FILENAME = '%s/%s.%s' % (CLOUDBERRY_MYSQL_DIRECTORY, TABLE_NAME, 'log')
-    LOCAL______HISTORY_LOG_FILENAME = '%s/%s.%s' % ('.', TABLE_NAME, 'log')
+    CLOUDBERRY_HISTORY_LOG_FILENAME = '%s/%s.%s' % (CLOUDBERRY_MYSQL_DIRECTORY, TABLE_NAME, 'log')#구글드라이버로 변경되면서 같아서 더 이상 사용할 필요가 없는데 그냥 뒀다.
+    LOCAL______HISTORY_LOG_FILENAME = '%s/%s.%s' % (CLOUDBERRY_MYSQL_DIRECTORY, TABLE_NAME, 'log')
 
 WHEREISSCRIPT = None
 LOCALHOST_TARGETPATH = None
