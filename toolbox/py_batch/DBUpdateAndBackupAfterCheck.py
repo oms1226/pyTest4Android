@@ -139,13 +139,14 @@ def writeFileAboutTableLastTimeInDB(filefullname, content):
 
 TABLE_NAME = 'my_wiki'
 MIN_DB_SIZE =  250*1024*1024
-HISTORY_UPDATEDATEinLOCAL_FILENAME = '%s.latest_updatetime.local' % TABLE_NAME
 if _platform == "win32" or _platform == "win64":
+    HISTORY_UPDATEDATEinLOCAL_FILENAME = 'D:\\%s.latest_updatetime.local' % TABLE_NAME
     CLOUDBERRY_MYSQL_DIRECTORY = 'D:\\_wikibackup'
     CLOUDBERRY_MYSQL_FULLFILENAME_PREFIX = '%s\\%s.%s' % (CLOUDBERRY_MYSQL_DIRECTORY, TABLE_NAME, 'sql')
     CLOUDBERRY_HISTORY_LOG_FILENAME = '%s\\%s.%s' % (CLOUDBERRY_MYSQL_DIRECTORY, TABLE_NAME, 'log')#구글드라이버로 변경되면서 같아서 더 이상 사용할 필요가 없는데 그냥 뒀다.
     LOCAL______HISTORY_LOG_FILENAME = '%s\\%s.%s' % (CLOUDBERRY_MYSQL_DIRECTORY, TABLE_NAME, 'log')
 else:
+    HISTORY_UPDATEDATEinLOCAL_FILENAME = '/Users/oms1226/.sleepwatcher/%s.latest_updatetime.local' % TABLE_NAME
     CLOUDBERRY_MYSQL_DIRECTORY = '/Users/oms1226/_google/_wikibackup'
     CLOUDBERRY_MYSQL_FULLFILENAME_PREFIX = '%s/%s.%s' % (CLOUDBERRY_MYSQL_DIRECTORY, TABLE_NAME, 'sql')
     CLOUDBERRY_HISTORY_LOG_FILENAME = '%s/%s.%s' % (CLOUDBERRY_MYSQL_DIRECTORY, TABLE_NAME, 'log')#구글드라이버로 변경되면서 같아서 더 이상 사용할 필요가 없는데 그냥 뒀다.
