@@ -15,19 +15,25 @@ sys.setdefaultencoding('utf-8')
 
 mysql_cmd = '/usr/local/opt/mysql@5.7/bin/mysql'
 mysqldump_cmd = '/usr/local/opt/mysql@5.7/bin/mysqldump'
+try:
+    mysql_password = os.environ['mysql_password']
+except:
+    mysql_password = '0000'
+
 if _platform == "win32" or _platform == "win64":
-    mysql_cmd='mysql'
-    mysqldump_cmd='mysqldump'
+    mysql_cmd='C:\\Bitnami\\mediawiki-1.34.2-1\\mysql\\bin\\mysql'
+    mysqldump_cmd='C:\\Bitnami\\mediawiki-1.34.2-1\\mysql\\bin\\mysqldump'
+
 
 def getTableLastTimeInDB(tablename):
     reVal = None
     if _platform == "linux" or _platform == "linux2" or _platform == "darwin":
         fd_popen = subprocess.Popen(
-            """ %s -uroot -p0000  -e "SELECT UPDATE_TIME FROM INFORMATION_SCHEMA.TABLES WHERE table_schema='%s';" """ % (mysql_cmd, tablename),
+            """ %s -uroot -p%s  -e "SELECT UPDATE_TIME FROM INFORMATION_SCHEMA.TABLES WHERE table_schema='%s';" """ % (mysql_cmd, mysql_password, tablename),
             shell=True, stdout=subprocess.PIPE).stdout
     elif _platform == "win32" or _platform == "win64":
         fd_popen = subprocess.Popen(
-            """%s -uroot -p0000  -e \"SELECT UPDATE_TIME FROM INFORMATION_SCHEMA.TABLES WHERE table_schema='%s';\"""" % (mysql_cmd, tablename),
+            """%s -uroot -p%s  -e \"SELECT UPDATE_TIME FROM INFORMATION_SCHEMA.TABLES WHERE table_schema='%s';\"""" % (mysql_cmd, mysql_password, tablename),
             stdout=subprocess.PIPE).stdout
     while 1:
         line = fd_popen.readline()
@@ -51,7 +57,7 @@ def execMysqlDump(filefullname):
     if os.path.exists(filefullname):
         os.unlink(filefullname)
     printEx('start::mysqldump'),
-    os.system("""%s -uroot -p0000 my_wiki > %s""" % (mysqldump_cmd, filefullname))
+    os.system("""%s -uroot -p%s my_wiki > %s""" % (mysqldump_cmd, mysql_password, filefullname))
     printEx('end::mysqldump')
 
     if os.path.exists(filefullname):
@@ -66,7 +72,7 @@ def execMysqlUpdate(filefullname):
 
     p_lastTimeInDB = getTableLastTimeInDB(TABLE_NAME)
     printEx('start::mysql-update'),
-    os.system("""%s -uroot -p0000 my_wiki < %s""" % (mysql_cmd, filefullname))
+    os.system("""%s -uroot -p%s my_wiki < %s""" % (mysql_cmd, mysql_password, filefullname))
     printEx('end::mysql-update')
     lastTimeInDB = getTableLastTimeInDB(TABLE_NAME)
 
