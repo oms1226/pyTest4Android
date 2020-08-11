@@ -10,6 +10,8 @@ import codecs
 from sys import platform as _platform
 import time
 
+from enum import Enum
+
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
@@ -181,7 +183,13 @@ def printEx (*strs):
     if os.path.exists(LOCAL______HISTORY_LOG_FILENAME):
         shutil.move(LOCAL______HISTORY_LOG_FILENAME, CLOUDBERRY_HISTORY_LOG_FILENAME)
 
+class SyncType(Enum):
+    BOTH = 1,
+    UPLOADONLY = 2,
+    DOWNLOADONLY = 3
+
 if __name__ == "__main__":
+    synctype = SyncType.BOTH
     while len(sys.argv) > 1:
         if len(sys.argv) > 1 and '--where' in sys.argv[1]:
             argfullname = sys.argv[1].split('=')
@@ -197,6 +205,12 @@ if __name__ == "__main__":
             if len(argfullname) == 2:
                 if argfullname[0] == '--localhost':
                     LOCALHOST_TARGETPATH = argfullname[1]
+            sys.argv.pop(1)
+        elif len(sys.argv) > 1 and '--uploadOnly' in sys.argv[1]:
+            synctype = SyncType.UPLOADONLY
+            sys.argv.pop(1)
+        elif len(sys.argv) > 1 and '--downloadOnly' in sys.argv[1]:
+            synctype = SyncType.DOWNLOADONLY
             sys.argv.pop(1)
         else:
             sys.argv.pop(1)
@@ -251,47 +265,53 @@ if __name__ == "__main__":
         printEx("Nothing; lastTimeInCloud is equal to lastTimeInDB!")
         pass
     elif int(lastTimeInCloud) < int(lastTimeInDB):
-        is_realLower = False
-        if lastTimeInFile == None:
-            is_realLower = True
-        elif int(lastTimeInFile) < int(lastTimeInDB):
-            is_realLower = True
-            if os.path.exists(HISTORY_UPDATEDATEinLOCAL_FILENAME):
-                os.unlink(HISTORY_UPDATEDATEinLOCAL_FILENAME)
+        if synctype == SyncType.DOWNLOADONLY:
+            printEx("Not Update-Cloud; lastTimeInCloud is lower to lastTimeInDB! That's why SyncType.DOWNLOADONLY")
         else:
-            printEx("NoneAfterUpdate; lastTimeInDB is not upper to lastTimeInFile!")
-
-        if is_realLower:
-            printEx("Update-Cloud; lastTimeInCloud is lower to lastTimeInDB!")
-            previous_filefullnameInCloud = '%s.%s' % (CLOUDBERRY_MYSQL_FULLFILENAME_PREFIX, lastTimeInCloud)
-            createFilefullname = '%s.%s' % (CLOUDBERRY_MYSQL_FULLFILENAME_PREFIX, lastTimeInDB)
-            printEx(execMysqlDump(createFilefullname))
-            previous_fileSizeInCloud = os.path.getsize(previous_filefullnameInCloud)
-            previous_createFileSize = os.path.getsize(createFilefullname)
-            if previous_createFileSize > previous_fileSizeInCloud:
-                printEx("correct; %s(%s) is bigger than %s(%s)!" % (createFilefullname, previous_createFileSize, previous_filefullnameInCloud, previous_fileSizeInCloud))
-                if os.path.exists(previous_filefullnameInCloud):
-                    os.unlink(previous_filefullnameInCloud)
+            is_realLower = False
+            if lastTimeInFile == None:
+                is_realLower = True
+            elif int(lastTimeInFile) < int(lastTimeInDB):
+                is_realLower = True
+                if os.path.exists(HISTORY_UPDATEDATEinLOCAL_FILENAME):
+                    os.unlink(HISTORY_UPDATEDATEinLOCAL_FILENAME)
             else:
-                printEx("Error; %s is not bigger than %s!" % (createFilefullname, previous_filefullnameInCloud))
-                shutil.move('%s' % previous_filefullnameInCloud,
-                            '%s.%s' % (previous_filefullnameInCloud, 'backup'))
+                printEx("NoneAfterUpdate; lastTimeInDB is not upper to lastTimeInFile!")
 
-            if os.path.getsize(createFilefullname) <= MIN_DB_SIZE:
-                printEx("Error; %s is not reach to MIN_DB_SIZE(%s)!" % (createFilefullname, MIN_DB_SIZE))
-                shutil.move('%s' % createFilefullname,
-                            '%s.%s' % (createFilefullname, 'current'))
+            if is_realLower:
+                printEx("Update-Cloud; lastTimeInCloud is lower to lastTimeInDB!")
+                previous_filefullnameInCloud = '%s.%s' % (CLOUDBERRY_MYSQL_FULLFILENAME_PREFIX, lastTimeInCloud)
+                createFilefullname = '%s.%s' % (CLOUDBERRY_MYSQL_FULLFILENAME_PREFIX, lastTimeInDB)
+                printEx(execMysqlDump(createFilefullname))
+                previous_fileSizeInCloud = os.path.getsize(previous_filefullnameInCloud)
+                previous_createFileSize = os.path.getsize(createFilefullname)
+                if previous_createFileSize > previous_fileSizeInCloud:
+                    printEx("correct; %s(%s) is bigger than %s(%s)!" % (createFilefullname, previous_createFileSize, previous_filefullnameInCloud, previous_fileSizeInCloud))
+                    if os.path.exists(previous_filefullnameInCloud):
+                        os.unlink(previous_filefullnameInCloud)
+                else:
+                    printEx("Error; %s is not bigger than %s!" % (createFilefullname, previous_filefullnameInCloud))
+                    shutil.move('%s' % previous_filefullnameInCloud,
+                                '%s.%s' % (previous_filefullnameInCloud, 'backup'))
+
+                if os.path.getsize(createFilefullname) <= MIN_DB_SIZE:
+                    printEx("Error; %s is not reach to MIN_DB_SIZE(%s)!" % (createFilefullname, MIN_DB_SIZE))
+                    shutil.move('%s' % createFilefullname,
+                                '%s.%s' % (createFilefullname, 'current'))
 
 
     elif int(lastTimeInCloud) > int(lastTimeInDB):
-        printEx("Update-Cloud; lastTimeInCloud is upper to lastTimeInDB!")
-        printEx(execMysqlUpdate('%s.%s' % (CLOUDBERRY_MYSQL_FULLFILENAME_PREFIX, lastTimeInCloud)))
-        lastTimeInDB = getTableLastTimeInDB(TABLE_NAME)
-        #shutil.move('%s.%s' % (CLOUDBERRY_MYSQL_FULLFILENAME_PREFIX, lastTimeInCloud), '%s.%s' % (CLOUDBERRY_MYSQL_FULLFILENAME_PREFIX, lastTimeInDB))
-        #printEx('%s.%s' % (CLOUDBERRY_MYSQL_FULLFILENAME_PREFIX, lastTimeInCloud) + ' to '  + '%s.%s' % (CLOUDBERRY_MYSQL_FULLFILENAME_PREFIX, lastTimeInDB))
-        write_result = writeFileAboutTableLastTimeInDB(HISTORY_UPDATEDATEinLOCAL_FILENAME, lastTimeInDB)
-        printEx("%s:%s" % ("write_result", write_result))
-        pass
+        if synctype == SyncType.UPLOADONLY:
+            printEx("Not Update-Cloud; lastTimeInCloud is upper to lastTimeInDB! That's why SyncType.UPLOADONLY")
+        else:
+            printEx("Update-Cloud; lastTimeInCloud is upper to lastTimeInDB!")
+            printEx(execMysqlUpdate('%s.%s' % (CLOUDBERRY_MYSQL_FULLFILENAME_PREFIX, lastTimeInCloud)))
+            lastTimeInDB = getTableLastTimeInDB(TABLE_NAME)
+            #shutil.move('%s.%s' % (CLOUDBERRY_MYSQL_FULLFILENAME_PREFIX, lastTimeInCloud), '%s.%s' % (CLOUDBERRY_MYSQL_FULLFILENAME_PREFIX, lastTimeInDB))
+            #printEx('%s.%s' % (CLOUDBERRY_MYSQL_FULLFILENAME_PREFIX, lastTimeInCloud) + ' to '  + '%s.%s' % (CLOUDBERRY_MYSQL_FULLFILENAME_PREFIX, lastTimeInDB))
+            write_result = writeFileAboutTableLastTimeInDB(HISTORY_UPDATEDATEinLOCAL_FILENAME, lastTimeInDB)
+            printEx("%s:%s" % ("write_result", write_result))
+            pass
 
     time.sleep(5)
     END_________TIME = (datetime.datetime.utcnow() + datetime.timedelta(hours=9)).strftime("%Y%m%d%H%M")
